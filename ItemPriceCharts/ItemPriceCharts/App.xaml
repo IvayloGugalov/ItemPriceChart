@@ -1,0 +1,21 @@
+﻿<Application x:Class="ItemPriceCharts.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ItemPriceCharts"
+             xmlns:views="clr-namespace:UI.WPF.Views"
+             xmlns:converters="clr-namespace:UI.WPF.Converters"
+             xmlns:viewModels="clr-namespace:UI.WPF.ViewModels">
+    <Application.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type viewModels:ShopViewModel}">
+                <views:ShopView />
+            </DataTemplate>
+            <ResourceDictionary.MergedDictionaries>
+                
+                
+                 
+                <ResourceDictionary Source="Views/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

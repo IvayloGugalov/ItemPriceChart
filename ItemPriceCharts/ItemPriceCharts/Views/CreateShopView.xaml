@@ -1,0 +1,73 @@
+﻿<Window x:Class="UI.WPF.Views.CreateShopView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UI.WPF.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        WindowStyle="None"
+        WindowState="Normal"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        MouseDown="Window_MouseDown"
+        Height="250"
+        Width="450">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        <Button Name="CloseButton"
+                Style="{StaticResource Styles.CloseButton}"
+                Click="CloseButton_Click">
+            <materialDesign:PackIcon Kind="CloseBoxOutline"
+                                     Width="20"
+                                     Height="20"/>
+        </Button>
+
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+            <TextBlock Text="Shop name:"
+                       HorizontalAlignment="Center"
+                       Margin="0 5"/>
+            <Border BorderThickness="1"
+                    CornerRadius="10"
+                    BorderBrush="Black"
+                    Margin="0 0 0 10"
+                    Height="35"
+                    Width="400">
+                <TextBox Name="Title"
+                         Style="{StaticResource Styles.TextBox.Common}"
+                         Foreground="Black"
+                         Padding="10 8 0 10"
+                         TextAlignment="Center"
+                         Text="{Binding NewShopTitle}"/>
+            </Border>
+
+            <TextBlock Text="Shop URL:"
+                       HorizontalAlignment="Center"
+                       Margin="0 0 0 5"/>
+            <Border BorderThickness="1"
+                    CornerRadius="10"
+                    BorderBrush="Black"
+                    Height="35"
+                    Width="400">
+                <TextBox Name="URL"
+                         Style="{StaticResource Styles.TextBox.Common}"
+                         Foreground="Black"
+                         Padding="10 8 0 10"
+                         TextAlignment="Center"
+                         Text="{Binding NewShopURL}"/>
+            </Border>
+
+            <Button Style="{StaticResource Styles.MenuButtons}"
+                    HorizontalAlignment="Center"
+                    Name="addUrl"
+                    Foreground="Black"
+                    Content="Add"
+                    Command="{Binding AddShopCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

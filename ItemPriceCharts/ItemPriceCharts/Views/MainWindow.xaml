@@ -1,0 +1,54 @@
+﻿<Window x:Class="UI.WPF.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cv="clr-namespace:UI.WPF.Converters"
+        mc:Ignorable="d"
+        Height="600"
+        Width="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Background="#82b2ff"
+              Width="150">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Image Margin="0 25"/>
+
+            <Button Grid.Row="1" 
+                    Style="{StaticResource Styles.MenuButtons}"
+                    Name="ComputerParts"
+                    Content="PC parts"
+                    Command="{Binding ShowPCPartsCommand}">
+            </Button>
+
+            <Button Grid.Row="2"
+                    Style="{StaticResource Styles.MenuButtons}"
+                    Name="Phones"
+                    Content="Phones"
+                    Command="{Binding ShowPhonesCommand}">
+            </Button>
+
+            <Button Grid.Row="3"
+                    Style="{StaticResource Styles.MenuButtons}"
+                    VerticalAlignment="Bottom"
+                    Content="Clear View"
+                    Command="{Binding ClearViewCommand}">
+            </Button>
+        </Grid>
+
+        <Grid Grid.Column="1" Background="CornflowerBlue">
+            <ContentControl Visibility="{Binding Path=IsNewViewDisplayed, Converter={cv:BoolToVisibilityConverter}}"
+                            Content="{Binding CurrentView}"/>
+        </Grid>
+    </Grid>
+</Window>
