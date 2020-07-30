@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using ItemPriceCharts.Helpers;
-using ItemPriceCharts.ViewModels;
-using Services.Models;
-using Services.Services;
+﻿using System.Windows.Input;
 
-namespace UI.WPF.ViewModels
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ShopViewModel : BindableViewModel
     {

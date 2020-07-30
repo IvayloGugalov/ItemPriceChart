@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.Constants
+namespace ItemPriceCharts.Services.Constants
 {
     public class URLConstants
     {

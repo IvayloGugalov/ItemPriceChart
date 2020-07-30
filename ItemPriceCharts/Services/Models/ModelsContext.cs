@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Services.Models
+namespace ItemPriceCharts.Services.Models
 {
     public class ModelsContext : DbContext
     {

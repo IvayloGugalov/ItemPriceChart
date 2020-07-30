@@ -4,10 +4,10 @@ using System.Linq;
 
 using Autofac;
 
-using UI.WPF.Factories;
-using UI.WPF.Modules;
+using ItemPriceCharts.UI.WPF.Factories;
+using ItemPriceCharts.UI.WPF.Modules;
 
-namespace UI.WPF.Bootstrapper
+namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
     public abstract class AutofacBootstrapper
     {

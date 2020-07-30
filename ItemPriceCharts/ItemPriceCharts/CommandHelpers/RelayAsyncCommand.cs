@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ItemPriceCharts.Helpers
+namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
     public interface IRelayAsyncCommand : ICommand
     {

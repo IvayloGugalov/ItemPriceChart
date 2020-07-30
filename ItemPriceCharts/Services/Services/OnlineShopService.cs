@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Services.Data;
-using Services.Models;
 
-namespace Services.Strategies
+using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+
+namespace ItemPriceCharts.Services.Strategies
 {
     public class OnlineShopService : IOnlineShopService
     {
@@ -21,7 +23,7 @@ namespace Services.Strategies
                 .FirstOrDefault(shop => shop.ShopId == id) ?? throw new Exception();
         }
 
-        public void Add(OnlineShopModel onlineShop)
+        public DatabaseResult AddToDatabase(OnlineShopModel onlineShop)
         {
             try
             {
@@ -29,7 +31,10 @@ namespace Services.Strategies
                 {
                     this.unitOfWork.OnlineShopRepository.Add(onlineShop);
                     this.unitOfWork.SaveChanges();
+
+                    return DatabaseResult.Succes;
                 }
+                return DatabaseResult.EntitityAlreadyExist;
             }
             catch (Exception e)
             {

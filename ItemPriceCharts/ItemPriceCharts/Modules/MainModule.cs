@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Autofac;
 
-using Autofac;
-using UI.WPF.ViewModels;
-using UI.WPF.Views;
+using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.Views;
 
-namespace UI.WPF.Modules
+namespace ItemPriceCharts.UI.WPF.Modules
 {
     public class MainModule : Module
     {

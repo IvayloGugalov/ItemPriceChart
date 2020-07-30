@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Services.Models;
+using ItemPriceCharts.Services.Models;
 
-namespace Services.Data
+namespace ItemPriceCharts.Services.Data
 {
     public class UnitOfWork : IDisposable
     {

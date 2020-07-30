@@ -4,9 +4,10 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Autofac;
-using UI.WPF.ViewModels;
 
-namespace UI.WPF.Factories
+using ItemPriceCharts.UI.WPF.ViewModels;
+
+namespace ItemPriceCharts.UI.WPF.Factories
 {
     public class ViewFactory : IViewFactory
     {

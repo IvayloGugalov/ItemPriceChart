@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows.Input;
-using UI.WPF.Helpers;
 
-namespace ItemPriceCharts.Helpers
+using ItemPriceCharts.UI.WPF.Helpers;
+
+namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
     public class RelayCommand : RelayCommand<object>
     {

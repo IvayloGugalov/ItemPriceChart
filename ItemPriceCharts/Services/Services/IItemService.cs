@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Services.Models;
+﻿using System.Collections.Generic;
 
-namespace Services.Strategies
+using ItemPriceCharts.Services.Models;
+
+namespace ItemPriceCharts.Services.Strategies
 {
     public interface IItemService
     {

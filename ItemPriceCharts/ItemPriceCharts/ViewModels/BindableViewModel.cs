@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace UI.WPF.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class BindableViewModel : IViewModel
     {

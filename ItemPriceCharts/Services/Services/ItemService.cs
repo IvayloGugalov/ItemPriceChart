@@ -1,10 +1,11 @@
-﻿using Services.Data;
-using Services.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Services.Strategies
+using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Models;
+
+namespace ItemPriceCharts.Services.Strategies
 {
     public class ItemService : IItemService
     {

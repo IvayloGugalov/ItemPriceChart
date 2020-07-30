@@ -1,10 +1,11 @@
-﻿using ItemPriceCharts.Helpers;
-using Services.Services;
-using System;
+﻿using System;
 using System.Windows.Input;
-using UI.WPF.Views;
 
-namespace UI.WPF.ViewModels
+using ItemPriceCharts.UI.WPF.Views;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteShopViewModel : BindableViewModel
     {

@@ -1,12 +1,12 @@
 ﻿using Autofac;
 
-using ItemPriceCharts;
-using UI.WPF.Factories;
-using UI.WPF.Modules;
-using UI.WPF.ViewModels;
-using UI.WPF.Views;
 
-namespace UI.WPF.Bootstrapper
+using ItemPriceCharts.UI.WPF.Factories;
+using ItemPriceCharts.UI.WPF.Modules;
+using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.Views;
+
+namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
     public class Bootstrapper : AutofacBootstrapper
     {

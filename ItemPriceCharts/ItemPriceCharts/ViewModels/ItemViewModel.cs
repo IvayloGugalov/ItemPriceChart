@@ -1,9 +1,8 @@
 ﻿
 
-using Services.Models.Entities;
-using UI.WPF.ViewModels;
+using ItemPriceCharts.Services.Models;
 
-namespace ItemPriceCharts.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ItemViewModel : BindableViewModel
     {
@@ -21,15 +20,10 @@ namespace ItemPriceCharts.ViewModels
             set => this.SetValue(ref this.price, value);
         }
 
-        public ItemViewModel(ItemResult item)
+        public ItemViewModel(ItemModel item)
         {
-            item.Title = this.title;
-            item.Price = this.price;
-        }
-
-        private void Initizialize()
-        {
-
+            this.Title = item.Title;
+            this.Price = item.Price.ToString();
         }
     }
 }

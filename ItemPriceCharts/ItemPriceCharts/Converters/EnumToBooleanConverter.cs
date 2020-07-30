@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace UI.WPF.Converters
+namespace ItemPriceCharts.UI.WPF.Converters
 {
     public class EnumToBooleanConverter : IValueConverter
     {

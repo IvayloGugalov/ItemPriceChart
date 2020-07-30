@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace UI.WPF.Converters
+namespace ItemPriceCharts.UI.WPF.Converters
 {
     [MarkupExtensionReturnType(typeof(IValueConverter))]
     internal abstract class ValueConverter<TSource, TTarget> : MarkupExtension, IValueConverter

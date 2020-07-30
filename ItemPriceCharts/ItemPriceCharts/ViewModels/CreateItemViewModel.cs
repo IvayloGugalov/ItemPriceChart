@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-using ItemPriceCharts.Helpers;
-using Services.Services;
-using UI.WPF.Helpers;
-using UI.WPF.Views;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Views;
 
-namespace UI.WPF.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateItemViewModel : BindableViewModel
     {
@@ -59,7 +59,7 @@ namespace UI.WPF.ViewModels
 
             if (onlineShopTitles.Any())
             {
-                this.OnlineShopsList = ToObservableCollectionExtensions.ToObservableCollection<string>(onlineShopTitles);
+                this.OnlineShopsList = ToObservableCollectionExtensions.ToObservableCollection(onlineShopTitles);
             }
         }
 

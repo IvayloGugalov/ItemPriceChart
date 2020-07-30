@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Services.Models;
+﻿using System.Collections.Generic;
 
-namespace Services.Strategies
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+
+namespace ItemPriceCharts.Services.Strategies
 {
     public interface IOnlineShopService
     {
         OnlineShopModel GetById(int id);
         IEnumerable<OnlineShopModel> GetAll();
-        void Add(OnlineShopModel onlineShop);
+        DatabaseResult AddToDatabase(OnlineShopModel onlineShop);
         void Update(OnlineShopModel onlineShop);
         void Delete(int id);
     }

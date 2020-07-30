@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Services.Models
+namespace ItemPriceCharts.Services.Models
 {
     public sealed class OnlineShopModel
     {
@@ -12,5 +11,17 @@ namespace Services.Models
         public string Url { get; set; }
 
         public List<ItemModel> Items { get; } = new List<ItemModel>();
+
+        public OnlineShopModel()
+        {
+        }
+
+        public OnlineShopModel(int id, string url, string title)
+            : this()
+        {
+            this.ShopId = id;
+            this.Url = url;
+            this.Title = title;
+        }
     }
 }

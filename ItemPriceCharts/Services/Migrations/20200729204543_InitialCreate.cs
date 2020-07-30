@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Services.Migrations
+namespace ItemPriceCharts.Services.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -26,10 +26,10 @@ namespace Services.Migrations
                 {
                     ItemtId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    URL = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false),
-                    URL = table.Column<string>(nullable: true),
                     OnlineShopModelId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

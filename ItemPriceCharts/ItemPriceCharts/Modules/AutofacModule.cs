@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Autofac;
 
-using Autofac;
-using Services.Data;
-using Services.Models;
-using Services.Services;
-using Services.Strategies;
-using UI.WPF.Factories;
+using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Services.Strategies;
+using ItemPriceCharts.UI.WPF.Factories;
 
-namespace UI.WPF.Modules
+namespace ItemPriceCharts.UI.WPF.Modules
 {
     public class AutofacModule : Module
     {

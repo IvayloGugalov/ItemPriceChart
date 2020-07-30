@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemPriceCharts.UI.WPF.CommandHelpers;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using System.Linq;
-using System.Text;
-
-using ItemPriceCharts.Helpers;
-
-namespace UI.WPF.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class MainWindowViewModel : BindableViewModel
     {

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using Services.Data;
-using Services.Models;
-using Services.Services;
-using Services.Strategies;
-using UI.WPF.Bootstrapper;
 
-namespace ItemPriceCharts
+
+using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Services.Strategies;
+
+namespace ItemPriceCharts.UI.WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -24,9 +25,8 @@ namespace ItemPriceCharts
             this.mappedTypes.Add(typeof(ModelsContext), typeof(ModelsContext));
             this.mappedTypes.Add(typeof(UnitOfWork), typeof(UnitOfWork));
 
-            var bootstrapper = new Bootstrapper(this);
+            var bootstrapper = new Bootstrapper.Bootstrapper(this);
             bootstrapper.Run(mappedTypes);
         }
-
     }
 }

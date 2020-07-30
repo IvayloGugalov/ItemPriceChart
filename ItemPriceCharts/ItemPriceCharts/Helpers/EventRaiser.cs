@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UI.WPF.Helpers
+namespace ItemPriceCharts.UI.WPF.Helpers
 {
     public static class EventRaiser
     {

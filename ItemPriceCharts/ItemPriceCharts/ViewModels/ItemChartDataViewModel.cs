@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UI.WPF.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     class ItemChartDataViewModel : BindableViewModel
     {

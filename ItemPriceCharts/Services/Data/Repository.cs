@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
-using Services.Models;
+using ItemPriceCharts.Services.Models;
 
-namespace Services.Data
+namespace ItemPriceCharts.Services.Data
 {
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
@@ -19,7 +19,7 @@ namespace Services.Data
         {
             this.dbContext = dbContext;
             this.dbSet = this.dbContext.Set<TEntity>();
-            this.dbContext.Database.Migrate();
+            this.dbContext.Database.CanConnectAsync();
         }
 
         public virtual IEnumerable<TEntity> All(

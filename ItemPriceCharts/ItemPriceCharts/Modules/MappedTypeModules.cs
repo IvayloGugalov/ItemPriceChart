@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Autofac;
 
-namespace UI.WPF.Modules
+namespace ItemPriceCharts.UI.WPF.Modules
 {
     public class MappedTypeModules : Module
     {

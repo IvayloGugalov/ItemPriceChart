@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using UI.WPF.ViewModels;
 
-namespace UI.WPF.Views
+using ItemPriceCharts.UI.WPF.ViewModels;
+
+namespace ItemPriceCharts.UI.WPF.Views
 {
     /// <summary>
     /// Interaction logic for CreateShopView.xaml

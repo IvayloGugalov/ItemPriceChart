@@ -1,16 +1,16 @@
 ﻿using System;
-using ItemPriceCharts.ViewModels;
-using Services.Models;
-using Services.Services;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using UI.WPF.Helpers;
 using System.Windows.Input;
-using ItemPriceCharts.Helpers;
 
-namespace UI.WPF.ViewModels
+using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class PCShopViewModel : ShopViewModel
     {
@@ -28,7 +28,21 @@ namespace UI.WPF.ViewModels
             this.webPageService = webPageService;
 
             this.ShowItemsCommand = new RelayCommand(_ => this.ShowItemsAction());
+
+            //PublishSubscribe<object>.RegisterEvent("NewShopAdded", this.UpdateListViewHandler);
+            NewEvents.NewShopAddedSub.Publisher.OnDataPublished += this.UpdateListViewHandler;
+
             this.AddShops();
+        }
+
+        //private void UpdateListViewHandler(object sender, PublishAndSubscribeEventArgs<object> args)
+        //{
+        //    this.OnlineShops.Add(args.Item.ToString());
+        //}
+
+        private void UpdateListViewHandler(object sender, MessageArgument<string> e)
+        {
+            this.OnlineShops.Add(e.Message);
         }
 
         private void ShowItemsAction()
@@ -46,7 +60,7 @@ namespace UI.WPF.ViewModels
 
             if (onlineShopTitles.Any())
             {
-                this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection<string>(onlineShopTitles);
+                this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(onlineShopTitles);
             }
         }
 

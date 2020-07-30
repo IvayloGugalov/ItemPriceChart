@@ -1,9 +1,6 @@
-﻿using Services.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ItemPriceCharts.Services.Services;
 
-namespace UI.WPF.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class PhoneShopViewModel : ShopViewModel
     {

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HtmlAgilityPack;
-using Services.Constants;
-using Services.Models;
-using Services.Models.Entities;
-using Services.Strategies;
 
-namespace Services.Services
+using ItemPriceCharts.Services.Constants;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Strategies;
+
+namespace ItemPriceCharts.Services.Services
 {
     public class WebPageService : IWebPageService
     {
@@ -35,13 +35,13 @@ namespace Services.Services
             this.items = this.itemService.GetAll();
         }
 
-        public void CreateShop(string shopURL, string shopTitle)
+        public bool CreateShop(string shopURL, string shopTitle)
         {
-            this.onlineShopService.Add(new OnlineShopModel()
-            {
-                Url = shopURL,
-                Title = shopTitle
-            });
+            return this.onlineShopService.AddToDatabase(
+                new OnlineShopModel(
+                    id: default,
+                    url: shopURL,
+                    title: shopTitle)) == DatabaseResult.Succes;
         }
 
         public void CreateItem(string itemURL, int shopId)
@@ -49,14 +49,14 @@ namespace Services.Services
             var itemDocument = this.htmlService.Load(itemURL);
             _ = double.TryParse(this.GetItemInformation(itemDocument, this.priceContent, this.priceStartIndex), out var price);
 
-            this.itemService.AddItem(new ItemModel()
-            {
-                URL = itemURL,
-                OnlineShopModelId = shopId,
-                Title = this.GetItemInformation(itemDocument, this.titleContent, this.nameStartIndex),
-                Description = this.GetItemInformation(itemDocument, this.descriptionContent, this.descriptionStartIndex),
-                Price = price
-            });
+            this.itemService.AddItem(
+                new ItemModel(
+                    id: default,
+                    url: itemURL,
+                    title: this.GetItemInformation(itemDocument, this.titleContent, this.nameStartIndex),
+                    description: this.GetItemInformation(itemDocument, this.descriptionContent, this.descriptionStartIndex),
+                    price: price,
+                    onlineShopId: shopId));
         }
 
         public void DeleteShop(int id)
@@ -74,22 +74,25 @@ namespace Services.Services
             return this.onlineShopService.GetAll();
         }
 
-        public List<ItemResult> FindRequiredTextForPC()
+        public List<ItemModel> FindRequiredTextForPC()
         {
-            var listOfResults = new List<ItemResult>();
+            //var listOfResults = new List<ItemModel>();
 
-            foreach (var item in this.items)
-            {
-                var itemDocument = this.htmlService.Load(item.URL);
+            //foreach (var item in this.items)
+            //{
+            //    var itemDocument = this.htmlService.Load(item.URL);
 
-                listOfResults.Add(new ItemResult(
-                    title: this.GetItemInformation(itemDocument, this.titleContent, this.nameStartIndex),
-                    price: this.GetItemInformation(itemDocument, this.priceContent, this.priceStartIndex),
-                    description: this.GetItemInformation(itemDocument, this.descriptionContent, this.descriptionStartIndex))
-                );
-            }
+            //    listOfResults.Add(new ItemModel(
+            //        id: default,
+            //        url: item.URL,
+            //        title: this.GetItemInformation(itemDocument, this.titleContent, this.nameStartIndex),
+            //        description: this.GetItemInformation(itemDocument, this.descriptionContent, this.descriptionStartIndex),
+            //        price: double.Parse(this.GetItemInformation(itemDocument, this.priceContent, this.priceStartIndex)),
+            //        onlineShopId: item.
+            //    );
+            //}
 
-            return listOfResults;
+            return null;
         }
 
         private string GetItemInformation(HtmlDocument itemDocument, string itemContent, int startIndex)

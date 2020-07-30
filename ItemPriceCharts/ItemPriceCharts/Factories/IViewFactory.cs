@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-using UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.ViewModels;
 
-namespace UI.WPF.Factories
+namespace ItemPriceCharts.UI.WPF.Factories
 {
     public interface IViewFactory
     {

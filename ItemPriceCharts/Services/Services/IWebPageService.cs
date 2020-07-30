@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Services.Models;
-using Services.Models.Entities;
 
-namespace Services.Services
+using ItemPriceCharts.Services.Models;
+
+namespace ItemPriceCharts.Services.Services
 {
     public interface IWebPageService
     {
@@ -23,6 +23,6 @@ namespace Services.Services
         /// Vario Items
         /// </summary>
         /// <returns></returns>
-        List<ItemResult> FindRequiredTextForPC();
+        List<ItemModel> FindRequiredTextForPC();
     }
 }

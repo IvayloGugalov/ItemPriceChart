@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ItemPriceCharts.UI.WPF": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
