@@ -6,23 +6,12 @@ namespace ItemPriceCharts.Services.Services
 {
     public interface IWebPageService
     {
-        /// <summary>
-        /// Create Vario Item
-        /// </summary>
-        /// <param name="itemURL"></param>
-        /// <param name="shopId"></param>
-        void CreateItem(string itemURL, int shopId);
+        void CreateItem(string itemURL, OnlineShopModel onlineShop);
 
-        void DeleteShop(int id);
+        void DeleteShop(OnlineShopModel onlineShop);
 
-        IEnumerable<OnlineShopModel> RetrieveItemsForShop();
+        IEnumerable<ItemModel> RetrieveItemsForShop();
 
         IEnumerable<OnlineShopModel> RetrieveOnlineShops();
-
-        /// <summary>
-        /// Vario Items
-        /// </summary>
-        /// <returns></returns>
-        List<ItemModel> FindRequiredTextForPC();
     }
 }

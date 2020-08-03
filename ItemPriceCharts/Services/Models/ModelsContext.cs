@@ -11,5 +11,13 @@ namespace ItemPriceCharts.Services.Models
         {
             optionsBuilder.UseSqlite("Data Source=ItemPriceChartsDB.db");
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<ItemModel>()
+                .HasOne(item => item.OnlineShop)
+                .WithMany(shop => shop.Items)
+                .IsRequired();
+        }
     }
 }

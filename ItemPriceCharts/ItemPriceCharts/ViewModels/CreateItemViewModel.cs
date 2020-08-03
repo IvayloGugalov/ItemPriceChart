@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
+using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Views;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
@@ -16,9 +14,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private readonly CreateItemView view;
         private readonly WebPageService webPageService;
         private string newItemURL;
-        private string selectedShop;
-
-        private readonly Dictionary<string, int> onlineShops = new Dictionary<string, int>();
 
         public string NewItemURL
         {
@@ -26,49 +21,26 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.newItemURL, value);
         }
 
-        public string SelectedShop
-        {
-            get => this.selectedShop;
-            set => this.SetValue(ref this.selectedShop, value);
-        }
-
-        public ObservableCollection<string> OnlineShopsList { get; set; }
-
         public ICommand AddItemCommand { get; }
 
-        public CreateItemViewModel(WebPageService webPageService)
+        public OnlineShopModel SelectedShop { get; }
+
+        public CreateItemViewModel(WebPageService webPageService, OnlineShopModel selectedShop)
         {
             this.webPageService = webPageService;
+            this.SelectedShop = selectedShop;
 
             this.AddItemCommand = new RelayCommand<object>(this.AddItemAction, this.AddItemPredicate);
-            this.GetShops();
 
             this.view = new CreateItemView(this);
             view.ShowDialog();
-
-        }
-
-        private void GetShops()
-        {
-            var onlineShopTitles = new List<string>();
-            foreach (var onlineShop in this.webPageService.RetrieveOnlineShops())
-            {
-                onlineShopTitles.Add(onlineShop.Title);
-                this.onlineShops.Add(onlineShop.Title, onlineShop.ShopId);
-            }
-
-            if (onlineShopTitles.Any())
-            {
-                this.OnlineShopsList = ToObservableCollectionExtensions.ToObservableCollection(onlineShopTitles);
-            }
         }
 
         private void AddItemAction(object obj)
         {
             try
             {
-                this.onlineShops.TryGetValue(this.SelectedShop, out var shopId);
-                this.webPageService.CreateItem(this.NewItemURL, shopId);
+                Task.Run(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop));
             }
             catch (Exception e)
             {
@@ -80,21 +52,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-
         private bool AddItemPredicate()
         {
-            if (this.NewItemURL != null && this.SelectedShop != null)
-            {
-                return this.NewItemURL.Contains(this.SelectedShop.ToLower());
-            }
-
-            return false;
-        }
-
-
-        private bool IsCorrctURL()
-        {
-            return this.NewItemURL.EndsWith(".com") || this.NewItemURL.EndsWith(@".bg/");
+            return this.NewItemURL != null && this.SelectedShop != null &&
+                this.NewItemURL.ToLower().Contains(this.SelectedShop.Title.ToLower());
         }
     }
 }

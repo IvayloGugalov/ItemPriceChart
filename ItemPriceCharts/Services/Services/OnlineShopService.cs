@@ -20,10 +20,10 @@ namespace ItemPriceCharts.Services.Strategies
         public OnlineShopModel GetById(int id)
         {
             return this.unitOfWork.OnlineShopRepository.All()
-                .FirstOrDefault(shop => shop.ShopId == id) ?? throw new Exception();
+                .FirstOrDefault(shop => shop.Id == id) ?? throw new Exception();
         }
 
-        public DatabaseResult AddToDatabase(OnlineShopModel onlineShop)
+        public DatabaseResult AddShop(OnlineShopModel onlineShop)
         {
             try
             {
@@ -46,9 +46,9 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (this.IsShopExisting(onlineShop.ShopId))
+                if (this.IsShopExisting(onlineShop.Id))
                 {
-                    var shopToUpdate = this.GetById(onlineShop.ShopId);
+                    var shopToUpdate = this.GetById(onlineShop.Id);
                     this.unitOfWork.OnlineShopRepository.Update(shopToUpdate);
                     this.unitOfWork.SaveChanges();
                 }
@@ -66,7 +66,7 @@ namespace ItemPriceCharts.Services.Strategies
                 if (this.IsShopExisting(id))
                 {
                     var shopToDelete = this.GetById(id);
-                    this.unitOfWork.OnlineShopRepository.Delete(shopToDelete.ShopId);
+                    this.unitOfWork.OnlineShopRepository.Delete(shopToDelete.Id);
                     this.unitOfWork.SaveChanges();
                 }
             }
@@ -87,10 +87,10 @@ namespace ItemPriceCharts.Services.Strategies
                 .Any(item => item.Url == newShopUrl);
         }
 
-        private bool IsShopExisting(int shopId)
+        public bool IsShopExisting(int shopId)
         {
             return this.unitOfWork.OnlineShopRepository.All()
-                .Any(item => item.ShopId == shopId);
+                .Any(item => item.Id == shopId);
         }
     }
 }

@@ -17,14 +17,14 @@ namespace ItemPriceCharts.Services.Migrations
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.ItemModel", b =>
                 {
-                    b.Property<int>("ItemtId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("OnlineShopModelId")
+                    b.Property<int>("OnlineShopId")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("Price")
@@ -36,16 +36,16 @@ namespace ItemPriceCharts.Services.Migrations
                     b.Property<string>("URL")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ItemtId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("OnlineShopModelId");
+                    b.HasIndex("OnlineShopId");
 
                     b.ToTable("Items");
                 });
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.OnlineShopModel", b =>
                 {
-                    b.Property<int>("ShopId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -55,7 +55,7 @@ namespace ItemPriceCharts.Services.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ShopId");
+                    b.HasKey("Id");
 
                     b.ToTable("OnlineShops");
                 });
@@ -64,7 +64,7 @@ namespace ItemPriceCharts.Services.Migrations
                 {
                     b.HasOne("ItemPriceCharts.Services.Models.OnlineShopModel", "OnlineShop")
                         .WithMany("Items")
-                        .HasForeignKey("OnlineShopModelId")
+                        .HasForeignKey("OnlineShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

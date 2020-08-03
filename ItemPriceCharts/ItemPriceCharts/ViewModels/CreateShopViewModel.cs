@@ -1,17 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Views;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateShopViewModel : BindableViewModel
     {
-        private const string SHOP_ADDED_EVENT_NAME = "NewShopAdded";
-
         private readonly CreateShopView view;
         private readonly WebPageService webPageService;
         private string newShopURL;
@@ -31,15 +29,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand AddShopCommand { get; }
 
-        public event PublishAndSubscribeEventHandler<object> UpdateListViewHandler;
-
         public CreateShopViewModel(WebPageService webPageService)
         {
             this.webPageService = webPageService;
 
             this.AddShopCommand = new RelayCommand(_ => this.AddShopAction());
-
-            PublishSubscribe<object>.AddEvent(CreateShopViewModel.SHOP_ADDED_EVENT_NAME, this.UpdateListViewHandler);
 
             this.view = new CreateShopView(this);
             view.ShowDialog();
@@ -51,11 +45,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 if (this.NewShopURL != string.Empty && this.IsCorrctURL())
                 {
-                    if (this.webPageService.CreateShop(this.NewShopURL, this.NewShopTitle))
-                    {
-                        //PublishSubscribe<object>.Publish(CreateShopViewModel.SHOP_ADDED_EVENT_NAME, this, new PublishAndSubscribeEventArgs<object>(this.NewShopTitle));
-                        NewEvents.NewShopAddedPub.Publish(this.NewShopTitle);
-                    }
+                    Task.Run(() => this.webPageService.CreateShop(this.NewShopURL, this.NewShopTitle));
                 }
             }
             catch (Exception e)

@@ -20,7 +20,7 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (!this.IsItemExisting(item.ItemtId))
+                if (!this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Add(item);
                     this.unitOfWork.SaveChanges();
@@ -35,16 +35,16 @@ namespace ItemPriceCharts.Services.Strategies
         public ItemModel GetById(int id)
         {
             return this.unitOfWork.ItemRepository.All()
-                .FirstOrDefault(item => item.ItemtId == id) ?? throw new Exception();
+                .FirstOrDefault(item => item.Id == id) ?? throw new Exception();
         }
 
         public void UpdateItem(ItemModel item)
         {
             try
             {
-                if (this.IsItemExisting(item.ItemtId))
+                if (this.IsItemExisting(item.Id))
                 {
-                    var itemToUpdate = this.GetById(item.ItemtId);
+                    var itemToUpdate = this.GetById(item.Id);
                     itemToUpdate.Price = item.Price;
                     itemToUpdate.Title = item.Title;
                     itemToUpdate.Description = item.Description;
@@ -62,10 +62,10 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (this.IsItemExisting(item.ItemtId))
+                if (this.IsItemExisting(item.Id))
                 {
-                    var itemToDelete = this.GetById(item.ItemtId);
-                    this.unitOfWork.ItemRepository.Delete(itemToDelete.ItemtId);
+                    var itemToDelete = this.GetById(item.Id);
+                    this.unitOfWork.ItemRepository.Delete(itemToDelete.Id);
                     this.unitOfWork.SaveChanges();
                 }
             }
@@ -83,7 +83,7 @@ namespace ItemPriceCharts.Services.Strategies
         private bool IsItemExisting(int itemId)
         {
             return this.unitOfWork.ItemRepository.All()
-                .Any(item => item.ItemtId == itemId);
+                .Any(item => item.Id == itemId);
         }
     }
 }

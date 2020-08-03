@@ -10,7 +10,7 @@
         WindowState="Normal"
         WindowStartupLocation="CenterScreen"
         MouseDown="Window_MouseDown"
-        Height="200"
+        Height="150"
         Width="450">
     <Grid>
         <Grid.RowDefinitions>
@@ -37,22 +37,12 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Choose shop name"
-                       HorizontalAlignment="Center"
-                       Margin="0 5"/>
-
-            <ComboBox ItemsSource="{Binding Path=OnlineShopsList}"
-                      SelectedValue="{Binding SelectedShop, Mode=TwoWay}"
-                      Grid.Row="1"
-                      Margin="0 0 0 10"
-                      FontFamily="Segoe UI"
-                      Style="{StaticResource Styles.ComboBox}"
-                      Name="OnlineShopView" />
-
-            <TextBlock Text="Shop URL:"
+            <TextBlock Text="Item URL to be added to "
                        Grid.Row="2"
                        HorizontalAlignment="Center"
-                       Margin="0 0 0 5"/>
+                       Margin="0 0 0 5">
+                <Run Text="{Binding SelectedShop.Title}"/>
+            </TextBlock>
 
             <Border BorderThickness="1"
                     CornerRadius="10"

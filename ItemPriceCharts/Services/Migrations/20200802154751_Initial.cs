@@ -2,7 +2,7 @@
 
 namespace ItemPriceCharts.Services.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,43 +10,43 @@ namespace ItemPriceCharts.Services.Migrations
                 name: "OnlineShops",
                 columns: table => new
                 {
-                    ShopId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OnlineShops", x => x.ShopId);
+                    table.PrimaryKey("PK_OnlineShops", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
-                    ItemtId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     URL = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false),
-                    OnlineShopModelId = table.Column<int>(nullable: false)
+                    OnlineShopId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Items", x => x.ItemtId);
+                    table.PrimaryKey("PK_Items", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Items_OnlineShops_OnlineShopModelId",
-                        column: x => x.OnlineShopModelId,
+                        name: "FK_Items_OnlineShops_OnlineShopId",
+                        column: x => x.OnlineShopId,
                         principalTable: "OnlineShops",
-                        principalColumn: "ShopId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_OnlineShopModelId",
+                name: "IX_Items_OnlineShopId",
                 table: "Items",
-                column: "OnlineShopModelId");
+                column: "OnlineShopId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

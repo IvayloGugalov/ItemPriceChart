@@ -1,7 +1,5 @@
 ﻿using System;
 
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -15,11 +13,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     public class PCShopViewModel : ShopViewModel
     {
         private readonly WebPageService webPageService;
-
-        public ObservableCollection<ItemViewModel> ListOfItems { get; set; } = new ObservableCollection<ItemViewModel>();
-
-        public ObservableCollection<string> OnlineShops { get; set; }
-
+       
         public ICommand ShowItemsCommand { get; }
 
         public PCShopViewModel(WebPageService webPageService)
@@ -27,56 +21,36 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.webPageService = webPageService;
 
-            this.ShowItemsCommand = new RelayCommand(_ => this.ShowItemsAction());
+            this.ShowItemsCommand = new RelayCommand(_ => this.AddItemsForShop());
 
-            //PublishSubscribe<object>.RegisterEvent("NewShopAdded", this.UpdateListViewHandler);
-            NewEvents.NewShopAddedSub.Publisher.OnDataPublished += this.UpdateListViewHandler;
+            Events.ShopAdded.Subscribe(this.UpdateListViewHandler);
+            Events.ShopDeleted.Subscribe(this.UpdateListViewHandler);
 
-            this.AddShops();
+            this.AddShopsToViewModel();
         }
 
-        //private void UpdateListViewHandler(object sender, PublishAndSubscribeEventArgs<object> args)
-        //{
-        //    this.OnlineShops.Add(args.Item.ToString());
-        //}
-
-        private void UpdateListViewHandler(object sender, MessageArgument<string> e)
+        private void UpdateListViewHandler(object sender, MessageArgument<OnlineShopModel> e)
         {
-            this.OnlineShops.Add(e.Message);
-        }
-
-        private void ShowItemsAction()
-        {
-            //show list of items
-        }
-
-        private void AddShops()
-        {
-            var onlineShopTitles = new List<string>();
-            foreach (var onlineShop in this.webPageService.RetrieveOnlineShops())
+            if (this.webPageService.TryGetShop(e.Message))
             {
-                onlineShopTitles.Add(onlineShop.Title);
+                this.OnlineShops.Add(e.Message);
             }
-
-            if (onlineShopTitles.Any())
+            else
             {
-                this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(onlineShopTitles);
+                this.OnlineShops.Remove(e.Message);
             }
         }
 
-        private void AddItems()
+        private void AddItemsForShop()
         {
-            var results = this.webPageService.FindRequiredTextForPC();
+            this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
+                this.webPageService.RetrieveItemsForShop().Select(item => new ItemViewModel(item)));
+            this.AreItemsShown = true;
+        }
 
-            foreach (var result in results)
-            {
-                this.ListOfItems.Add(new ItemViewModel(result));
-            }
-
-            if (results.Any())
-            {
-                this.IsChartShown = true;
-            }
+        private void AddShopsToViewModel()
+        {
+             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(this.webPageService.RetrieveOnlineShops());
         }
     }
 }

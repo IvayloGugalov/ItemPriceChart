@@ -26,9 +26,11 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <ListView ItemsSource="{Binding Path=OnlineShops}"
-                          Style="{StaticResource Styles.ListView}"
-                          Name="OnlineShopsListView">
+                <ListView Name="OnlineShopsListView"
+                          ItemsSource="{Binding Path=OnlineShops}"
+                          DisplayMemberPath="Title"
+                          SelectedItem="{Binding SelectedShop}"
+                          Style="{StaticResource Styles.ListView}" >
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
@@ -37,19 +39,6 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
 
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="{Binding}"/>
-                                <!--<TextBlock Text="Description"/>-->
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                 </ListView>
             </Grid>
 
@@ -72,7 +61,7 @@
         </Grid>
 
         <Grid Grid.Column="2"
-              Visibility="{Binding ShowItems, Converter={cv:BoolToVisibilityConverter}}">
+              Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -95,32 +84,20 @@
                 </Button>
             </StackPanel>
 
-            <ListView ItemsSource="{Binding Path=ItemsList}"
-                      Grid.Row="1"
-                      Style="{StaticResource Styles.ListView}"
+            <ListView Grid.Row="1"
+                      Name="ItemsListView"
+                      ItemsSource="{Binding Path=ItemsList}"
+                      SelectedItem="{Binding SelectedItem}"
+                      DisplayMemberPath="Title"
                       Width="400"
-                      Name="ItemsListView">
+                      Height="300">
 
-                <i:Interaction.Triggers>
+                <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <i:InvokeCommandAction Command="{Binding ShowItemDetails}"
                                                CommandParameter="{Binding ElementName=ItemsListView, Path=SelectedItem}"/>
                     </i:EventTrigger>
-                </i:Interaction.Triggers>
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Text="{Binding}"/>
-                            <!--<TextBlock Text="Description"/>-->
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                </i:Interaction.Triggers>-->
             </ListView>
         </Grid>
 

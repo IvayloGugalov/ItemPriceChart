@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
@@ -10,16 +11,25 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private readonly WebPageService webPageService;
 
-        private string title;
+        private OnlineShopModel selectedShop;
+        private ItemViewModel selectedItem;
         private bool isAddShopShown;
         private bool isChartShown;
+        private bool areItemsShown;
 
-        public bool IsAddURLEnabled { get; set; }
+        public ObservableCollection<ItemViewModel> ItemsList { get; set; }
+        public ObservableCollection<OnlineShopModel> OnlineShops { get; set; }
 
-        public string Title
+        public OnlineShopModel SelectedShop
         {
-            get => this.title;
-            set => this.SetValue(ref this.title, value);
+            get => this.selectedShop;
+            set => SetValue(ref this.selectedShop, value);
+        }
+
+        public ItemViewModel SelectedItem
+        {
+            get => this.selectedItem;
+            set => SetValue(ref this.selectedItem, value);
         }
 
         public bool IsAddShopShown
@@ -31,7 +41,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public bool IsChartShown
         {
             get => this.isChartShown;
-            set => this.SetValue(ref isChartShown, value);
+            set => this.SetValue(ref this.isChartShown, value);
+        }
+
+        public bool AreItemsShown
+        {
+            get => this.areItemsShown;
+            set => this.SetValue(ref this.areItemsShown, value);
         }
 
         public ICommand ShowCreateShopCommand { get; }
@@ -61,7 +77,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowAddItemAction()
         {
-            _ = new CreateItemViewModel(this.webPageService);
+            _ = new CreateItemViewModel(this.webPageService, this.SelectedShop);
         }
     }
 }

@@ -2,43 +2,52 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-
-    <ControlTemplate x:Key="Templates.ListViewItem"
-                     TargetType="{x:Type ListViewItem}">
-        <ContentPresenter TextBlock.TextAlignment="Center"
-                          TextBlock.Foreground="White"/>
+    <!--<ControlTemplate x:Key="Templates.FocusVisual">
+        <Border BorderThickness="0"
+                />
     </ControlTemplate>
-
+    
+    <Style x:Key="{x:Static SystemParameters.FocusVisualStyleKey}">
+        <Setter Property="Control.Template" Value="{StaticResource Templates.FocusVisual}" />
+    </Style>-->
+    
     <Style x:Key="Styles.ListViewItem" TargetType="{x:Type ListViewItem}">
         <Setter Property="Height" Value="30"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Margin" Value="0 5 0 5"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Template" Value="{StaticResource Templates.ListViewItem}" />
+        <Setter Property="Width" Value="246" />
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="#c7c7c7"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}" >
+                    <Border 
+                            Width="248"
+                            BorderBrush="Black">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Width="220"
+                                          TextBlock.TextAlignment="Center">
+                        </ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Styles.ListView" TargetType="{x:Type ListView}">
         <Setter Property="Width" Value="250"/>
+        <Setter Property="MaxHeight" Value="350" />
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.ListViewItem}"/>
-        <Style.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsMouseOver" Value="True" />
-                </MultiTrigger.Conditions>
-                <MultiTrigger.Setters>
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <SolidColorBrush Color="#2f00ff" Opacity="0.1" />
-                        </Setter.Value>
-                    </Setter>
-                </MultiTrigger.Setters>
-            </MultiTrigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="Aqua"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Styles.TextBox.Common" TargetType="{x:Type TextBox}">
