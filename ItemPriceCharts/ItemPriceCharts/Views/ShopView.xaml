@@ -11,7 +11,7 @@
              mc:Ignorable="d"
              Height="550"
              Width="850">
-    <Grid Background="#5e81ff">
+    <Grid Background="#6eb6ff">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="50" />
@@ -30,10 +30,10 @@
                           ItemsSource="{Binding Path=OnlineShops}"
                           DisplayMemberPath="Title"
                           SelectedItem="{Binding SelectedShop}"
-                          Style="{StaticResource Styles.ListView}" >
+                          Style="{StaticResource Styles.ListViewForShops}" >
 
                     <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
                             <i:InvokeCommandAction Command="{Binding ShowItemsCommand}"
                                                    CommandParameter="{Binding ElementName=OnlineShopsListView, Path=SelectedItem}"/>
                         </i:EventTrigger>
@@ -68,37 +68,56 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal"
-                        Margin="0 20 0 10">
-                <Button Name="ShowAddItem"
-                        HorizontalAlignment="Left"
-                        Width="35"
-                        Height="35"
-                        Style="{StaticResource Styles.Simple.Button}"
-                        Foreground="White"
-                        ToolTip="Add Item"
-                        Command="{Binding ShowAddItemCommand}">
+            <Button Name="ShowAddItem"
+                    Style="{StaticResource Styles.MenuButtons}"
+                    Width="400"
+                    Margin="0 10"
+                    Height="35"
+                    Foreground="White"
+                    ToolTip="Add a product"
+                    Command="{Binding ShowAddItemCommand}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource ResourceKey=Styles.Textblock.Common}">
+                        <Run Text="Add a product to"/>
+                        <Run Text="{Binding SelectedShop.Title}"/>
+                    </TextBlock>
                     <materialDesign:PackIcon Kind="Add"
-                                             Width="30"
-                                             Height="30"/>
-                </Button>
-            </StackPanel>
+                                             Margin="5 0 0 0"
+                                             Grid.Column="1"
+                                             Width="30" 
+                                             Height="30" />
+                </Grid>
+            </Button>
 
             <ListView Grid.Row="1"
                       Name="ItemsListView"
+                      Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
                       ItemsSource="{Binding Path=ItemsList}"
                       SelectedItem="{Binding SelectedItem}"
                       DisplayMemberPath="Title"
-                      Width="400"
-                      Height="300">
+                      Style="{StaticResource Styles.ListViewForItems}">
 
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction Command="{Binding ShowItemDetails}"
-                                               CommandParameter="{Binding ElementName=ItemsListView, Path=SelectedItem}"/>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseRightButtonUp">
+                        <i:InvokeCommandAction Command="{Binding ShowItemMenuCommand}"
+                                               CommandParameter="{Binding ElementName=ItemsListView,
+                                               Path=SelectedItem}"/>
                     </i:EventTrigger>
-                </i:Interaction.Triggers>-->
+                </i:Interaction.Triggers>
+
+                <ListView.ContextMenu>
+                    <ContextMenu Style="{StaticResource Styles.ItemContextMenu}">
+                        <MenuItem Header="Show information" Command="{Binding ShowItemInformationDialogCommand}"/>
+                        <MenuItem Header="Delete product" Command="{Binding DeleteItemCommand}"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                
             </ListView>
+                      
         </Grid>
 
         <!--<Grid Grid.Column="1"

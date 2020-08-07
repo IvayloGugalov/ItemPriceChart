@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 using ItemPriceCharts.Services.Models;
@@ -11,7 +12,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateItemViewModel : BindableViewModel
     {
-        private readonly CreateItemView view;
+        //private readonly CreateItemView view;
         private readonly WebPageService webPageService;
         private string newItemURL;
 
@@ -24,6 +25,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand AddItemCommand { get; }
 
         public OnlineShopModel SelectedShop { get; }
+        public ItemModel.ItemType ItemType { get; }
 
         public CreateItemViewModel(WebPageService webPageService, OnlineShopModel selectedShop)
         {
@@ -32,23 +34,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.AddItemCommand = new RelayCommand<object>(this.AddItemAction, this.AddItemPredicate);
 
-            this.view = new CreateItemView(this);
-            view.ShowDialog();
+            //this.view = new CreateItemView(this);
+            //view.ShowDialog();
         }
 
         private void AddItemAction(object obj)
         {
             try
             {
-                Task.Run(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop));
+                Task.Run(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop, this.ItemType));
             }
             catch (Exception e)
             {
-                throw e;
-            }
-            finally
-            {
-                this.view.Close();
+                MessageBox.Show($"We had an error: {e.Message}");
             }
         }
 

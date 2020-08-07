@@ -14,6 +14,8 @@ namespace ItemPriceCharts.UI.WPF.Factories
         Window Resolve<TViewModel>()
            where TViewModel : class, IViewModel;
 
+        Window Resolve(IViewModel viewModel);
+
         void RegisterUserControl<TViewModel, TView>()
             where TViewModel : class, IViewModel
             where TView : UserControl;

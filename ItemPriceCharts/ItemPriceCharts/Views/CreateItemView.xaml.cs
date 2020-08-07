@@ -11,13 +11,13 @@ namespace ItemPriceCharts.UI.WPF.Views
     /// </summary>
     public partial class CreateItemView : Window
     {
-        private readonly CreateItemViewModel viewModel;
+        //private readonly CreateItemViewModel viewModel;
 
-        public CreateItemView(CreateItemViewModel viewModel)
+        public CreateItemView()
         {
             InitializeComponent();
 
-            this.DataContext = this.viewModel = viewModel ?? throw new ArgumentNullException();
+            //this.DataContext = this.viewModel = viewModel ?? throw new ArgumentNullException();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

@@ -7,6 +7,8 @@ using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -15,21 +17,39 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private readonly WebPageService webPageService;
        
         public ICommand ShowItemsCommand { get; }
+        public ICommand ShowItemInformationDialogCommand { get; }
+        public ICommand DeleteItemCommand { get; }
 
         public PCShopViewModel(WebPageService webPageService)
             : base(webPageService)
         {
             this.webPageService = webPageService;
 
-            this.ShowItemsCommand = new RelayCommand(_ => this.AddItemsForShop());
+            this.ShowItemsCommand = new RelayCommand(_ => this.AddItemsForShopAction());
+            this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
+            this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
 
-            Events.ShopAdded.Subscribe(this.UpdateListViewHandler);
-            Events.ShopDeleted.Subscribe(this.UpdateListViewHandler);
+            Events.ShopAdded.Subscribe(this.UpdateShopsListHandler);
+            Events.ShopDeleted.Subscribe(this.UpdateShopsListHandler);
+            Events.ItemAdded.Subscribe(this.UpdateItemsListHandler);
+            Events.ItemDeleted.Subscribe(this.UpdateItemsListHandler);
 
             this.AddShopsToViewModel();
         }
 
-        private void UpdateListViewHandler(object sender, MessageArgument<OnlineShopModel> e)
+        private void UpdateItemsListHandler(object sender, MessageArgument<ItemModel> e)
+        {
+            if (this.webPageService.TryGetItem(e.Message))
+            {
+                this.ItemsList.Add(e.Message);
+            }
+            else
+            {
+                this.ItemsList.Remove(e.Message);
+            }
+        }
+
+        private void UpdateShopsListHandler(object sender, MessageArgument<OnlineShopModel> e)
         {
             if (this.webPageService.TryGetShop(e.Message))
             {
@@ -41,16 +61,32 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private void AddItemsForShop()
-        {
-            this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                this.webPageService.RetrieveItemsForShop().Select(item => new ItemViewModel(item)));
-            this.AreItemsShown = true;
-        }
-
         private void AddShopsToViewModel()
         {
-             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(this.webPageService.RetrieveOnlineShops());
+            this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
+                this.webPageService.RetrieveOnlineShops());
+        }
+
+        private void AddItemsForShopAction()
+        {
+            this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
+                 this.webPageService.RetrieveItemsForShop(this.SelectedShop));
+
+            this.AreItemsShown = true;
+            if (this.ItemsList.Any())
+            {
+                this.SelectedItem = this.ItemsList.First();
+            }
+        }
+
+        private void ShowItemInformationDialogAction()
+        {
+            Task.Factory.StartNew(() => { });
+        }
+
+        private void DeleteItemAction()
+        {
+            
         }
     }
 }

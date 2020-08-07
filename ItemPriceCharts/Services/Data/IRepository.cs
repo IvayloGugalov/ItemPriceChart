@@ -15,6 +15,7 @@ namespace ItemPriceCharts.Services.Data
             string includeProperties = "");
         void Add(TEntity entity);
         void Update(TEntity entity);
-        void Delete(object entity);
+        void Delete(TEntity entity);
+        void Delete(object id);
     }
 }

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -11,13 +12,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private readonly WebPageService webPageService;
 
+        private ObservableCollection<ItemModel> itemsList;
         private OnlineShopModel selectedShop;
-        private ItemViewModel selectedItem;
+        private ItemModel selectedItem;
         private bool isAddShopShown;
         private bool isChartShown;
         private bool areItemsShown;
 
-        public ObservableCollection<ItemViewModel> ItemsList { get; set; }
+        public ObservableCollection<ItemModel> ItemsList
+        {
+            get => this.itemsList;
+            set => this.SetValue(ref this.itemsList, value);
+        }
+
         public ObservableCollection<OnlineShopModel> OnlineShops { get; set; }
 
         public OnlineShopModel SelectedShop
@@ -26,7 +33,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => SetValue(ref this.selectedShop, value);
         }
 
-        public ItemViewModel SelectedItem
+        public ItemModel SelectedItem
         {
             get => this.selectedItem;
             set => SetValue(ref this.selectedItem, value);
@@ -67,7 +74,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowCreateShopAction()
         {
-            _ = new CreateShopViewModel(this.webPageService);
+            UIEvents.CreateViewModel.Publish(null);
+            //_ = new CreateShopViewModel(this.webPageService);
         }
 
         private void ShowDeleteShopAction()

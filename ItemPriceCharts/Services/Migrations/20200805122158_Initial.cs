@@ -7,55 +7,40 @@ namespace ItemPriceCharts.Services.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "OnlineShops",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(nullable: true),
-                    Url = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OnlineShops", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Items",
+                name: "Entities",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     URL = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
-                    OnlineShopId = table.Column<int>(nullable: false)
+                    Price = table.Column<double>(nullable: true),
+                    Type = table.Column<int>(nullable: true),
+                    OnlineShopId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Items", x => x.Id);
+                    table.PrimaryKey("PK_Entities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Items_OnlineShops_OnlineShopId",
+                        name: "FK_Entities_Entities_OnlineShopId",
                         column: x => x.OnlineShopId,
-                        principalTable: "OnlineShops",
+                        principalTable: "Entities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_OnlineShopId",
-                table: "Items",
+                name: "IX_Entities_OnlineShopId",
+                table: "Entities",
                 column: "OnlineShopId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Items");
-
-            migrationBuilder.DropTable(
-                name: "OnlineShops");
+                name: "Entities");
         }
     }
 }

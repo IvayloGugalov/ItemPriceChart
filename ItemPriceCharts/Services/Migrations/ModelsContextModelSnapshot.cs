@@ -15,11 +15,32 @@ namespace ItemPriceCharts.Services.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3");
 
-            modelBuilder.Entity("ItemPriceCharts.Services.Models.ItemModel", b =>
+            modelBuilder.Entity("ItemPriceCharts.Services.Models.EntityModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("URL")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Entities");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("EntityModel");
+                });
+
+            modelBuilder.Entity("ItemPriceCharts.Services.Models.ItemModel", b =>
+                {
+                    b.HasBaseType("ItemPriceCharts.Services.Models.EntityModel");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
@@ -30,34 +51,19 @@ namespace ItemPriceCharts.Services.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("URL")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
 
                     b.HasIndex("OnlineShopId");
 
-                    b.ToTable("Items");
+                    b.HasDiscriminator().HasValue("ItemModel");
                 });
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.OnlineShopModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.HasBaseType("ItemPriceCharts.Services.Models.EntityModel");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OnlineShops");
+                    b.HasDiscriminator().HasValue("OnlineShopModel");
                 });
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.ItemModel", b =>

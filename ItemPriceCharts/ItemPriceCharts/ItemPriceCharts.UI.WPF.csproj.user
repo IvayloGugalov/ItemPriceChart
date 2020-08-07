@@ -18,6 +18,9 @@
     <Compile Update="Views\CreateShopView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\DeleteItemView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\DeleteShopView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -33,6 +36,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\CreateShopView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DeleteItemView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\DeleteShopView.xaml">

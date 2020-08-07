@@ -11,7 +11,7 @@
         <Setter Property="Control.Template" Value="{StaticResource Templates.FocusVisual}" />
     </Style>-->
     
-    <Style x:Key="Styles.ListViewItem" TargetType="{x:Type ListViewItem}">
+    <Style x:Key="Styles.ListViewItemShop" TargetType="{x:Type ListViewItem}">
         <Setter Property="Height" Value="30"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Margin" Value="0 5 0 5"/>
@@ -23,9 +23,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}" >
-                    <Border 
-                            Width="248"
-                            BorderBrush="Black">
+                    <Border Width="248"
+                            BorderBrush="White">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Width="220"
@@ -43,11 +42,51 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Styles.ListView" TargetType="{x:Type ListView}">
+    <Style x:Key="Styles.ListViewForShops" TargetType="{x:Type ListView}">
         <Setter Property="Width" Value="250"/>
         <Setter Property="MaxHeight" Value="350" />
+        <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.ListViewItem}"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.ListViewItemShop}"/>
+    </Style>
+
+    <Style x:Key="Styles.ListViewItems" TargetType="{x:Type ListViewItem}">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Margin" Value="0 5 0 5"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Width" Value="440" />
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="#d9d9d9"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}" >
+                    
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Width="600"
+                                          TextBlock.TextAlignment="Center">
+                        </ContentPresenter>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style x:Key="Styles.ListViewForItems" TargetType="{x:Type ListView}">
+        <Setter Property="Width" Value="450"/>
+        <Setter Property="Height" Value="480"/>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="#90dcff"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.ListViewItems}"/>
     </Style>
 
     <Style x:Key="Styles.TextBox.Common" TargetType="{x:Type TextBox}">
@@ -57,6 +96,21 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontWeight" Value="Regular"/>
+    </Style>
+
+    <Style x:Key="Styles.MenuItem" TargetType="{x:Type MenuItem}">
+        <Setter Property="Background" Value="WhiteSmoke"/>
+        <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>-->
+    </Style>
+    
+    <Style x:Key="Styles.ItemContextMenu" TargetType="{x:Type ContextMenu}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.MenuItem}"/>
     </Style>
 
     <ControlTemplate x:Key="Templates.Simple.Button"
@@ -171,11 +225,11 @@
                     Grid.ColumnSpan="2"
                     CornerRadius="10"
                     Margin="10 0 0 0"
-                    Background="#00c3ff" />
+                    Background="#a0fcff" />
             <Border Grid.Column="0"
                     x:Name="Border"
                     CornerRadius="10 0 0 10" 
-                    Background="#00c3ff" />
+                    Background="#a0fcff" />
             <materialDesign:PackIcon Grid.Column="1"
                                      Kind="ArrowDropDown"
                                      Foreground="White"
@@ -217,7 +271,7 @@
                         <ToggleButton Name="ToggleButton" 
                                       Template="{StaticResource ComboBoxToggleButton}" 
                                       Grid.Column="2" 
-                                      Focusable="false"
+                                      Focusable="False"
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       ClickMode="Press">
                         </ToggleButton>
@@ -235,7 +289,7 @@
                                  BorderThickness="0"
                                  HorizontalAlignment="Left" 
                                  VerticalAlignment="Center" 
-                                 Margin="10,3,23,3"
+                                 Margin="10 3 23 3"
                                  FontFamily="Segoe UI"
                                  Focusable="False" 
                                  Visibility="Hidden"
@@ -254,7 +308,7 @@
                                         Background="#7de0ff"
                                         BorderThickness="0"
                                         BorderBrush="Wheat"/>
-                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                <ScrollViewer Margin="4 6 4 6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True"
                                                 KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
@@ -285,6 +339,13 @@
         </Setter>
         <Style.Triggers>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Styles.Textblock.Common" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
 </ResourceDictionary>

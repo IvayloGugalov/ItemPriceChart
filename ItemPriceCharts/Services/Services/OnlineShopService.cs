@@ -10,7 +10,7 @@ namespace ItemPriceCharts.Services.Strategies
 {
     public class OnlineShopService : IOnlineShopService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
         public OnlineShopService(UnitOfWork unitOfWork)
         {
@@ -27,7 +27,7 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (!this.IsShopExisting(onlineShop.Url))
+                if (!this.IsShopExisting(onlineShop.URL))
                 {
                     this.unitOfWork.OnlineShopRepository.Add(onlineShop);
                     this.unitOfWork.SaveChanges();
@@ -84,7 +84,7 @@ namespace ItemPriceCharts.Services.Strategies
         private bool IsShopExisting(string newShopUrl)
         {
             return this.unitOfWork.OnlineShopRepository.All()
-                .Any(item => item.Url == newShopUrl);
+                .Any(item => item.URL == newShopUrl);
         }
 
         public bool IsShopExisting(int shopId)

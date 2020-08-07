@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 using ItemPriceCharts.Services.Services;
@@ -35,8 +36,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.AddShopCommand = new RelayCommand(_ => this.AddShopAction());
 
-            this.view = new CreateShopView(this);
-            view.ShowDialog();
+            //this.view = new CreateShopView(this);
+            //view.ShowDialog();
         }
 
         private void AddShopAction()
@@ -50,11 +51,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
-                throw e;
-            }
-            finally
-            {
-                this.view.Close();
+                MessageBox.Show($"We had an error: {e.Message}");
             }
         }
 

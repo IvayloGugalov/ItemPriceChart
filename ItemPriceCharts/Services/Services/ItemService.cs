@@ -9,7 +9,7 @@ namespace ItemPriceCharts.Services.Strategies
 {
     public class ItemService : IItemService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
         public ItemService(UnitOfWork unitOfWork)
         {
@@ -20,7 +20,7 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (!this.IsItemExisting(item.Id))
+                if (!this.IsItemExisting(item))
                 {
                     this.unitOfWork.ItemRepository.Add(item);
                     this.unitOfWork.SaveChanges();
@@ -42,7 +42,7 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (this.IsItemExisting(item.Id))
+                if (this.IsItemExisting(item))
                 {
                     var itemToUpdate = this.GetById(item.Id);
                     itemToUpdate.Price = item.Price;
@@ -62,7 +62,7 @@ namespace ItemPriceCharts.Services.Strategies
         {
             try
             {
-                if (this.IsItemExisting(item.Id))
+                if (this.IsItemExisting(item))
                 {
                     var itemToDelete = this.GetById(item.Id);
                     this.unitOfWork.ItemRepository.Delete(itemToDelete.Id);
@@ -75,15 +75,15 @@ namespace ItemPriceCharts.Services.Strategies
             }
         }
 
-        public IEnumerable<ItemModel> GetAll()
+        public IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop)
         {
-            return this.unitOfWork.ItemRepository.All();
+            return this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id);
         }
 
-        private bool IsItemExisting(int itemId)
+        public bool IsItemExisting(ItemModel item)
         {
             return this.unitOfWork.ItemRepository.All()
-                .Any(item => item.Id == itemId);
+                .Any(i => i.URL == item.URL || i.Id == item.Id);
         }
     }
 }

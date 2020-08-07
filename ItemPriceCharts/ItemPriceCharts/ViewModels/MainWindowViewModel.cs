@@ -44,15 +44,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsNewViewDisplayed = false;
         }
 
-        private async void ShowPCPartsAction()
+        private void ShowPCPartsAction()
         {
-            await Task.Run(() => this.CurrentView = this.shopViewModelPC);
+            this.CurrentView = this.shopViewModelPC;
             this.IsNewViewDisplayed = true;
         }
 
-        private async void ShowPhonesAction()
+        private void ShowPhonesAction()
         {
-            await Task.Run(() => this.CurrentView = this.shopViewModelPhone);
+            this.CurrentView = this.shopViewModelPhone;
             this.IsNewViewDisplayed = true;
         }
     }

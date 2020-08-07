@@ -14,7 +14,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Grid Background="#82b2ff"
+        <Grid Background="#7098da"
               Width="150">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

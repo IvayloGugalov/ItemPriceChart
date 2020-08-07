@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+
 using Autofac;
 
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -31,6 +31,16 @@ namespace ItemPriceCharts.UI.WPF.Factories
         {
             TViewModel viewModel = this.componentContext.Resolve<TViewModel>();
             var viewType = this.map[typeof(TViewModel)];
+            var view = this.componentContext.Resolve(viewType) as Window;
+
+            view.DataContext = viewModel;
+
+            return view;
+        }
+
+        public Window Resolve(IViewModel viewModel)
+        {
+            var viewType = this.map[viewModel.GetType()];
             var view = this.componentContext.Resolve(viewType) as Window;
 
             view.DataContext = viewModel;

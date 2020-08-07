@@ -4,17 +4,15 @@ using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.Services.Data
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IDisposable, IUnitOfWork
     {
         private readonly ModelsContext dbContext;
-        private readonly Repository<ItemModel> itemRepository;
-        private readonly Repository<OnlineShopModel> shopRepository;
 
         private bool disposed = false;
 
-        public Repository<ItemModel> ItemRepository => this.itemRepository ?? new Repository<ItemModel>(this.dbContext);
+        public IRepository<ItemModel> ItemRepository => new Repository<ItemModel>(this.dbContext);
 
-        public Repository<OnlineShopModel> OnlineShopRepository => this.shopRepository ?? new Repository<OnlineShopModel>(this.dbContext);
+        public IRepository<OnlineShopModel> OnlineShopRepository => new Repository<OnlineShopModel>(this.dbContext);
 
         public UnitOfWork(ModelsContext dbContext)
         {

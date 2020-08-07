@@ -7,9 +7,10 @@ namespace ItemPriceCharts.Services.Strategies
     public interface IItemService
     {
         ItemModel GetById(int id);
-        IEnumerable<ItemModel> GetAll();
+        IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop);
         void AddItem(ItemModel item);
         void UpdateItem(ItemModel item);
         void DeleteItem(ItemModel item);
+        bool IsItemExisting(ItemModel item);
     }
 }

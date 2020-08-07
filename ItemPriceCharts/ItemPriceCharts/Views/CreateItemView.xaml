@@ -10,7 +10,7 @@
         WindowState="Normal"
         WindowStartupLocation="CenterScreen"
         MouseDown="Window_MouseDown"
-        Height="150"
+        Height="180"
         Width="450">
     <Grid>
         <Grid.RowDefinitions>
@@ -30,9 +30,11 @@
               VerticalAlignment="Top"
               Margin="0 0 0 10">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -58,8 +60,16 @@
                          Text="{Binding NewItemURL}"/>
             </Border>
 
+            <ComboBox Grid.Row="5"
+                      
+                      
+                      
+                      Style="{StaticResource Styles.ComboBox}"
+                      Width="200"
+                      Padding="5"/>
+
             <Button Style="{StaticResource Styles.MenuButtons}"
-                    Grid.Row="4"
+                    Grid.Row="6"
                     HorizontalAlignment="Center"
                     Name="addUrl"
                     Foreground="Black"

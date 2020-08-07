@@ -1,6 +1,5 @@
 ﻿using Autofac;
 
-
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -35,8 +34,15 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         protected override void RegisterViews(IViewFactory viewFactory)
         {
             viewFactory.Register<MainWindowViewModel, MainWindow>();
+
             viewFactory.RegisterUserControl<PhoneShopViewModel, ShopView>();
             viewFactory.RegisterUserControl<PCShopViewModel, ShopView>();
+
+            viewFactory.Register<CreateShopViewModel, CreateShopView>();
+            viewFactory.Register<DeleteShopViewModel, DeleteShopView>();
+
+            viewFactory.Register<CreateItemViewModel, CreateItemView>();
+            viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
         }
     }
 }

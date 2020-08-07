@@ -12,6 +12,18 @@ namespace ItemPriceCharts.UI.WPF.Modules
             builder.RegisterType<ShopView>();
             builder.RegisterType<PCShopViewModel>();
             builder.RegisterType<PhoneShopViewModel>();
+
+            builder.RegisterType<CreateItemViewModel>();
+            builder.RegisterType<CreateItemView>();
+
+            builder.RegisterType<DeleteItemViewModel>();
+            builder.RegisterType<DeleteItemView>();
+
+            builder.RegisterType<CreateShopViewModel>();
+            builder.RegisterType<CreateShopView>();
+
+            builder.RegisterType<DeleteShopViewModel>();
+            builder.RegisterType<DeleteShopView>();
         }
     }
 }

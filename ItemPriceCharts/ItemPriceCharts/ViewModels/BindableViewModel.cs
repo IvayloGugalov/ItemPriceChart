@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class BindableViewModel : IViewModel
+    public abstract class BindableViewModel : IViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -27,16 +30,23 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             callback?.Invoke();
         }
 
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        protected virtual void OnPropertyChanged<T>(Expression<Func<T>> expression)
         {
-            if (propertyName == null)
-            {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
+            this.OnPropertyChanged(ExpressionHelper.PropertyName(expression));
+        }
 
-            PropertyChanged?.Invoke
-                (this,
-                new PropertyChangedEventArgs(propertyName));
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                if (propertyName == null)
+                {
+                    throw new ArgumentNullException(nameof(propertyName));
+                }
+
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

@@ -7,6 +7,8 @@ namespace ItemPriceCharts.Services.Models
         public DbSet<OnlineShopModel> OnlineShops { get; set; }
         public DbSet<ItemModel> Items { get; set; }
 
+        public DbSet<EntityModel> Entities { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=ItemPriceChartsDB.db");
@@ -14,6 +16,14 @@ namespace ItemPriceCharts.Services.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<EntityModel>();
+            builder.Entity<OnlineShopModel>();
+            builder.Entity<ItemModel>();
+
+            builder.Entity<ItemModel>()
+                .Property(i => i.Type)
+                .HasConversion<int>();
+
             builder.Entity<ItemModel>()
                 .HasOne(item => item.OnlineShop)
                 .WithMany(shop => shop.Items)

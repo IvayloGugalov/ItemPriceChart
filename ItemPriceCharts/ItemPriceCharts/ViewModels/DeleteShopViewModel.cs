@@ -14,7 +14,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteShopViewModel : BindableViewModel
     {
-        private readonly WebPageService webPageService;
+        private readonly IWebPageService webPageService;
         private OnlineShopModel selectedShop;
         private string operationResult = string.Empty;
         private bool isOperationFinished;

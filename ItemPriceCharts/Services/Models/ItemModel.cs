@@ -1,15 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ItemPriceCharts.Services.Models
+﻿namespace ItemPriceCharts.Services.Models
 {
-    public sealed class ItemModel
+    public sealed class ItemModel: EntityModel
     {
-        [Key]
-        public int Id { get; set; }
-        public string URL { get; set; }
-        public string Title { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
+        public ItemType Type { get; set; }
 
         public OnlineShopModel OnlineShop { get; set; }
 
@@ -17,7 +12,7 @@ namespace ItemPriceCharts.Services.Models
         {
         }
 
-        public ItemModel(int id, string url, string title, string description, double price, OnlineShopModel onlineShop)
+        public ItemModel(int id, string url, string title, string description, double price, OnlineShopModel onlineShop, ItemType type)
             : this()
         {
             this.Id = id;
@@ -26,6 +21,13 @@ namespace ItemPriceCharts.Services.Models
             this.Description = description;
             this.Price = price;
             this.OnlineShop = onlineShop;
+            this.Type = type;
+        }
+
+        public enum ItemType
+        {
+            ComputerItem = 1,
+            PhoneItem = 2
         }
     }
 }
