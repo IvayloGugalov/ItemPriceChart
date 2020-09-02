@@ -13,7 +13,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
     {
         private Dictionary<Type, Type> mappedTypes;
 
-        public void Run(Dictionary<Type, Type> mappedTypes, out IViewFactory viewFactory)
+        public void Run(Dictionary<Type, Type> mappedTypes)
         {
             this.mappedTypes = mappedTypes;
 
@@ -22,7 +22,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.ConfigureContainer(builder);
 
             var container = builder.Build();
-            viewFactory = container.Resolve<IViewFactory>();
+            var viewFactory = container.Resolve<IViewFactory>();
 
             this.RegisterViews(viewFactory);
             this.ConfigureApplication(container);

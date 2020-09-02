@@ -9,10 +9,9 @@ namespace ItemPriceCharts.UI.WPF.Views
     /// </summary>
     public partial class DeleteShopView : Window
     {
-        public DeleteShopView(DeleteShopViewModel viewModel)
+        public DeleteShopView()
         {
             InitializeComponent();
-            this.DataContext = viewModel;
         }
     }
 }

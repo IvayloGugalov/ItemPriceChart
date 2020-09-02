@@ -21,7 +21,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand DeleteItemCommand { get; }
 
         public PCShopViewModel(WebPageService webPageService)
-            : base(webPageService)
         {
             this.webPageService = webPageService;
 

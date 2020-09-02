@@ -8,9 +8,6 @@ using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.Services.Strategies;
-using ItemPriceCharts.UI.WPF.Helpers;
-using ItemPriceCharts.UI.WPF.ViewModels;
-using ItemPriceCharts.UI.WPF.Factories;
 
 namespace ItemPriceCharts.UI.WPF
 {
@@ -20,7 +17,6 @@ namespace ItemPriceCharts.UI.WPF
     public partial class App : Application
     {
         private readonly Dictionary<Type, Type> mappedTypes = new Dictionary<Type, Type>();
-        private IViewFactory viewFactory;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -30,16 +26,13 @@ namespace ItemPriceCharts.UI.WPF
             this.mappedTypes.Add(typeof(IUnitOfWork), typeof(UnitOfWork));
             this.mappedTypes.Add(typeof(DbContext), typeof(ModelsContext));
 
-            UIEvents.CreateViewModel.Subscribe(this.CreateViewModel);
-
             var bootstrapper = new Bootstrapper.Bootstrapper(this);
-            bootstrapper.Run(mappedTypes, out this.viewFactory);
-        }
+            bootstrapper.Run(mappedTypes);
 
-        private void CreateViewModel(object sender, MessageArgument<Type> e)
-        {
-            var view = this.viewFactory.Resolve(e.Message);
-            view.Show();
+            this.MainWindow.Closed += (s, a) =>
+            {
+                bootstrapper.Stop();
+            };
         }
     }
 }

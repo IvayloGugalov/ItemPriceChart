@@ -5,13 +5,12 @@ using System.Windows.Input;
 
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using ItemPriceCharts.UI.WPF.Views;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateShopViewModel : BindableViewModel
     {
-        private readonly CreateShopView view;
         private readonly WebPageService webPageService;
         private string newShopURL;
         private string newShopTitle;
@@ -35,16 +34,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.webPageService = webPageService;
 
             this.AddShopCommand = new RelayCommand(_ => this.AddShopAction());
-
-            //this.view = new CreateShopView(this);
-            //view.ShowDialog();
         }
 
         private void AddShopAction()
         {
             try
             {
-                if (this.NewShopURL != string.Empty && this.IsCorrctURL())
+                if (ValidateURL.IsValidAddress(this.NewShopURL))
                 {
                     Task.Run(() => this.webPageService.CreateShop(this.NewShopURL, this.NewShopTitle));
                 }
@@ -53,11 +49,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 MessageBox.Show($"We had an error: {e.Message}");
             }
-        }
-
-        private bool IsCorrctURL()
-        {
-            return this.NewShopURL.EndsWith(".com") || this.NewShopURL.EndsWith(@".bg/");
         }
     }
 }

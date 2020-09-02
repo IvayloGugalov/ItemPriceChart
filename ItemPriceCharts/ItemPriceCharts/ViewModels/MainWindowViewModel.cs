@@ -1,6 +1,6 @@
-﻿using ItemPriceCharts.UI.WPF.CommandHelpers;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+
+using ItemPriceCharts.UI.WPF.CommandHelpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {

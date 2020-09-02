@@ -7,7 +7,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private readonly WebPageService webPageService;
 
         public PhoneShopViewModel(WebPageService webPageService)
-            : base (webPageService)
         {
             this.webPageService = webPageService;
         }

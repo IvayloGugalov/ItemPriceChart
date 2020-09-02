@@ -49,9 +49,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.SelectedShop = this.AllShops.First();
 
             this.DeleteShopCommand = new RelayCommand(_ => this.DeleteShopAction());
-
-            var view = new DeleteShopView(this);
-            view.Show();
         }
 
         private void DeleteShopAction()
@@ -64,7 +61,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 this.OperationResult = $"Deleted {this.SelectedShop.Title} with id: {this.SelectedShop.Id}";
 
                 this.AllShops.Remove(this.SelectedShop);
-                //Events.ShopDeleted.Publish(this.SelectedShop.Title);
+                Events.ShopDeleted.Publish(this.SelectedShop);
             }
             catch (Exception e)
             {

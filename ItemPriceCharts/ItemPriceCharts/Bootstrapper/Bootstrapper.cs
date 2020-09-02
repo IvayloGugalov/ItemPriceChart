@@ -1,19 +1,32 @@
 ﻿using Autofac;
-
+using Autofac.Core;
+using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Factories;
+using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Modules;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
+using System;
 
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
     public class Bootstrapper : AutofacBootstrapper
     {
         private readonly App app;
+        private IViewFactory viewFactory;
 
         public Bootstrapper(App app)
         {
             this.app = app;
+
+            UIEvents.ShowCreateShopViewModel.Subscribe(this.CreateShopWindow);
+            UIEvents.ShowDeleteShopViewModel.Subscribe(this.CreateDeleteShopWindow);
+            UIEvents.ShowCreateItemViewModel.Subscribe(this.CreateItemWindow);
+        }
+
+        public void Stop()
+        {
+            this.viewFactory.LifetimeScope.Dispose();
         }
 
         protected override void ConfigureContainer(ContainerBuilder builder)
@@ -25,8 +38,9 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         protected override void ConfigureApplication(IContainer container)
         {
-            var viewFactory = container.Resolve<IViewFactory>();
-            var mainWindow = viewFactory.Resolve<MainWindowViewModel>();
+            this.viewFactory = container.Resolve<IViewFactory>();
+            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>();
+
             this.app.MainWindow = mainWindow;
             this.app.MainWindow.Show();
         }
@@ -43,6 +57,25 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
             viewFactory.Register<CreateItemViewModel, CreateItemView>();
             viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
+        }
+
+        protected void CreateShopWindow(object sender, MessageArgument<object> e)
+        {
+            var window = this.viewFactory.Resolve<CreateShopViewModel>();
+            window.Show();
+        }
+
+        protected void CreateDeleteShopWindow(object sender, MessageArgument<object> e)
+        {
+            var window = this.viewFactory.Resolve<DeleteShopViewModel>();
+            window.Show();
+        }
+
+        protected void CreateItemWindow(object sender, MessageArgument<object> e)
+        {
+            var parameters = new Parameter[] { new NamedParameter("selectedShop", e.Message) };
+            var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
+            window.Show();
         }
     }
 }

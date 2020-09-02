@@ -2,7 +2,6 @@
 using System.Windows.Input;
 
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -10,8 +9,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ShopViewModel : BindableViewModel
     {
-        private readonly WebPageService webPageService;
-
         private ObservableCollection<ItemModel> itemsList;
         private OnlineShopModel selectedShop;
         private ItemModel selectedItem;
@@ -63,29 +60,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand ShowAddItemCommand { get;  }
 
-        public ShopViewModel(WebPageService webPageService)
+        public ShopViewModel()
         {
-            this.webPageService = webPageService;
-
             this.ShowCreateShopCommand = new RelayCommand(_ => this.ShowCreateShopAction());
             this.ShowDeleteShopCommand = new RelayCommand(_ => this.ShowDeleteShopAction());
             this.ShowAddItemCommand = new RelayCommand(_ => this.ShowAddItemAction());
         }
 
-        private void ShowCreateShopAction()
-        {
-            UIEvents.CreateViewModel.Publish(null);
-            //_ = new CreateShopViewModel(this.webPageService);
-        }
+        private void ShowCreateShopAction() => UIEvents.ShowCreateShopViewModel.Publish(null);
 
-        private void ShowDeleteShopAction()
-        {
-            _ = new DeleteShopViewModel(this.webPageService);
-        }
+        private void ShowDeleteShopAction() => UIEvents.ShowDeleteShopViewModel.Publish(null);
 
-        private void ShowAddItemAction()
-        {
-            _ = new CreateItemViewModel(this.webPageService, this.SelectedShop);
-        }
+        private void ShowAddItemAction() => UIEvents.ShowCreateItemViewModel.Publish(this.SelectedShop);
     }
 }

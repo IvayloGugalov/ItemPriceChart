@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 using Autofac;
-
+using Autofac.Core;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Factories
@@ -12,11 +12,12 @@ namespace ItemPriceCharts.UI.WPF.Factories
     public class ViewFactory : IViewFactory
     {
         private readonly Dictionary<Type, Type> map = new Dictionary<Type, Type>();
-        private readonly IComponentContext componentContext;
+        
+        public ILifetimeScope LifetimeScope { get; }
 
-        public ViewFactory(IComponentContext componentContext)
+        public ViewFactory(ILifetimeScope lifetimeScope)
         {
-            this.componentContext = componentContext;
+            this.LifetimeScope = lifetimeScope;
         }
 
         public void Register<TViewModel, TView>()
@@ -29,19 +30,21 @@ namespace ItemPriceCharts.UI.WPF.Factories
         public Window Resolve<TViewModel>()
             where TViewModel : class, IViewModel
         {
-            TViewModel viewModel = this.componentContext.Resolve<TViewModel>();
+            TViewModel viewModel = this.LifetimeScope.Resolve<TViewModel>();
             var viewType = this.map[typeof(TViewModel)];
-            var view = this.componentContext.Resolve(viewType) as Window;
+            var view = this.LifetimeScope.Resolve(viewType) as Window;
 
             view.DataContext = viewModel;
 
             return view;
         }
 
-        public Window Resolve(IViewModel viewModel)
+        Window IViewFactory.Resolve<TViewModel>(Parameter[] parameters)
         {
-            var viewType = this.map[viewModel.GetType()];
-            var view = this.componentContext.Resolve(viewType) as Window;
+            TViewModel viewModel = this.LifetimeScope.Resolve<TViewModel>(parameters);
+
+            var viewType = this.map[typeof(TViewModel)];
+            var view = this.LifetimeScope.Resolve(viewType) as Window;
 
             view.DataContext = viewModel;
 
@@ -58,9 +61,9 @@ namespace ItemPriceCharts.UI.WPF.Factories
         public UserControl ResolveUserControl<TViewModel>()
             where TViewModel : class, IViewModel
         {
-            TViewModel viewModel = this.componentContext.Resolve<TViewModel>();
+            TViewModel viewModel = this.LifetimeScope.Resolve<TViewModel>();
             var viewType = this.map[typeof(TViewModel)];
-            var view = this.componentContext.Resolve(viewType) as UserControl;
+            var view = this.LifetimeScope.Resolve(viewType) as UserControl;
 
             view.DataContext = viewModel;
 

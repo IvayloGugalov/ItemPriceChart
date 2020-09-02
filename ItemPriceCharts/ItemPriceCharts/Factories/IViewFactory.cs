@@ -1,12 +1,16 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
-
+using Autofac;
+using Autofac.Core;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Factories
 {
     public interface IViewFactory
     {
+        ILifetimeScope LifetimeScope { get; }
+
         void Register<TViewModel, TView>()
             where TViewModel : class, IViewModel
             where TView : Window;
@@ -14,7 +18,8 @@ namespace ItemPriceCharts.UI.WPF.Factories
         Window Resolve<TViewModel>()
            where TViewModel : class, IViewModel;
 
-        Window Resolve(IViewModel viewModel);
+        Window Resolve<TViewModel>(Parameter[] parameters)
+            where TViewModel : class, IViewModel;
 
         void RegisterUserControl<TViewModel, TView>()
             where TViewModel : class, IViewModel

@@ -1,12 +1,11 @@
-﻿using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.UI.WPF.CommandHelpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -22,7 +21,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.operationResult, value);
         }
 
-        ICommand DeleteItemCommand { get; }
+        public ICommand DeleteItemCommand { get; }
 
         public DeleteItemViewModel(WebPageService webPageService, ItemModel item)
         {

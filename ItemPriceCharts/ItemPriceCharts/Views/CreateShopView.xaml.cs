@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 
-using ItemPriceCharts.UI.WPF.ViewModels;
-
 namespace ItemPriceCharts.UI.WPF.Views
 {
     /// <summary>
@@ -11,13 +9,9 @@ namespace ItemPriceCharts.UI.WPF.Views
     /// </summary>
     public partial class CreateShopView : Window
     {
-        private CreateShopViewModel viewModel;
-
-        public CreateShopView(CreateShopViewModel viewModel)
+        public CreateShopView()
         {
             InitializeComponent();
-
-            this.DataContext = this.viewModel = viewModel ?? throw new ArgumentNullException();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

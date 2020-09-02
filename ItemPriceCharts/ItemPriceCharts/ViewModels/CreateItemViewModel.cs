@@ -6,13 +6,12 @@ using System.Windows.Input;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using ItemPriceCharts.UI.WPF.Views;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateItemViewModel : BindableViewModel
     {
-        //private readonly CreateItemView view;
         private readonly WebPageService webPageService;
         private string newItemURL;
 
@@ -30,12 +29,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public CreateItemViewModel(WebPageService webPageService, OnlineShopModel selectedShop)
         {
             this.webPageService = webPageService;
-            this.SelectedShop = selectedShop;
+            this.SelectedShop = selectedShop ?? throw new ArgumentNullException();
 
             this.AddItemCommand = new RelayCommand<object>(this.AddItemAction, this.AddItemPredicate);
-
-            //this.view = new CreateItemView(this);
-            //view.ShowDialog();
         }
 
         private void AddItemAction(object obj)
@@ -52,7 +48,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private bool AddItemPredicate()
         {
-            return this.NewItemURL != null && this.SelectedShop != null &&
+            return ValidateURL.IsValidAddress(this.NewItemURL) && 
                 this.NewItemURL.ToLower().Contains(this.SelectedShop.Title.ToLower());
         }
     }
