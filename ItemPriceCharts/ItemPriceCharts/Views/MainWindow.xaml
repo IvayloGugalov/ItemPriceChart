@@ -6,6 +6,7 @@
         xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
+        Topmost="False"
         Height="600"
         Width="1000">
     <Grid>

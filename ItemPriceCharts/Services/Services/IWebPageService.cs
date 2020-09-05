@@ -6,7 +6,7 @@ namespace ItemPriceCharts.Services.Services
 {
     public interface IWebPageService
     {
-        void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemModel.ItemType type);
+        void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type);
         void CreateShop(string shopURL, string shopTitle);
 
         void DeleteShop(OnlineShopModel onlineShop);

@@ -40,7 +40,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemModel.ItemType type)
+        public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type)
         {
             var itemDocument = this.htmlService.Load(itemURL);
             var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);

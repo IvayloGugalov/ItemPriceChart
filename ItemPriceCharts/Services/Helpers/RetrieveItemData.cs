@@ -10,7 +10,7 @@ namespace ItemPriceCharts.Services.Helpers
     public static class RetrieveItemData
     {
 
-        public static ItemModel CreateModel(string itemURL, HtmlDocument itemDocument, OnlineShopModel onlineShop, ItemModel.ItemType type)
+        public static ItemModel CreateModel(string itemURL, HtmlDocument itemDocument, OnlineShopModel onlineShop, ItemType type)
         {
             switch (onlineShop.Title)
             {

@@ -44,6 +44,9 @@
     <Page Update="Views\DeleteShopView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\EnumConverters.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

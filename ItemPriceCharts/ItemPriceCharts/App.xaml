@@ -11,9 +11,8 @@
                 <views:ShopView />
             </DataTemplate>
             <ResourceDictionary.MergedDictionaries>
-                
-                
-                 
+
+                <ResourceDictionary Source="Views/EnumConverters.xaml"/>
                 <ResourceDictionary Source="Views/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -1,6 +1,6 @@
 ﻿namespace ItemPriceCharts.Services.Models
 {
-    public sealed class ItemModel: EntityModel
+    public sealed partial class ItemModel: EntityModel
     {
         public string Description { get; set; }
         public double Price { get; set; }
@@ -22,12 +22,6 @@
             this.Price = price;
             this.OnlineShop = onlineShop;
             this.Type = type;
-        }
-
-        public enum ItemType
-        {
-            ComputerItem = 1,
-            PhoneItem = 2
         }
     }
 }

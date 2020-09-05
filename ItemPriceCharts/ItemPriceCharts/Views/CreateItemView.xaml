@@ -61,8 +61,8 @@
             </Border>
 
             <ComboBox Grid.Row="5"
-                      
-                      
+                      ItemsSource="{Binding Source={StaticResource ItemTypeDataProvider}}"
+                      SelectedItem="{Binding SelectedItemType}"
                       
                       Style="{StaticResource Styles.ComboBox}"
                       Width="200"

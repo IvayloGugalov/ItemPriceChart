@@ -13,6 +13,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     public class CreateItemViewModel : BindableViewModel
     {
         private readonly WebPageService webPageService;
+        private ItemType selectedItemType;
         private string newItemURL;
 
         public string NewItemURL
@@ -21,10 +22,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.newItemURL, value);
         }
 
-        public ICommand AddItemCommand { get; }
+        public ItemType SelectedItemType
+        {
+            get => this.selectedItemType;
+            set => this.SetValue(ref this.selectedItemType, value);
+        }
 
         public OnlineShopModel SelectedShop { get; }
-        public ItemModel.ItemType ItemType { get; }
+
+        public ICommand AddItemCommand { get; }
 
         public CreateItemViewModel(WebPageService webPageService, OnlineShopModel selectedShop)
         {
@@ -38,7 +44,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-                Task.Run(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop, this.ItemType));
+                Task.Run(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType));
             }
             catch (Exception e)
             {
