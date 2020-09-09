@@ -27,7 +27,7 @@ namespace ItemPriceCharts.UI.WPF
             this.mappedTypes.Add(typeof(DbContext), typeof(ModelsContext));
 
             var bootstrapper = new Bootstrapper.Bootstrapper(this);
-            bootstrapper.Run(mappedTypes);
+            bootstrapper.Run(this.mappedTypes);
 
             this.MainWindow.Closed += (s, a) =>
             {

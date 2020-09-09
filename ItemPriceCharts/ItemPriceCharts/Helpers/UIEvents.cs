@@ -1,5 +1,5 @@
 ﻿using System;
-
+using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
@@ -7,7 +7,9 @@ namespace ItemPriceCharts.UI.WPF.Helpers
     public static class UIEvents
     {
         public static IChannel<object> ShowCreateShopViewModel { get; set; } = new Channel<object>();
-        public static IChannel<object> ShowDeleteShopViewModel { get; set; } = new Channel<object>();
-        public static IChannel<object> ShowCreateItemViewModel { get; set; } = new Channel<object>();
+        public static IChannel<OnlineShopModel> ShowDeleteShopViewModel { get; set; } = new Channel<OnlineShopModel>();
+        public static IChannel<OnlineShopModel> ShowCreateItemViewModel { get; set; } = new Channel<OnlineShopModel>();
+        public static IChannel<ItemModel> ShowItemInformatioViewModel { get; set; } = new Channel<ItemModel>();
+
     }
 }

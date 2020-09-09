@@ -9,6 +9,7 @@ using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System.Windows;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -38,26 +39,33 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void UpdateItemsListHandler(object sender, MessageArgument<ItemModel> e)
         {
-            if (this.webPageService.TryGetItem(e.Message))
+            Dispatcher.CurrentDispatcher.Invoke(() =>
             {
-                this.ItemsList.Add(e.Message);
-            }
-            else
-            {
-                this.ItemsList.Remove(e.Message);
-            }
+                if (this.webPageService.TryGetItem(e.Message))
+                {
+                    this.ItemsList.Add(e.Message);
+                }
+                else
+                {
+                    this.ItemsList.Remove(e.Message);
+                }
+            });
         }
 
         private void UpdateShopsListHandler(object sender, MessageArgument<OnlineShopModel> e)
         {
-            if (this.webPageService.TryGetShop(e.Message))
+            Dispatcher dispatcher = Application.Current.Dispatcher;
+            dispatcher.Invoke(() =>
             {
-                this.OnlineShops.Add(e.Message);
-            }
-            else
-            {
-                this.OnlineShops.Remove(e.Message);
-            }
+                if (this.webPageService.TryGetShop(e.Message))
+                {
+                    this.OnlineShops.Add(e.Message);
+                }
+                else
+                {
+                    this.OnlineShops.Remove(e.Message);
+                }
+            });
         }
 
         private void AddShopsToViewModel()
@@ -80,7 +88,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowItemInformationDialogAction()
         {
-            Task.Factory.StartNew(() => { });
+            UIEvents.ShowItemInformatioViewModel.Publish(this.SelectedItem);
         }
 
         private void DeleteItemAction()

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 using HtmlAgilityPack;
 
-using ItemPriceCharts.Services.Constants;
 using ItemPriceCharts.Services.Helpers;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Strategies;
@@ -28,7 +23,8 @@ namespace ItemPriceCharts.Services.Services
 
         public void CreateShop(string shopURL, string shopTitle)
         {
-            var newShop = new OnlineShopModel(
+            var newShop = 
+                new OnlineShopModel(
                     id: default,
                     url: shopURL,
                     title: shopTitle);
@@ -45,12 +41,13 @@ namespace ItemPriceCharts.Services.Services
             var itemDocument = this.htmlService.Load(itemURL);
             var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
             this.itemService.AddItem(item);
+
             Events.ItemAdded.Publish(item);
         }
 
         public void DeleteShop(OnlineShopModel onlineShop)
         {
-            this.onlineShopService.Delete(onlineShop.Id);
+            this.onlineShopService.DeleteShop(onlineShop);
             Events.ShopDeleted.Publish(onlineShop);
         }
 
@@ -70,15 +67,14 @@ namespace ItemPriceCharts.Services.Services
             return this.itemService.GetAll(onlineShop);
         }
 
-
         public bool TryGetShop(OnlineShopModel onlineShop)
         {
-            return Task.Run(() => this.onlineShopService.IsShopExisting(onlineShop.Id)).Result;
+            return this.onlineShopService.IsShopExisting(onlineShop.Id);
         }
 
         public bool TryGetItem(ItemModel item)
         {
-            return Task.Run(() => this.itemService.IsItemExisting(item)).Result;
+            return this.itemService.IsItemExisting(item);
         }
     }
 }

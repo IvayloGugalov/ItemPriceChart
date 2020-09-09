@@ -24,6 +24,8 @@ namespace ItemPriceCharts.UI.WPF.Modules
 
             builder.RegisterType<DeleteItemViewModel>();
             builder.RegisterType<DeleteItemView>();
+
+            builder.RegisterType<ItemInformationViewModel>();
         }
     }
 }

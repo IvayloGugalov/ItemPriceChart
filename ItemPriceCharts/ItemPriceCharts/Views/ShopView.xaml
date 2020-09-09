@@ -21,11 +21,21 @@
         <Grid Margin="0 8 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0"
+                  VerticalAlignment="Bottom"
+                  Margin="5 0 0 0">
+                <Button Style="{StaticResource Styles.MenuButtons}"
+                        HorizontalAlignment="Center"
+                        Command="{Binding ShowCreateShopCommand}"
+                        Margin="5 10"
+                        Content="Add a new shop"/>
+            </Grid>
+            
+            <Grid Grid.Row="2">
                 <ListView Name="OnlineShopsListView"
                           ItemsSource="{Binding Path=OnlineShops}"
                           DisplayMemberPath="Title"
@@ -39,24 +49,43 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
 
-                </ListView>
-            </Grid>
+                    <ListView.ContextMenu>
+                        <ContextMenu Style="{StaticResource Styles.ItemContextMenu}">
+                            <MenuItem Command="{Binding ShowAddItemCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Add"
+                                                             Foreground="#00ff51"
+                                                             VerticalAlignment="Center"
+                                                             Width="20" 
+                                                             Height="20" />
+                                </MenuItem.Icon>
+                                <MenuItem.Header>
+                                    <TextBlock>
+                                        <Run Text="Add a product to"/>
+                                        <Run Text="{Binding SelectedShop.Title}"/>
+                                    </TextBlock>
+                                </MenuItem.Header>
+                            </MenuItem>
 
-            <Grid Grid.Row="2"
-                  VerticalAlignment="Bottom"
-                  Margin="5 0 0 0">
-                <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource Styles.MenuButtons}"
-                            HorizontalAlignment="Left"
-                            Command="{Binding ShowCreateShopCommand}"
-                            Margin="5 10"
-                            Content="Add a new shop"/>
-                    <Button Style="{StaticResource Styles.MenuButtons}"
-                            HorizontalAlignment="Right"
-                            Command="{Binding ShowDeleteShopCommand}"
-                            Margin="5 10"
-                            Content="Delete shop"/>
-                </StackPanel>
+                            <MenuItem Command="{Binding ShowDeleteShopCommand}">
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Remove"
+                                                             Foreground="#ff2626"
+                                                             VerticalAlignment="Center"
+                                                             Width="20" 
+                                                             Height="20" />
+                                </MenuItem.Icon>
+                                <MenuItem.Header>
+                                    <TextBlock>
+                                        <Run Text="Delete shop"/>
+                                        <Run Text="{Binding SelectedShop.Title}"/>
+                                    </TextBlock>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+
+                </ListView>
             </Grid>
         </Grid>
 
@@ -65,35 +94,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Button Name="ShowAddItem"
-                    Style="{StaticResource Styles.MenuButtons}"
-                    Width="400"
-                    Margin="0 10"
-                    Height="35"
-                    Foreground="White"
-                    ToolTip="Add a product"
-                    Command="{Binding ShowAddItemCommand}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource ResourceKey=Styles.Textblock.Common}">
-                        <Run Text="Add a product to"/>
-                        <Run Text="{Binding SelectedShop.Title}"/>
-                    </TextBlock>
-                    <materialDesign:PackIcon Kind="Add"
-                                             Margin="5 0 0 0"
-                                             Grid.Column="1"
-                                             Width="30" 
-                                             Height="30" />
-                </Grid>
-            </Button>
-
-            <ListView Grid.Row="1"
+            <ListView Grid.Row="0"
+                      Margin="0 30 0 0"
                       Name="ItemsListView"
                       Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
                       ItemsSource="{Binding Path=ItemsList}"
@@ -115,25 +119,9 @@
                         <MenuItem Header="Delete product" Command="{Binding DeleteItemCommand}"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
-                
-            </ListView>
-                      
-        </Grid>
 
-        <!--<Grid Grid.Column="1"
-              Margin="15"
-              Visibility="{Binding IsChartShown, Converter={cv:BoolToVisibilityConverter}}">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" 
-                                LegendLocation="Right" >
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Sales"
-                              LabelFormatter="{Binding YFormatter}" />
-                </lvc:CartesianChart.AxisY>
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Month"
-                              Labels="{Binding Labels}" />
-                </lvc:CartesianChart.AxisX>
-            </lvc:CartesianChart>
-        </Grid>-->
+            </ListView>
+
+        </Grid>
     </Grid>
 </UserControl>

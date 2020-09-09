@@ -21,7 +21,7 @@ namespace ItemPriceCharts.Services.Data
 
         public void SaveChanges()
         {
-            this.dbContext.SaveChanges();
+            this.dbContext.SaveChangesAsync();
         }
 
         protected virtual void Dispose(bool disposing)

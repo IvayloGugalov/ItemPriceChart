@@ -14,11 +14,11 @@
     <Style x:Key="Styles.ListViewItemShop" TargetType="{x:Type ListViewItem}">
         <Setter Property="Height" Value="30"/>
         <Setter Property="FontSize" Value="20"/>
-        <Setter Property="Margin" Value="0 5 0 5"/>
+        <Setter Property="Padding" Value="0"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="Width" Value="246" />
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Foreground" Value="#c7c7c7"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -27,7 +27,8 @@
                             BorderBrush="White">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-                                          Width="220"
+                                          Width="{TemplateBinding Width}"
+                                          Height="{TemplateBinding Height}"
                                           TextBlock.TextAlignment="Center">
                         </ContentPresenter>
                     </Border>
@@ -100,13 +101,6 @@
 
     <Style x:Key="Styles.MenuItem" TargetType="{x:Type MenuItem}">
         <Setter Property="Background" Value="WhiteSmoke"/>
-        <!--<Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type MenuItem}">
-                    
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>-->
     </Style>
     
     <Style x:Key="Styles.ItemContextMenu" TargetType="{x:Type ContextMenu}">

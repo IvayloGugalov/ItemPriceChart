@@ -24,6 +24,9 @@
     <Compile Update="Views\DeleteShopView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ItemInformationView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\MainWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -45,6 +48,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\EnumConverters.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ItemInformationView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MainWindow.xaml">

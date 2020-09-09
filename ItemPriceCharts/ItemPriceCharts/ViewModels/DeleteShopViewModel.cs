@@ -9,21 +9,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Services.Models;
+using System.Threading.Tasks;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteShopViewModel : BindableViewModel
     {
         private readonly IWebPageService webPageService;
-        private OnlineShopModel selectedShop;
         private string operationResult = string.Empty;
         private bool isOperationFinished;
-
-        public OnlineShopModel SelectedShop
-        {
-            get => this.selectedShop;
-            set => this.SetValue(ref this.selectedShop, value);
-        }
 
         public string OperationResult
         {
@@ -37,31 +31,29 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isOperationFinished, value);
         }
 
-        public ObservableCollection<OnlineShopModel> AllShops { get; set; }
+        public OnlineShopModel SelectedShop { get; }
 
         public ICommand DeleteShopCommand { get; }
 
-        public DeleteShopViewModel(WebPageService webPageService)
+        public DeleteShopViewModel(WebPageService webPageService, OnlineShopModel selectedShop)
         {
             this.webPageService = webPageService;
-
-            this.AllShops = ToObservableCollectionExtensions.ToObservableCollection(this.webPageService.RetrieveOnlineShops());
-            this.SelectedShop = this.AllShops.First();
+            this.SelectedShop = selectedShop ?? throw new ArgumentNullException();
 
             this.DeleteShopCommand = new RelayCommand(_ => this.DeleteShopAction());
         }
 
-        private void DeleteShopAction()
+        private async void DeleteShopAction()
         {
             try
             {
-                this.IsOperationFinished = true;
+                await Task.Run(() => this.webPageService.DeleteShop(this.SelectedShop));
 
-                this.webPageService.DeleteShop(this.SelectedShop);
+                this.IsOperationFinished = true;
                 this.OperationResult = $"Deleted {this.SelectedShop.Title} with id: {this.SelectedShop.Id}";
 
-                this.AllShops.Remove(this.SelectedShop);
-                Events.ShopDeleted.Publish(this.SelectedShop);
+                this.OnPropertyChanged(() => this.IsOperationFinished);
+                this.OnPropertyChanged(() => this.OperationResult);
             }
             catch (Exception e)
             {

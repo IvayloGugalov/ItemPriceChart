@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-
+using System.Windows.Threading;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
@@ -44,7 +44,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-                Task.Run(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType));
+                Dispatcher.CurrentDispatcher.BeginInvoke(() => this.webPageService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType));
             }
             catch (Exception e)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,7 @@ namespace ItemPriceCharts.Services.Data
             this.dbContext.Database.CanConnectAsync();
         }
 
-        public virtual IEnumerable<TEntity> All(
+        public virtual async Task<IEnumerable<TEntity>> All(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null,
@@ -43,34 +44,25 @@ namespace ItemPriceCharts.Services.Data
 
             if (orderBy != null)
             {
-                return orderBy(query).ToList();
+                return await orderBy(query).ToListAsync();
             }
             else
             {
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public virtual TEntity GetById(object id)
-        {
-            return this.dbSet.Find(id);
-        }
+        public virtual async Task<TEntity> GetById(int id) => await this.dbSet.FindAsync(id);
 
-        public virtual void Add(TEntity entity)
+        public virtual async Task Add(TEntity entity)
         {
-            this.dbSet.Add(entity);
+            await this.dbSet.AddAsync(entity);
         }
 
         public virtual void Update(TEntity entityToUpdate)
         {
             this.dbSet.Attach(entityToUpdate);
             this.dbContext.Entry(entityToUpdate).State = EntityState.Modified;
-        }
-
-        public void Delete(object id)
-        {
-            TEntity entityToDelete = this.dbSet.Find(id);
-            this.Delete(entityToDelete);
         }
 
         public virtual void Delete(TEntity entityToDelete)

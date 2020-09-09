@@ -69,7 +69,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowCreateShopAction() => UIEvents.ShowCreateShopViewModel.Publish(null);
 
-        private void ShowDeleteShopAction() => UIEvents.ShowDeleteShopViewModel.Publish(null);
+        private void ShowDeleteShopAction() => UIEvents.ShowDeleteShopViewModel.Publish(this.SelectedShop);
 
         private void ShowAddItemAction() => UIEvents.ShowCreateItemViewModel.Publish(this.SelectedShop);
     }

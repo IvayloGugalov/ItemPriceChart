@@ -17,11 +17,9 @@ namespace ItemPriceCharts.Services.Strategies
             this.unitOfWork = unitOfWork;
         }
 
-        public OnlineShopModel GetById(int id)
-        {
-            return this.unitOfWork.OnlineShopRepository.All()
-                .FirstOrDefault(shop => shop.Id == id) ?? throw new Exception();
-        }
+        public OnlineShopModel GetById(int id) =>
+            this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == id).Result
+                .FirstOrDefault() ?? throw new Exception();
 
         public DatabaseResult AddShop(OnlineShopModel onlineShop)
         {
@@ -42,14 +40,13 @@ namespace ItemPriceCharts.Services.Strategies
             }
         }
 
-        public void Update(OnlineShopModel onlineShop)
+        public void UpdateShop(OnlineShopModel onlineShop)
         {
             try
             {
                 if (this.IsShopExisting(onlineShop.Id))
                 {
-                    var shopToUpdate = this.GetById(onlineShop.Id);
-                    this.unitOfWork.OnlineShopRepository.Update(shopToUpdate);
+                    this.unitOfWork.OnlineShopRepository.Update(onlineShop);
                     this.unitOfWork.SaveChanges();
                 }
             }
@@ -59,14 +56,13 @@ namespace ItemPriceCharts.Services.Strategies
             }
         }
 
-        public void Delete(int id)
+        public void DeleteShop(OnlineShopModel onlineShop)
         {
             try
             {
-                if (this.IsShopExisting(id))
+                if (this.IsShopExisting(onlineShop.Id))
                 {
-                    var shopToDelete = this.GetById(id);
-                    this.unitOfWork.OnlineShopRepository.Delete(shopToDelete.Id);
+                    this.unitOfWork.OnlineShopRepository.Delete(onlineShop);
                     this.unitOfWork.SaveChanges();
                 }
             }
@@ -76,21 +72,13 @@ namespace ItemPriceCharts.Services.Strategies
             }
         }
 
-        public IEnumerable<OnlineShopModel> GetAll()
-        {
-            return this.unitOfWork.OnlineShopRepository.All();
-        }
+        public IEnumerable<OnlineShopModel> GetAll() =>
+            this.unitOfWork.OnlineShopRepository.All().Result;
 
-        private bool IsShopExisting(string newShopUrl)
-        {
-            return this.unitOfWork.OnlineShopRepository.All()
-                .Any(item => item.URL == newShopUrl);
-        }
+        private bool IsShopExisting(string newShopUrl) =>
+            this.unitOfWork.OnlineShopRepository.All(shop => shop.URL == newShopUrl).Result.Any();
 
-        public bool IsShopExisting(int shopId)
-        {
-            return this.unitOfWork.OnlineShopRepository.All()
-                .Any(item => item.Id == shopId);
-        }
+        public bool IsShopExisting(int shopId) =>
+            this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == shopId).Result.Any();
     }
 }

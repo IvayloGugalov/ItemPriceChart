@@ -10,8 +10,8 @@ namespace ItemPriceCharts.Services.Strategies
         OnlineShopModel GetById(int id);
         IEnumerable<OnlineShopModel> GetAll();
         DatabaseResult AddShop(OnlineShopModel onlineShop);
-        void Update(OnlineShopModel onlineShop);
-        void Delete(int id);
+        void UpdateShop(OnlineShopModel onlineShop);
+        void DeleteShop(OnlineShopModel onlineShop);
         bool IsShopExisting(int shopId);
     }
 }

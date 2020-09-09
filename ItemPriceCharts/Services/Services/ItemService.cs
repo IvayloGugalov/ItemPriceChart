@@ -16,6 +16,10 @@ namespace ItemPriceCharts.Services.Strategies
             this.unitOfWork = unitOfWork;
         }
 
+        public ItemModel GetById(int id) =>
+            this.unitOfWork.ItemRepository.All(item => item.Id == id).Result
+                .FirstOrDefault() ?? throw new Exception();
+
         public void AddItem(ItemModel item)
         {
             try
@@ -32,12 +36,6 @@ namespace ItemPriceCharts.Services.Strategies
             }
         }
 
-        public ItemModel GetById(int id)
-        {
-            return this.unitOfWork.ItemRepository.All()
-                .FirstOrDefault(item => item.Id == id) ?? throw new Exception();
-        }
-
         public void UpdateItem(ItemModel item)
         {
             try
@@ -48,6 +46,7 @@ namespace ItemPriceCharts.Services.Strategies
                     itemToUpdate.Price = item.Price;
                     itemToUpdate.Title = item.Title;
                     itemToUpdate.Description = item.Description;
+                    this.unitOfWork.ItemRepository.Update(itemToUpdate);
 
                     this.unitOfWork.SaveChanges();
                 }
@@ -64,8 +63,7 @@ namespace ItemPriceCharts.Services.Strategies
             {
                 if (this.IsItemExisting(item))
                 {
-                    var itemToDelete = this.GetById(item.Id);
-                    this.unitOfWork.ItemRepository.Delete(itemToDelete.Id);
+                    this.unitOfWork.ItemRepository.Delete(item);
                     this.unitOfWork.SaveChanges();
                 }
             }
@@ -75,15 +73,10 @@ namespace ItemPriceCharts.Services.Strategies
             }
         }
 
-        public IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop)
-        {
-            return this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id);
-        }
+        public IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop) =>
+            this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
 
-        public bool IsItemExisting(ItemModel item)
-        {
-            return this.unitOfWork.ItemRepository.All()
-                .Any(i => i.URL == item.URL || i.Id == item.Id);
-        }
+        public bool IsItemExisting(ItemModel item) =>
+            this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.Any();
     }
 }
