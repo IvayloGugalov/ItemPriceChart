@@ -14,6 +14,8 @@ namespace ItemPriceCharts.Services.Data
 
         public IRepository<OnlineShopModel> OnlineShopRepository => new Repository<OnlineShopModel>(this.dbContext);
 
+        public IRepository<ItemPrice> ItemPriceRepository => new Repository<ItemPrice>(this.dbContext);
+
         public UnitOfWork(ModelsContext dbContext)
         {
             this.dbContext = dbContext;

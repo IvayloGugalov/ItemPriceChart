@@ -43,7 +43,7 @@ namespace ItemPriceCharts.Services.Strategies
                 if (this.IsItemExisting(item))
                 {
                     var itemToUpdate = this.GetById(item.Id);
-                    itemToUpdate.Price = item.Price;
+                    itemToUpdate.CurrentPrice = item.CurrentPrice;
                     itemToUpdate.Title = item.Title;
                     itemToUpdate.Description = item.Description;
                     this.unitOfWork.ItemRepository.Update(itemToUpdate);

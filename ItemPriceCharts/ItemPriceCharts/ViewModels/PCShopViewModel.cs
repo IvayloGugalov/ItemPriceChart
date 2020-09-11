@@ -1,15 +1,12 @@
-﻿using System;
-
-using System.Linq;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Windows;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -25,7 +22,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.webPageService = webPageService;
 
-            this.ShowItemsCommand = new RelayCommand(_ => this.AddItemsForShopAction());
+            this.ShowItemsCommand = new RelayCommand<object>(this.AddItemsForShopAction, this.ShowItemsPredicate);
             this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
 
@@ -65,6 +62,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 {
                     this.OnlineShops.Remove(e.Message);
                 }
+                this.OnPropertyChanged(() => this.IsListOfShopsShown);
             });
         }
 
@@ -72,9 +70,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
                 this.webPageService.RetrieveOnlineShops());
+
+            this.IsListOfShopsShown = this.OnlineShops.Any();
         }
 
-        private void AddItemsForShopAction()
+        private void AddItemsForShopAction(object parameter)
         {
             this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
                  this.webPageService.RetrieveItemsForShop(this.SelectedShop));
@@ -94,6 +94,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private void DeleteItemAction()
         {
             
+        }
+
+        private bool ShowItemsPredicate()
+        {
+            return this.OnlineShops.Any();
         }
     }
 }

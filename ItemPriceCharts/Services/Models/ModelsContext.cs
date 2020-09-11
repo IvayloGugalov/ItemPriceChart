@@ -6,6 +6,7 @@ namespace ItemPriceCharts.Services.Models
     {
         public DbSet<OnlineShopModel> OnlineShops { get; set; }
         public DbSet<ItemModel> Items { get; set; }
+        public DbSet<ItemPrice> ItemPrices { get; set; }
 
         public DbSet<EntityModel> Entities { get; set; }
 
@@ -19,6 +20,7 @@ namespace ItemPriceCharts.Services.Models
             builder.Entity<EntityModel>();
             builder.Entity<OnlineShopModel>();
             builder.Entity<ItemModel>();
+            builder.Entity<ItemPrice>();
 
             builder.Entity<ItemModel>()
                 .Property(i => i.Type)

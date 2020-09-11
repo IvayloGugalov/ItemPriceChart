@@ -14,11 +14,13 @@ namespace ItemPriceCharts.Services.Services
         private readonly HtmlWeb htmlService = new HtmlWeb();
         private readonly IItemService itemService;
         private readonly IOnlineShopService onlineShopService;
+        private readonly IItemPriceService itemPriceService;
 
-        public WebPageService(ItemService itemService, OnlineShopService onlineShopService)
+        public WebPageService(ItemService itemService, OnlineShopService onlineShopService, ItemPriceService itemPriceService)
         {
             this.itemService = itemService;
             this.onlineShopService = onlineShopService;
+            this.itemPriceService = itemPriceService;
         }
 
         public void CreateShop(string shopURL, string shopTitle)
@@ -41,6 +43,11 @@ namespace ItemPriceCharts.Services.Services
             var itemDocument = this.htmlService.Load(itemURL);
             var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
             this.itemService.AddItem(item);
+            this.itemPriceService.CreateItemPrice(new ItemPrice(
+                id: default,
+                priceDate: DateTime.Now,
+                currentPrice: item.CurrentPrice,
+                itemId: item.Id));
 
             Events.ItemAdded.Publish(item);
         }
