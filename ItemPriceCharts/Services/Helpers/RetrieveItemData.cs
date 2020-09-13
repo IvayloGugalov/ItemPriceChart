@@ -2,7 +2,7 @@
 using System.Linq;
 
 using HtmlAgilityPack;
-
+using ItemPriceCharts.Services.Constants;
 using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.Services.Helpers
@@ -50,15 +50,15 @@ namespace ItemPriceCharts.Services.Helpers
             char[] toTrim = { '\n', ' ' };
             try
             {
-                var title = htmlDocument.DocumentNode.SelectSingleNode("//h1[@class='productTitle']").InnerText;
+                var title = htmlDocument.DocumentNode.SelectSingleNode(PlesioKeyWordConstants.TITLE).InnerText;
                 var description = string.Empty;
-                double.TryParse(htmlDocument.DocumentNode.SelectSingleNode("//span[@class='productPrice']").InnerText.Trim(toTrim)
+                double.TryParse(htmlDocument.DocumentNode.SelectSingleNode(PlesioKeyWordConstants.PRICE).InnerText.Trim(toTrim)
                     .Replace("лв", "")
                     .Trim().Replace(".", ","), out var price);
 
-                var descriptionValues = htmlDocument.DocumentNode.SelectNodes("//li//span[@class='characteristicLabel']")
+                var descriptionValues = htmlDocument.DocumentNode.SelectNodes(PlesioKeyWordConstants.DESCRIPTION_VALUES)
                     .Select(x => x.InnerText);
-                var descriptioLabels = htmlDocument.DocumentNode.SelectNodes("//li//span[@class='characteristicValue']")
+                var descriptioLabels = htmlDocument.DocumentNode.SelectNodes(PlesioKeyWordConstants.DESCRIPTION_LABELS)
                     .Select(x => x.InnerText);
 
                 foreach (var item in descriptionValues.Zip(descriptioLabels, (a, b) => a + "\t" + b + "\n"))
@@ -78,12 +78,12 @@ namespace ItemPriceCharts.Services.Helpers
         {
             try
             {
-                var title = htmlDocument.DocumentNode.SelectSingleNode("//h1[@itemprop]").GetAttributeValue("content", "");
+                var title = htmlDocument.DocumentNode.SelectSingleNode(VarioKeyWordConstants.TITLE).GetAttributeValue("content", "");
                 var description = string.Empty;
-                double.TryParse(htmlDocument.DocumentNode.SelectSingleNode("//span[@itemprop]").GetAttributeValue("content", ""), out var price);
+                double.TryParse(htmlDocument.DocumentNode.SelectSingleNode(VarioKeyWordConstants.PRICE).GetAttributeValue("content", ""), out var price);
 
-                var descriptionValues = htmlDocument.DocumentNode.SelectNodes("//li//span").Select(x => x.InnerText);
-                var descriptioLabels = htmlDocument.DocumentNode.SelectNodes("//div//ul//li//h3").Select(x => x.InnerText);
+                var descriptionValues = htmlDocument.DocumentNode.SelectNodes(VarioKeyWordConstants.DESCRIPTION_VALUES).Select(x => x.InnerText);
+                var descriptioLabels = htmlDocument.DocumentNode.SelectNodes(VarioKeyWordConstants.DESCRIPTION_LABELS).Select(x => x.InnerText);
 
                 foreach (var item in descriptioLabels.Zip(descriptionValues, (a, b) => a + "\t" + b + "\n"))
                 {

@@ -11,7 +11,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteItemViewModel : BindableViewModel
     {
-        private readonly IWebPageService webPageService;
+        private readonly IItemService itemService;
         private string operationResult;
 
         public ItemModel ItemToDelete { get; }
@@ -23,9 +23,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand DeleteItemCommand { get; }
 
-        public DeleteItemViewModel(WebPageService webPageService, ItemModel item)
+        public DeleteItemViewModel(ItemService itemService, ItemModel item)
         {
-            this.webPageService = webPageService;
+            this.itemService = itemService;
             this.ItemToDelete = item;
 
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
@@ -35,7 +35,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-                Task.Run(() => this.webPageService.DeleteItem(this.ItemToDelete));
+                Task.Run(() => this.itemService.DeleteItem(this.ItemToDelete));
             }
             catch (Exception e)
             {

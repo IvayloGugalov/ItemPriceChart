@@ -84,7 +84,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         protected void CreateItemInformationWindow(object sender, MessageArgument<ItemModel> e)
         {
-            var parameters = new Parameter[] { new NamedParameter("selectedItem", e.Message) };
+            var parameters = new Parameter[] { new NamedParameter("item", e.Message) };
             var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
             window.Show();
         }

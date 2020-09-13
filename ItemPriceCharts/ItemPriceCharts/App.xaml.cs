@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.Services.Strategies;
 
 namespace ItemPriceCharts.UI.WPF
 {
@@ -20,9 +19,9 @@ namespace ItemPriceCharts.UI.WPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            this.mappedTypes.Add(typeof(IWebPageService), typeof(WebPageService));
             this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
             this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
+            this.mappedTypes.Add(typeof(IItemPriceService), typeof(ItemPriceService));
             this.mappedTypes.Add(typeof(IUnitOfWork), typeof(UnitOfWork));
             this.mappedTypes.Add(typeof(DbContext), typeof(ModelsContext));
 

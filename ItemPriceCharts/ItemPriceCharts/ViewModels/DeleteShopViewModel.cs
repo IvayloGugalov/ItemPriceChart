@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
-using ItemPriceCharts.UI.WPF.Views;
+using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using ItemPriceCharts.UI.WPF.Helpers;
-using ItemPriceCharts.Services.Models;
-using System.Threading.Tasks;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteShopViewModel : BindableViewModel
     {
-        private readonly IWebPageService webPageService;
+        private readonly IOnlineShopService onlineShopService;
         private string operationResult = string.Empty;
         private bool isOperationFinished;
 
@@ -35,9 +30,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand DeleteShopCommand { get; }
 
-        public DeleteShopViewModel(WebPageService webPageService, OnlineShopModel selectedShop)
+        public DeleteShopViewModel(OnlineShopService onlineShopService, OnlineShopModel selectedShop)
         {
-            this.webPageService = webPageService;
+            this.onlineShopService = onlineShopService;
             this.SelectedShop = selectedShop ?? throw new ArgumentNullException();
 
             this.DeleteShopCommand = new RelayCommand(_ => this.DeleteShopAction());
@@ -47,7 +42,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-                await Task.Run(() => this.webPageService.DeleteShop(this.SelectedShop));
+                await Task.Run(() => this.onlineShopService.DeleteShop(this.SelectedShop));
 
                 this.IsOperationFinished = true;
                 this.OperationResult = $"Deleted {this.SelectedShop.Title} with id: {this.SelectedShop.Id}";
