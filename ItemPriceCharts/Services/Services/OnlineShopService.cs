@@ -4,9 +4,8 @@ using System.Linq;
 
 using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 
-namespace ItemPriceCharts.Services.Strategies
+namespace ItemPriceCharts.Services.Services
 {
     public class OnlineShopService : IOnlineShopService
     {
@@ -21,18 +20,22 @@ namespace ItemPriceCharts.Services.Strategies
             this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == id).Result
                 .FirstOrDefault() ?? throw new Exception();
 
-        public DatabaseResult AddShop(OnlineShopModel onlineShop)
+        public void CreateShop(string shopURL, string shopTitle)
         {
             try
             {
-                if (!this.IsShopExisting(onlineShop.URL))
+                if (!this.IsShopExisting(shopURL))
                 {
-                    this.unitOfWork.OnlineShopRepository.Add(onlineShop);
+                    var newShop = new OnlineShopModel(
+                        id: default,
+                        url: shopURL,
+                        title: shopTitle);
+
+                    this.unitOfWork.OnlineShopRepository.Add(newShop);
                     this.unitOfWork.SaveChanges();
 
-                    return DatabaseResult.Succes;
+                    Events.ShopAdded.Publish(newShop);
                 }
-                return DatabaseResult.EntitityAlreadyExist;
             }
             catch (Exception e)
             {
@@ -64,6 +67,8 @@ namespace ItemPriceCharts.Services.Strategies
                 {
                     this.unitOfWork.OnlineShopRepository.Delete(onlineShop);
                     this.unitOfWork.SaveChanges();
+
+                    Events.ShopDeleted.Publish(onlineShop);
                 }
             }
             catch (Exception e)

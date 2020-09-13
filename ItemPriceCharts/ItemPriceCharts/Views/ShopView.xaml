@@ -27,6 +27,7 @@
 
             <Grid Grid.Row="0"
                   VerticalAlignment="Bottom"
+                  HorizontalAlignment="Center"
                   Margin="5 0 0 0">
                 <Button Style="{StaticResource Styles.MenuButtons}"
                         HorizontalAlignment="Center"
@@ -39,6 +40,7 @@
                 <ListView Name="OnlineShopsListView"
                           ItemsSource="{Binding Path=OnlineShops}"
                           DisplayMemberPath="Title"
+                          Visibility="{Binding IsListOfShopsShown, Converter={cv:BoolToVisibilityConverter}}"
                           SelectedItem="{Binding SelectedShop}"
                           Style="{StaticResource Styles.ListViewForShops}" >
 

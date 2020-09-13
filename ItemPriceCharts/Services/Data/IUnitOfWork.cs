@@ -6,6 +6,7 @@ namespace ItemPriceCharts.Services.Data
     {
         IRepository<ItemModel> ItemRepository { get; }
         IRepository<OnlineShopModel> OnlineShopRepository { get; }
+        IRepository<ItemPrice> ItemPriceRepository { get; }
 
         void SaveChanges();
     }

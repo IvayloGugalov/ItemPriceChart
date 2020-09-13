@@ -65,26 +65,26 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         protected void CreateShopWindow(object sender, MessageArgument<object> e)
         {
             var window = this.viewFactory.Resolve<CreateShopViewModel>();
-            window.Show();
+            window.ShowDialog();
         }
 
         protected void DeleteShopWindow(object sender, MessageArgument<OnlineShopModel> e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e.Message) };
             var window = this.viewFactory.Resolve<DeleteShopViewModel>(parameters);
-            window.Show();
+            window.ShowDialog();
         }
 
         protected void CreateItemWindow(object sender, MessageArgument<OnlineShopModel> e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e.Message) };
             var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
-            window.Show();
+            window.ShowDialog();
         }
 
         protected void CreateItemInformationWindow(object sender, MessageArgument<ItemModel> e)
         {
-            var parameters = new Parameter[] { new NamedParameter("selectedItem", e.Message) };
+            var parameters = new Parameter[] { new NamedParameter("item", e.Message) };
             var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
             window.Show();
         }

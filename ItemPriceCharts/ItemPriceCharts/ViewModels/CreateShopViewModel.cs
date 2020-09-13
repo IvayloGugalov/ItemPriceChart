@@ -11,7 +11,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateShopViewModel : BindableViewModel
     {
-        private readonly WebPageService webPageService;
+        private readonly IOnlineShopService onlineShopService;
         private string newShopURL;
         private string newShopTitle;
 
@@ -29,9 +29,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand AddShopCommand { get; }
 
-        public CreateShopViewModel(WebPageService webPageService)
+        public CreateShopViewModel(OnlineShopService onlineShopService)
         {
-            this.webPageService = webPageService;
+            this.onlineShopService = onlineShopService;
 
             this.AddShopCommand = new RelayCommand(_ => this.AddShopAction());
         }
@@ -42,7 +42,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 if (ValidateURL.IsValidAddress(this.NewShopURL))
                 {
-                    Task.Run(() => this.webPageService.CreateShop(this.NewShopURL, this.NewShopTitle));
+                    Task.Run(() => this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle));
                 }
             }
             catch (Exception e)

@@ -12,9 +12,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private ObservableCollection<ItemModel> itemsList;
         private OnlineShopModel selectedShop;
         private ItemModel selectedItem;
-        private bool isAddShopShown;
-        private bool isChartShown;
         private bool areItemsShown;
+        private bool isListOfShopsShown;
 
         public ObservableCollection<ItemModel> ItemsList
         {
@@ -36,29 +35,23 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => SetValue(ref this.selectedItem, value);
         }
 
-        public bool IsAddShopShown
-        {
-            get => this.isAddShopShown;
-            set => this.SetValue(ref this.isAddShopShown, value);
-        }
-
-        public bool IsChartShown
-        {
-            get => this.isChartShown;
-            set => this.SetValue(ref this.isChartShown, value);
-        }
-
         public bool AreItemsShown
         {
             get => this.areItemsShown;
             set => this.SetValue(ref this.areItemsShown, value);
         }
 
+        public bool IsListOfShopsShown
+        {
+            get => this.isListOfShopsShown;
+            set => this.SetValue(ref this.isListOfShopsShown, value);
+        }
+
         public ICommand ShowCreateShopCommand { get; }
 
         public ICommand ShowDeleteShopCommand { get; }
 
-        public ICommand ShowAddItemCommand { get;  }
+        public ICommand ShowAddItemCommand { get; }
 
         public ShopViewModel()
         {

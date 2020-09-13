@@ -1,31 +1,30 @@
-﻿using System;
-
-using System.Linq;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Windows;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class PCShopViewModel : ShopViewModel
     {
-        private readonly WebPageService webPageService;
+        private readonly IItemService itemService;
+        private readonly IOnlineShopService onlineShopService;
        
         public ICommand ShowItemsCommand { get; }
         public ICommand ShowItemInformationDialogCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public PCShopViewModel(WebPageService webPageService)
+        public PCShopViewModel(ItemService itemService, OnlineShopService onlineShopService)
         {
-            this.webPageService = webPageService;
+            this.itemService = itemService;
+            this.onlineShopService = onlineShopService;
 
-            this.ShowItemsCommand = new RelayCommand(_ => this.AddItemsForShopAction());
+            this.ShowItemsCommand = new RelayCommand<object>(this.AddItemsForShopAction, this.ShowItemsPredicate);
             this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
 
@@ -39,9 +38,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void UpdateItemsListHandler(object sender, MessageArgument<ItemModel> e)
         {
-            Dispatcher.CurrentDispatcher.Invoke(() =>
+            Dispatcher dispatcher = Application.Current.Dispatcher;
+            dispatcher.Invoke(() =>
             {
-                if (this.webPageService.TryGetItem(e.Message))
+                if (this.itemService.IsItemExisting(e.Message))
                 {
                     this.ItemsList.Add(e.Message);
                 }
@@ -57,7 +57,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
             {
-                if (this.webPageService.TryGetShop(e.Message))
+                if (this.onlineShopService.IsShopExisting(e.Message.Id))
                 {
                     this.OnlineShops.Add(e.Message);
                 }
@@ -65,19 +65,22 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 {
                     this.OnlineShops.Remove(e.Message);
                 }
+                this.OnPropertyChanged(() => this.IsListOfShopsShown);
             });
         }
 
         private void AddShopsToViewModel()
         {
             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
-                this.webPageService.RetrieveOnlineShops());
+                this.onlineShopService.GetAll());
+
+            this.IsListOfShopsShown = this.OnlineShops.Any();
         }
 
-        private void AddItemsForShopAction()
+        private void AddItemsForShopAction(object parameter)
         {
             this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                 this.webPageService.RetrieveItemsForShop(this.SelectedShop));
+                 this.itemService.GetAll(this.SelectedShop));
 
             this.AreItemsShown = true;
             if (this.ItemsList.Any())
@@ -93,7 +96,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void DeleteItemAction()
         {
-            
+            this.itemService.DeleteItem(this.SelectedItem);
+        }
+
+        private bool ShowItemsPredicate()
+        {
+            return this.OnlineShops.Any();
         }
     }
 }
