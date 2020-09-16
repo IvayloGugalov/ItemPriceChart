@@ -9,7 +9,7 @@ namespace ItemPriceCharts.Services.Models
         [Key]
         public int Id { get; set; }
         public DateTime PriceDate { get; set; }
-        public double CurrentPrice { get; set; }
+        public double Price { get; set; }
 
         public int ItemId { get; set; }
 
@@ -21,7 +21,7 @@ namespace ItemPriceCharts.Services.Models
         {
             this.Id = id;
             this.PriceDate = priceDate;
-            this.CurrentPrice = currentPrice;
+            this.Price = currentPrice;
             this.ItemId = itemId;
         }
     }

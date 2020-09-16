@@ -92,5 +92,35 @@ namespace ItemPriceCharts.Services.Services
 
         public bool IsItemExisting(ItemModel item) =>
             this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.Any();
+
+        public ItemPrice UpdateItemPrice(ItemModel item)
+        {
+            try
+            {
+                if (!this.IsItemExisting(item))
+                {
+                    var itemDocument = this.htmlService.Load(item.URL);
+                    var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
+
+                    this.UpdateItem(updatedItem);
+
+                    var newestItemPrice = new ItemPrice(
+                        id: default,
+                        priceDate: DateTime.Now,
+                        currentPrice: updatedItem.CurrentPrice,
+                        itemId: updatedItem.Id);
+
+                    this.unitOfWork.ItemPriceRepository.Add(newestItemPrice);
+
+                    return newestItemPrice;
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }

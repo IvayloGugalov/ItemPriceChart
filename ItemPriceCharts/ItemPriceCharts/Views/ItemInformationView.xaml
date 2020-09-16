@@ -7,10 +7,9 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
-        xmlns:vm="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels"
         mc:Ignorable="d"
-        Width="450"
-        Height="800">
+        Width="600"
+        MinHeight="500">
     <Grid Margin="10 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,30 +17,37 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="{Binding Item.Title}"/>
-        <TextBlock Grid.Row="2" Text="{Binding Item.Description}"/>
-        <TextBlock Grid.Row="4" Text="Price Chart"/>
-        <Grid Grid.Row="6">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" 
-                                LegendLocation="Right" >
+        <TextBlock Grid.Row="0"
+                   HorizontalAlignment="Center"
+                   Text="{Binding Item.Title}"/>
+        <TextBlock Grid.Row="2" 
+                   HorizontalAlignment="Center"
+                   Text="{Binding Item.Description}"/>
+
+        <Grid Grid.Row="4" Height="300">
+            <lvc:CartesianChart Series="{Binding PriceCollection}">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Sales"
+                    <lvc:Axis Title="Price"
                               LabelFormatter="{Binding YFormatter}" />
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Month"
+                    <lvc:Axis Title="Date"
                               Labels="{Binding Labels}" />
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>
         </Grid>
 
-        <Button Grid.Row="8"
+        <Button Grid.Row="5"
+                Style="{StaticResource Styles.MenuButtons}"
+                HorizontalAlignment="Center"
+                Command="{Binding UpdatePriceCommand}"
+                Foreground="Black"
+                Margin="5 10"
                 Content="Refresh Price info"/>
+
     </Grid>
 </Window>
