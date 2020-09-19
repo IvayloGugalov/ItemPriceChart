@@ -97,20 +97,23 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                if (!this.IsItemExisting(item))
+                if (this.IsItemExisting(item))
                 {
                     var itemDocument = this.htmlService.Load(item.URL);
                     var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
 
-                    this.UpdateItem(updatedItem);
+                    item.Description = updatedItem.Description;
+                    item.CurrentPrice = updatedItem.CurrentPrice;
+
+                    this.UpdateItem(item);
 
                     var newestItemPrice = new ItemPrice(
                         id: default,
                         priceDate: DateTime.Now,
-                        currentPrice: updatedItem.CurrentPrice,
-                        itemId: updatedItem.Id);
+                        currentPrice: item.CurrentPrice,
+                        itemId: item.Id);
 
-                    this.unitOfWork.ItemPriceRepository.Add(newestItemPrice);
+                    this.itemPriceService.CreateItemPrice(newestItemPrice);
 
                     return newestItemPrice;
                 }

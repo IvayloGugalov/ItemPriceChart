@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core;
+
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Factories;
@@ -7,7 +8,6 @@ using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Modules;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
-using System;
 
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
@@ -86,7 +86,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         {
             var parameters = new Parameter[] { new NamedParameter("item", e.Message) };
             var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
-            window.Show();
+            window.ShowDialog();
         }
     }
 }

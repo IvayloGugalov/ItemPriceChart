@@ -1,14 +1,15 @@
-﻿using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.UI.WPF.CommandHelpers;
-using LiveCharts;
-using LiveCharts.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+
+using LiveCharts;
+using LiveCharts.Wpf;
+
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -18,13 +19,25 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private readonly IItemPriceService itemPriceService;
         private readonly IItemService itemService;
 
-        public Func<double, string> YFormatter { get; set; }
-
-        public List<string> Labels { get; set; }
+        private SeriesCollection priceCollection;
+        private LineSeries lineSeries;
+        private List<string> labels;
 
         public ItemModel Item { get; }
 
-        public SeriesCollection PriceCollection { get; set; }
+        public Func<double, string> YFormatter { get; set; }
+
+        public List<string> Labels
+        {
+            get => this.labels;
+            set => this.SetValue(ref this.labels, value);
+        }
+
+        public SeriesCollection PriceCollection
+        {
+            get => this.priceCollection;
+            set => this.SetValue(ref this.priceCollection, value);
+        }
 
         public ICommand UpdatePriceCommand { get; }
 
@@ -38,10 +51,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.LoadItemPriceInformation();
 
             this.UpdatePriceCommand = new RelayCommand(_ => this.UpdatePriceAction());
-
-            //this.Labels = Enumerable.Range(1, DateTime.Today.Month - 1)
-            //                .Select(m => new DateTime(DateTime.Today.Year, m, 1).ToString("MMMM"))
-            //                .ToArray();
         }
 
         private void LoadItemPriceInformation()
@@ -50,39 +59,40 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 var priceInformation = Task.Run(() => this.itemPriceService.GetPricesForItem(this.Item.Id)).Result;
 
-                //var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToString("MM/dd/yyyy"));
-                //var oldPrices = priceInformation.Select(p => p.Price);
+                var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
+                var oldPrices = priceInformation.Select(p => p.Price);
 
+                this.Labels = dateOfPrices.ToList();
 
-                var dateOfPrices = new DateTime[]
+                //var dateOfPrices = new DateTime[]
+                //{
+                //    new DateTime(2020, 5, 10),
+                //    new DateTime(2020, 4, 10),
+                //    new DateTime(2020, 3, 10),
+                //    new DateTime(2020, 2, 10),
+                //    new DateTime(2020, 1, 10),
+                //    new DateTime(2019, 12, 10),
+                //};
+
+                //var oldPrices = new double[]
+                //{
+                //5.66,
+                //6.33,
+                //10.10,
+                //9.94,
+                //9.50,
+                //10.50
+                //};
+
+                this.lineSeries = new LineSeries
                 {
-                    new DateTime(2020, 5, 10),
-                    new DateTime(2020, 4, 10),
-                    new DateTime(2020, 3, 10),
-                    new DateTime(2020, 2, 10),
-                    new DateTime(2020, 1, 10),
-                    new DateTime(2019, 12, 10),
-                };
-
-                this.Labels = dateOfPrices.Select(d => d.ToShortDateString()).ToList();
-                
-                var oldPrices = new double[]
-                {
-                5.66,
-                6.33,
-                10.10,
-                9.94,
-                9.50,
-                10.50
+                    Title = "Price",
+                    Values = new ChartValues<double>(oldPrices)
                 };
 
                 this.PriceCollection = new SeriesCollection
                 {
-                    new LineSeries
-                    {
-                        Title = "Price",
-                        Values = new ChartValues<double>(oldPrices)
-                    }
+                    this.lineSeries
                 };
 
                 this.YFormatter = value => value.ToString("C");
@@ -97,12 +107,16 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-                //check if shop exists
-                var itemPrice =  Task.Run(() => this.itemService.UpdateItemPrice(this.Item)).Result;
+                var itemPrice = Task.Run(() => this.itemService.UpdateItemPrice(this.Item)).Result;
 
-                this.Labels.Add(itemPrice.PriceDate.ToShortDateString());
+                if (itemPrice != null)
+                {
+                    this.lineSeries.Values.Add(itemPrice.Price);
+                    this.Labels.Add(itemPrice.PriceDate.ToShortDateString());
 
-                this.OnPropertyChanged(() => this.Labels);
+                    this.OnPropertyChanged(() => this.PriceCollection);
+                    this.OnPropertyChanged(() => this.Labels);
+                }
             }
             catch (Exception e)
             {
