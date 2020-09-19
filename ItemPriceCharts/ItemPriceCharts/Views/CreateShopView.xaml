@@ -38,8 +38,7 @@
                     Margin="0 0 0 10"
                     Height="35"
                     Width="400">
-                <TextBox Name="Title"
-                         Style="{StaticResource Styles.TextBox.Common}"
+                <TextBox Style="{StaticResource Styles.TextBox.Common}"
                          Foreground="Black"
                          Padding="10 8 0 10"
                          TextAlignment="Center"

@@ -25,7 +25,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ItemModel Item { get; }
 
-        public Func<double, string> YFormatter { get; set; }
+        public Func<double, string> YFormatter { get; private set; }
 
         public List<string> Labels
         {
@@ -40,7 +40,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
 
         public ICommand UpdatePriceCommand { get; }
-
 
         public ItemInformationViewModel(ItemPriceService itemPriceService, ItemService itemService, ItemModel item)
         {
@@ -62,31 +61,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
                 var oldPrices = priceInformation.Select(p => p.Price);
 
+                //Test Data
+                //this.CreateTestData(out var dateOfPrices, out var oldPrices);
+
                 this.Labels = dateOfPrices.ToList();
-
-                //var dateOfPrices = new DateTime[]
-                //{
-                //    new DateTime(2020, 5, 10),
-                //    new DateTime(2020, 4, 10),
-                //    new DateTime(2020, 3, 10),
-                //    new DateTime(2020, 2, 10),
-                //    new DateTime(2020, 1, 10),
-                //    new DateTime(2019, 12, 10),
-                //};
-
-                //var oldPrices = new double[]
-                //{
-                //5.66,
-                //6.33,
-                //10.10,
-                //9.94,
-                //9.50,
-                //10.50
-                //};
 
                 this.lineSeries = new LineSeries
                 {
                     Title = "Price",
+                    Stroke = System.Windows.Media.Brushes.White,
                     Values = new ChartValues<double>(oldPrices)
                 };
 
@@ -122,6 +105,29 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 throw e;
             }
+        }
+
+        private void CreateTestData(out List<string> dateOfPrices, out double[] oldPrices)
+        {
+            dateOfPrices = new List<string>
+            {
+                new DateTime(2020, 5, 10).ToShortDateString(),
+                new DateTime(2020, 4, 10).ToShortDateString(),
+                new DateTime(2020, 3, 10).ToShortDateString(),
+                new DateTime(2020, 2, 10).ToShortDateString(),
+                new DateTime(2020, 1, 10).ToShortDateString(),
+                new DateTime(2019, 12, 10).ToShortDateString(),
+            }.ToList();
+
+            oldPrices = new double[]
+            {
+                5.66,
+                6.33,
+                10.10,
+                9.94,
+                9.50,
+                10.50
+            };
         }
     }
 }
