@@ -43,7 +43,7 @@ namespace ItemPriceCharts.Services.Services
                     filter: price => price.ItemId == itemId,
                     orderBy: prices => prices.OrderByDescending(price => price.PriceDate))
                 .Result.First()
-                .CurrentPrice;
+                .Price;
             }
             catch (Exception e)
             {

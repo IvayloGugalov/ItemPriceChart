@@ -3,45 +3,79 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
-        xmlns:vm="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels"
         mc:Ignorable="d"
-        Width="450"
-        Height="800">
-    <Grid Margin="10 20">
+        WindowStyle="SingleBorderWindow"
+        SizeToContent="Height" 
+        ResizeMode="CanMinimize"
+        Width="600"
+        MinHeight="500">
+    <Window.Background>
+        <LinearGradientBrush>
+            <GradientStop Color="#0048d0" Offset="0"/>
+            <GradientStop Color="#00a6ff" Offset="0.7"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid Margin="20 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="{Binding Item.Title}"/>
-        <TextBlock Grid.Row="2" Text="{Binding Item.Description}"/>
-        <TextBlock Grid.Row="4" Text="Price Chart"/>
-        <Grid Grid.Row="6">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" 
-                                LegendLocation="Right" >
+        <TextBlock Grid.Row="0"
+                   HorizontalAlignment="Center"
+                   Text="{Binding Item.Title}"
+                   Foreground="WhiteSmoke"
+                   FontFamily="LilyUPC"
+                   FontWeight="SemiBold"
+                   FontSize="15"
+                   TextTrimming="WordEllipsis"/>
+        <TextBlock Grid.Row="2" 
+                   HorizontalAlignment="Center"
+                   Foreground="WhiteSmoke"
+                   Text="{Binding Item.Description}"
+                   FontSize="13"
+                   FontFamily="Tahoma"
+                   TextTrimming="WordEllipsis"/>
+
+        <Border Grid.Row="4"
+                CornerRadius="10"
+                BorderBrush="WhiteSmoke"
+                BorderThickness="1"
+                Height="260">
+            <lvc:CartesianChart Series="{Binding PriceCollection}"
+                                Foreground="Black"
+                                Margin="5">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Sales"
-                              LabelFormatter="{Binding YFormatter}" />
+                    <lvc:Axis Foreground="WhiteSmoke"
+                              LabelFormatter="{Binding YFormatter}" >
+                        <lvc:Axis.Separator>
+                            <lvc:Separator StrokeThickness="1" Stroke="#8EFFFFFF" />
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Month"
-                              Labels="{Binding Labels}" />
+                    <lvc:Axis Title="Date"
+                              Foreground="WhiteSmoke"
+                              Labels="{Binding Labels}">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator StrokeThickness="1" Stroke="#8EFFFFFF" />
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>
-        </Grid>
+        </Border>
 
-        <Button Grid.Row="8"
+        <Button Grid.Row="5"
+                Style="{StaticResource Styles.MenuButtons}"
+                HorizontalAlignment="Center"
+                Command="{Binding UpdatePriceCommand}"
+                Foreground="WhiteSmoke"
                 Content="Refresh Price info"/>
     </Grid>
 </Window>

@@ -9,33 +9,29 @@
              xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
-             Height="550"
+             Height="600"
              Width="850">
     <Grid Background="#6eb6ff">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="30" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Grid Margin="0 8 0 0">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="20" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0"
-                  VerticalAlignment="Bottom"
-                  HorizontalAlignment="Center"
-                  Margin="5 0 0 0">
-                <Button Style="{StaticResource Styles.MenuButtons}"
-                        HorizontalAlignment="Center"
-                        Command="{Binding ShowCreateShopCommand}"
-                        Margin="5 10"
-                        Content="Add a new shop"/>
-            </Grid>
-            
+            <Button Grid.Row="0"
+                    Style="{StaticResource Styles.MenuButtons}"
+                    HorizontalAlignment="Center"
+                    Command="{Binding ShowCreateShopCommand}"
+                    Margin="5 10"
+                    Content="Add a new shop"/>
+
             <Grid Grid.Row="2">
                 <ListView Name="OnlineShopsListView"
                           ItemsSource="{Binding Path=OnlineShops}"
@@ -117,8 +113,31 @@
 
                 <ListView.ContextMenu>
                     <ContextMenu Style="{StaticResource Styles.ItemContextMenu}">
-                        <MenuItem Header="Show information" Command="{Binding ShowItemInformationDialogCommand}"/>
-                        <MenuItem Header="Delete product" Command="{Binding DeleteItemCommand}"/>
+                        <MenuItem Command="{Binding ShowItemInformationDialogCommand}">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="InformationVariant"
+                                                         Foreground="#3d9bff"
+                                                         VerticalAlignment="Center"
+                                                         Width="20" 
+                                                         Height="20" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <TextBlock Text="Show information"/>
+                            </MenuItem.Header>
+                        </MenuItem>
+
+                        <MenuItem Command="{Binding DeleteItemCommand}">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Remove"
+                                                         Foreground="#ff2626"
+                                                         VerticalAlignment="Center"
+                                                         Width="20" 
+                                                         Height="20" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <TextBlock Text="Delete item"/>
+                            </MenuItem.Header>
+                        </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
 

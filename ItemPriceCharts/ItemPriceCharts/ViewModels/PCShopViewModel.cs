@@ -65,7 +65,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 {
                     this.OnlineShops.Remove(e.Message);
                 }
+
                 this.OnPropertyChanged(() => this.IsListOfShopsShown);
+                this.OnPropertyChanged(() => this.OnlineShops);
             });
         }
 
