@@ -22,10 +22,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private SeriesCollection priceCollection;
         private LineSeries lineSeries;
         private List<string> labels;
+        private bool isInProgress;
 
         public ItemModel Item { get; }
 
         public Func<double, string> YFormatter { get; private set; }
+
+        public bool IsInProgress
+        {
+            get => this.isInProgress;
+            set => this.SetValue(ref this.isInProgress, value);
+        }
 
         public List<string> Labels
         {
@@ -49,14 +56,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.LoadItemPriceInformation();
 
-            this.UpdatePriceCommand = new RelayCommand(_ => this.UpdatePriceAction());
+            this.UpdatePriceCommand = new RelayCommand<object>(this.UpdatePriceAction, this.UpdatePricePredicate);
         }
 
-        private void LoadItemPriceInformation()
+        private async void LoadItemPriceInformation()
         {
             try
             {
-                var priceInformation = Task.Run(() => this.itemPriceService.GetPricesForItem(this.Item.Id)).Result;
+                var priceInformation = await Task.Run(() => this.itemPriceService.GetPricesForItem(this.Item.Id));
 
                 var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
                 var oldPrices = priceInformation.Select(p => p.Price);
@@ -86,25 +93,37 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private void UpdatePriceAction()
+        private async void UpdatePriceAction(object obj)
         {
             try
             {
-                var itemPrice = Task.Run(() => this.itemService.UpdateItemPrice(this.Item)).Result;
+                this.IsInProgress = true;
+                this.OnPropertyChanged(() => this.IsInProgress);
 
-                if (itemPrice != null)
+                var updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
+
+                if (this.Item.CurrentPrice != updatedItemPrice.Price)
                 {
-                    this.lineSeries.Values.Add(itemPrice.Price);
-                    this.Labels.Add(itemPrice.PriceDate.ToShortDateString());
+                    this.lineSeries.Values.Add(updatedItemPrice.Price);
+                    this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
 
                     this.OnPropertyChanged(() => this.PriceCollection);
                     this.OnPropertyChanged(() => this.Labels);
+                }
+                else
+                {
+                    
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
+        }
+
+        private bool UpdatePricePredicate()
+        {
+            return !this.IsInProgress;
         }
 
         private void CreateTestData(out List<string> dateOfPrices, out double[] oldPrices)
