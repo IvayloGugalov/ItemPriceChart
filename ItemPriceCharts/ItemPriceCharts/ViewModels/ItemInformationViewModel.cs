@@ -10,6 +10,7 @@ using LiveCharts.Wpf;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -98,7 +99,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             try
             {
                 this.IsInProgress = true;
-                this.OnPropertyChanged(() => this.IsInProgress);
 
                 var updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
 
@@ -112,7 +112,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 }
                 else
                 {
-                    
+                    UIEvents.ShowMessageDialog.Publish(
+                        new Models.Message(
+                            title: "alalalala",
+                            description: "babababab babababba babababab bababababa bababab",
+                            positiveButtonText: "Ok"));
                 }
             }
             catch (Exception e)

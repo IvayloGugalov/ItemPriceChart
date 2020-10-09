@@ -1,0 +1,36 @@
+﻿using ItemPriceCharts.UI.WPF.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace ItemPriceCharts.UI.WPF.Views
+{
+    /// <summary>
+    /// Interaction logic for MessageDialog.xaml
+    /// </summary>
+    public partial class MessageDialog : Window
+    {
+        private readonly MessageDialogViewModel viewModel;
+
+        public MessageDialog(MessageDialogViewModel viewModel)
+        {
+            this.DataContext = this.viewModel = viewModel ?? throw new ArgumentNullException();
+            InitializeComponent();
+
+            if (viewModel.CloseWindow == null)
+            {
+                viewModel.CloseWindow = new Action(this.Close);
+            }
+        }
+
+
+    }
+}
