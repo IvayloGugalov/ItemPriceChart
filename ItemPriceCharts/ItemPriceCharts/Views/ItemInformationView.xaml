@@ -50,7 +50,6 @@
             <TextBlock HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Margin="0 5 0 5"
-                       Padding="0"
                        Foreground="WhiteSmoke"
                        Text="{Binding Item.Description}"
                        FontSize="13"
