@@ -39,6 +39,8 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
+                //return this.unitOfWork.ItemPriceRepository.GetById(itemId)
+                //    .Result.Price;
                 return this.unitOfWork.ItemPriceRepository.All(
                     filter: price => price.ItemId == itemId,
                     orderBy: prices => prices.OrderByDescending(price => price.PriceDate))

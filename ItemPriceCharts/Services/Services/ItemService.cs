@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 using ItemPriceCharts.Services.Data;
@@ -23,8 +23,7 @@ namespace ItemPriceCharts.Services.Services
         }
 
         public ItemModel GetById(int id) =>
-            this.unitOfWork.ItemRepository.All(item => item.Id == id).Result
-                .FirstOrDefault() ?? throw new Exception();
+            this.unitOfWork.ItemRepository.GetById(id).Result ?? throw new Exception();
 
         public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type)
         {

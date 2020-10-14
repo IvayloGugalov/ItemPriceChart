@@ -17,8 +17,7 @@ namespace ItemPriceCharts.Services.Services
         }
 
         public OnlineShopModel GetById(int id) =>
-            this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == id).Result
-                .FirstOrDefault() ?? throw new Exception();
+            this.unitOfWork.OnlineShopRepository.GetById(id).Result ?? throw new Exception();
 
         public void CreateShop(string shopURL, string shopTitle)
         {
