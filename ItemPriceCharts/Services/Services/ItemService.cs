@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using HtmlAgilityPack;
 
 using ItemPriceCharts.Services.Data;
@@ -12,7 +11,7 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemService : IItemService
     {
-        private readonly HtmlWeb htmlService = new HtmlWeb();
+        private readonly HtmlWeb htmlService;
         private readonly IUnitOfWork unitOfWork;
         private readonly IItemPriceService itemPriceService;
 
@@ -20,20 +19,21 @@ namespace ItemPriceCharts.Services.Services
         {
             this.unitOfWork = unitOfWork;
             this.itemPriceService = itemPriceService;
+            this.htmlService = new HtmlWeb();
         }
 
-        public ItemModel GetById(int id) =>
-            this.unitOfWork.ItemRepository.GetById(id).Result ?? throw new Exception();
+        public ItemModel GetBy(object id) =>
+            this.unitOfWork.ItemRepository.GetBy(id).Result ?? throw new Exception();
 
         public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type)
         {
             try
             {
-                var itemDocument = this.htmlService.Load(itemURL);
-                var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
-
-                if (!this.IsItemExisting(item))
+                if (!this.IsItemExisting(itemURL))
                 {
+                    var itemDocument = this.htmlService.Load(itemURL);
+                    var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
+
                     this.unitOfWork.ItemRepository.Add(item);
                     this.unitOfWork.SaveChanges();
 
@@ -56,7 +56,7 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                if (this.IsItemExisting(item))
+                if (this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Update(item);
                     this.unitOfWork.SaveChanges();
@@ -72,7 +72,7 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                if (this.IsItemExisting(item))
+                if (this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Delete(item);
                     this.unitOfWork.SaveChanges();
@@ -89,14 +89,14 @@ namespace ItemPriceCharts.Services.Services
         public IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop) =>
             this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
 
-        public bool IsItemExisting(ItemModel item) =>
-            this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.Any();
+        public bool IsItemExisting(object id) =>
+            this.unitOfWork.ItemRepository.GetBy(id) != null;
 
         public ItemPrice UpdateItemPrice(ItemModel item)
         {
             try
             {
-                if (this.IsItemExisting(item))
+                if (this.IsItemExisting(item.Id))
                 {
                     var itemDocument = this.htmlService.Load(item.URL);
                     var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);

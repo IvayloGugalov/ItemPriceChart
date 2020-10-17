@@ -52,7 +52,7 @@ namespace ItemPriceCharts.Services.Data
             }
         }
 
-        public virtual async Task<TEntity> GetById(int id) => await this.dbSet.FindAsync(id);
+        public virtual async Task<TEntity> GetBy(object id) => await this.dbSet.FindAsync(id);
 
         public virtual async Task Add(TEntity entity)
         {
@@ -61,8 +61,7 @@ namespace ItemPriceCharts.Services.Data
 
         public virtual void Update(TEntity entityToUpdate)
         {
-            this.dbSet.Attach(entityToUpdate);
-            this.dbContext.Entry(entityToUpdate).State = EntityState.Modified;
+            this.dbSet.Update(entityToUpdate);
         }
 
         public virtual void Delete(TEntity entityToDelete)

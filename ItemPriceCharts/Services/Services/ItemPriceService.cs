@@ -39,8 +39,6 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                //return this.unitOfWork.ItemPriceRepository.GetById(itemId)
-                //    .Result.Price;
                 return this.unitOfWork.ItemPriceRepository.All(
                     filter: price => price.ItemId == itemId,
                     orderBy: prices => prices.OrderByDescending(price => price.PriceDate))
@@ -53,7 +51,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        private bool IsItemExisting(int itemId) =>
-           this.unitOfWork.ItemRepository.All(i => i.Id == itemId).Result.First() != null;
+        private bool IsItemExisting(object id) =>
+           this.unitOfWork.ItemRepository.GetBy(id) != null;
     }
 }

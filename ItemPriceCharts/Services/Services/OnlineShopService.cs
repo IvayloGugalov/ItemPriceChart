@@ -16,8 +16,8 @@ namespace ItemPriceCharts.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public OnlineShopModel GetById(int id) =>
-            this.unitOfWork.OnlineShopRepository.GetById(id).Result ?? throw new Exception();
+        public OnlineShopModel GetBy(object id) =>
+            this.unitOfWork.OnlineShopRepository.GetBy(id).Result ?? throw new Exception();
 
         public void CreateShop(string shopURL, string shopTitle)
         {
@@ -79,10 +79,7 @@ namespace ItemPriceCharts.Services.Services
         public IEnumerable<OnlineShopModel> GetAll() =>
             this.unitOfWork.OnlineShopRepository.All().Result;
 
-        private bool IsShopExisting(string newShopUrl) =>
-            this.unitOfWork.OnlineShopRepository.All(shop => shop.URL == newShopUrl).Result.Any();
-
-        public bool IsShopExisting(int shopId) =>
-            this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == shopId).Result.Any();
+        public bool IsShopExisting(object shopId) =>
+            this.unitOfWork.OnlineShopRepository.GetBy(shopId) != null;
     }
 }

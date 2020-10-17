@@ -8,7 +8,7 @@ namespace ItemPriceCharts.Services.Data
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<TEntity> GetById(int id);
+        Task<TEntity> GetBy(object id);
         Task<IEnumerable<TEntity>> All(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>,

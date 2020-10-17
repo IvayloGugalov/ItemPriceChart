@@ -6,11 +6,11 @@ namespace ItemPriceCharts.Services.Services
 {
     public interface IOnlineShopService
     {
-        OnlineShopModel GetById(int id);
+        OnlineShopModel GetBy(object id);
         IEnumerable<OnlineShopModel> GetAll();
         void CreateShop(string shopURL, string shopTitle);
         void UpdateShop(OnlineShopModel onlineShop);
         void DeleteShop(OnlineShopModel onlineShop);
-        bool IsShopExisting(int shopId);
+        bool IsShopExisting(object shopId);
     }
 }
