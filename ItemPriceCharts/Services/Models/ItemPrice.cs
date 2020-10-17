@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ItemPriceCharts.Services.Models
 {
-    public sealed class ItemPrice
+    public sealed class ItemPrice : IEntity
     {
         [Key]
         public int Id { get; set; }

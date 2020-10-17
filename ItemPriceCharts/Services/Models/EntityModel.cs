@@ -2,7 +2,7 @@
 
 namespace ItemPriceCharts.Services.Models
 {
-    public abstract class EntityModel
+    public abstract class EntityModel : IEntity
     {
         [Key]
         public int Id { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace ItemPriceCharts.Services.Models
 {
-    public sealed partial class ItemModel: EntityModel
+    public sealed partial class ItemModel : EntityModel, IEntity
     {
         public string Description { get; set; }
         public double CurrentPrice { get; set; }

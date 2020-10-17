@@ -9,6 +9,6 @@ namespace ItemPriceCharts.Services.Services
         void CreateItemPrice(ItemPrice itemPrice);
         IEnumerable<ItemPrice> GetPricesForItem(int itemId);
         double GetLatestItemPrice(int itemId);
-
+        bool IsItemExisting(int itemId);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ItemPriceCharts.Services.Models
 {
-    public sealed class OnlineShopModel: EntityModel
+    public sealed class OnlineShopModel : EntityModel, IEntity
     {
         public ICollection<ItemModel> Items { get; set; }
 

@@ -20,13 +20,15 @@ namespace ItemPriceCharts.Services.Data
         {
             this.dbContext = dbContext;
             this.dbSet = this.dbContext.Set<TEntity>();
-            this.dbContext.Database.CanConnectAsync();
+            if (!this.dbContext.Database.CanConnect())
+            {
+                throw new Exception("Can't connect to Database");
+            }
         }
 
         public virtual async Task<IEnumerable<TEntity>> All(
             Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>,
-            IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "")
         {
             IQueryable<TEntity> query = this.dbSet;

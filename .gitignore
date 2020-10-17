@@ -46,3 +46,5 @@ ehthumbs.db
 Thumbs.db
 /.vs/ItemPriceChart/v16
 /.vs
+/ItemPriceCharts/ItemPriceCharts.ServicesTest/obj
+/ItemPriceCharts/ItemPriceCharts.ServicesTest/bin/Debug/netcoreapp3.1

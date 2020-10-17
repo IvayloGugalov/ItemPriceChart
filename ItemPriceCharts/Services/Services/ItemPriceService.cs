@@ -11,7 +11,7 @@ namespace ItemPriceCharts.Services.Services
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public ItemPriceService(UnitOfWork unitOfWork)
+        public ItemPriceService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
@@ -51,7 +51,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        private bool IsItemExisting(int itemId) =>
+        public bool IsItemExisting(int itemId) =>
            this.unitOfWork.ItemRepository.All(i => i.Id == itemId).Result.First() != null;
     }
 }

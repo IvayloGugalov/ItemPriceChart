@@ -10,15 +10,18 @@ namespace ItemPriceCharts.Services.Data
 
         private bool disposed = false;
 
-        public IRepository<ItemModel> ItemRepository => new Repository<ItemModel>(this.dbContext);
+        public IRepository<ItemModel> ItemRepository { get; }
 
-        public IRepository<OnlineShopModel> OnlineShopRepository => new Repository<OnlineShopModel>(this.dbContext);
+        public IRepository<OnlineShopModel> OnlineShopRepository { get; }
 
-        public IRepository<ItemPrice> ItemPriceRepository => new Repository<ItemPrice>(this.dbContext);
+        public IRepository<ItemPrice> ItemPriceRepository { get; }
 
         public UnitOfWork(ModelsContext dbContext)
         {
             this.dbContext = dbContext;
+            this.ItemPriceRepository = new Repository<ItemPrice>(this.dbContext);
+            this.ItemRepository = new Repository<ItemModel>(this.dbContext);
+            this.OnlineShopRepository = new Repository<OnlineShopModel>(this.dbContext);
         }
 
         public void SaveChanges()

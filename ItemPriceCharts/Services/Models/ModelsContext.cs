@@ -2,13 +2,13 @@
 
 namespace ItemPriceCharts.Services.Models
 {
-    public class ModelsContext : DbContext
+    public class ModelsContext : DbContext, IModelsContext
     {
-        public DbSet<OnlineShopModel> OnlineShops { get; set; }
-        public DbSet<ItemModel> Items { get; set; }
-        public DbSet<ItemPrice> ItemPrices { get; set; }
+        public virtual DbSet<OnlineShopModel> OnlineShops { get; set; }
+        public virtual DbSet<ItemModel> Items { get; set; }
+        public virtual DbSet<ItemPrice> ItemPrices { get; set; }
 
-        public DbSet<EntityModel> Entities { get; set; }
+        public virtual DbSet<EntityModel> Entities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
