@@ -16,7 +16,7 @@ namespace ItemPriceCharts.Services.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IItemPriceService itemPriceService;
 
-        public ItemService(UnitOfWork unitOfWork, ItemPriceService itemPriceService)
+        public ItemService(IUnitOfWork unitOfWork, IItemPriceService itemPriceService)
         {
             this.unitOfWork = unitOfWork;
             this.itemPriceService = itemPriceService;

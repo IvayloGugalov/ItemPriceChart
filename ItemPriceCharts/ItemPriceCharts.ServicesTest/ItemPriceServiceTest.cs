@@ -1,43 +1,37 @@
 using System;
-
-using NUnit.Framework;
-using Moq;
-using ItemPriceCharts.Services.Data;
-using ItemPriceCharts.Services.Services;
-using Autofac.Extras.Moq;
-using ItemPriceCharts.Services.Models;
-using Autofac;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using ItemPriceCharts.ServicesTest.MockHelper;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
+using Moq;
+using NUnit.Framework;
 
+using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.ServicesTest.MockHelper;
 
 namespace ItemPriceCharts.ServicesTest
 {
     public class ItemPriceServiceTest
     {
-        private AutoMock mock;
-        private ItemPriceService itemPriceService;
-        private Mock<UnitOfWork> unitOfWorkMock;
-        private Mock<ModelsContext> modelsContextMock;
+        private Mock<IUnitOfWork> unitOfWorkMock;
+        private Mock<IRepository<ItemPrice>> itemPriceRepositoryMock;
+        private Mock<IRepository<ItemModel>> itemRepositoryMock;
 
         [SetUp]
         public void Setup()
         {
-            //this.modelsContextMock = new Mock<ModelsContext>();
-            //var items = new List<ItemModel> { new ItemModel(1, null, null, null, 0, null, ItemType.ComputerItem) };
-            //this.modelsContextMock.Setup(x => x.Items).Returns(DbSetMock.GetQueryableMockDbSet(items));
-            //var unit = new UnitOfWork(this.modelsContextMock.Object);
+            this.unitOfWorkMock = new Mock<IUnitOfWork>();
+            this.itemPriceRepositoryMock = new Mock<IRepository<ItemPrice>>();
+            this.itemRepositoryMock = new Mock<IRepository<ItemModel>>();
+        }
 
-           
-            
+        [TearDown]
+        public void TearDown()
+        {
+            this.unitOfWorkMock.VerifyAll();
+            this.itemRepositoryMock.VerifyAll();
+            this.itemPriceRepositoryMock.VerifyAll();
         }
 
         [Test]
@@ -45,81 +39,85 @@ namespace ItemPriceCharts.ServicesTest
         { }
 
         [Test]
-        public void CreatingUnitOfWork_WhenSuccessful_WillHaveRepositoryInstances()
+        public void GetAllPrices_WillSucceed()
         {
-            //Assert.IsNotNull(this.unitOfWorkMock.Object.ItemPriceRepository);
-            //Assert.IsNotNull(this.unitOfWorkMock.Object.ItemRepository);
-            //Assert.IsNotNull(this.unitOfWorkMock.Object.OnlineShopRepository);
-
-            var shop = new OnlineShopModel(id: 1, url: "www.shop.com", title: "shop");
-            var itemPrice = new ItemPrice(
+            //Arrange
+            var item = ModelConstruct.ConstructItem(id: 1);
+            var itemPrice = ModelConstruct.ConstructItemPrice(
                 id: 1,
                 priceDate: DateTime.Now,
                 currentPrice: 100,
-                itemId: 1);
-            var items = new List<ItemModel>
-            {
-                new ItemModel(
-                    id: 1,
-                    url: "www.shop.com/item",
-                    title: "Item",
-                    description: "Description",
-                    price: 10,
-                    onlineShop: shop,
-                    ItemType.ComputerItem)
-            };
-            //var itemsDb = DbSetMock.GetQueryableMockDbSet(items);
+                itemId: item.Id);
 
-            this.modelsContextMock = new Mock<ModelsContext>();
-            //this.modelsContextMock.Setup(_ => _.Items).Returns(itemsDb);
+            var itemPriceService = new ItemPriceService(this.unitOfWorkMock.Object);
 
-            var item = new ItemModel(1, null, null, null, 0, null, ItemType.ComputerItem);
-            var unit = new Mock<IUnitOfWork>();
-            var repoPrice = new Mock<IRepository<ItemPrice>>();
+            this.unitOfWorkMock.SetupGet(_ => _.ItemPriceRepository)
+                .Returns(this.itemPriceRepositoryMock.Object);
 
-            this.itemPriceService = new ItemPriceService(unit.Object);
+            MockMethods<ItemPrice>.GetAll(this.itemPriceRepositoryMock, new List<ItemPrice> { itemPrice });
 
-            MockMethods.GetAll(repoPrice)
-            repoPrice.
+            //Act
+            var retrievedPrices = itemPriceService.GetPricesForItem(item.Id);
 
-            unit.SetupGet(_ => _.ItemPriceRepository).Returns(repoPrice.Object);
-            repoPrice.Setup(_ => _.All(
-                It.IsAny<Expression<Func<ItemPrice, bool>>>(),
-                It.IsAny<Func<IQueryable<ItemPrice>, IOrderedQueryable<ItemPrice>>>(),
-                It.IsAny<string>()))
-                .ReturnsAsync(new List<ItemPrice> { itemPrice });
-
-            var a = this.itemPriceService.GetPricesForItem(item.Id);
-            Assert.AreEqual(itemPrice, a.First());
-
+            //Assert
+            Assert.AreEqual(itemPrice, retrievedPrices.First());
         }
 
         [Test]
-        public void Test1()
+        public void CreateItemPrice_WillSucceed()
         {
-            var itemPrice = new ItemPrice(
+            //Arrange
+            var item = ModelConstruct.ConstructItem(id: 1);
+            var itemPrice = ModelConstruct.ConstructItemPrice(
                 id: 1,
                 priceDate: DateTime.Now,
                 currentPrice: 100,
-                itemId: 1);
+                itemId: item.Id);
 
-            var item = new ItemModel(1, null, null, null, 0, null, ItemType.ComputerItem);
-            var repo = new Mock<IRepository<ItemModel>>();
-            var unit = new Mock<IUnitOfWork>();
-            var repoPrice = new Mock<IRepository<ItemPrice>>();
+            var itemPriceService = new ItemPriceService(this.unitOfWorkMock.Object);
 
-            this.itemPriceService = new ItemPriceService(unit.Object);
+            this.unitOfWorkMock.SetupGet(_ => _.ItemRepository).Returns(this.itemRepositoryMock.Object);
+            this.unitOfWorkMock.SetupGet(_ => _.ItemPriceRepository).Returns(this.itemPriceRepositoryMock.Object);
 
-            unit.SetupGet(_ => _.ItemRepository).Returns(repo.Object);
-            unit.SetupGet(_ => _.ItemPriceRepository).Returns(repoPrice.Object);
-            repo.Setup(_ => _.All(
-                It.IsAny<Expression<Func<ItemModel, bool>>>(),
-                It.IsAny<Func<IQueryable<ItemModel>, IOrderedQueryable<ItemModel>>>(),
-                It.IsAny<string>()))
-                .ReturnsAsync(new List<ItemModel> { item });
-            repoPrice.Setup(_ => _.Add(itemPrice));
-            this.itemPriceService.CreateItemPrice(itemPrice);
-            unit.Verify(_ => _.SaveChanges());
+            MockMethods<ItemModel>.GetAll(itemRepositoryMock, new List<ItemModel> { item });
+
+            itemPriceRepositoryMock.Setup(_ => _.Add(itemPrice));
+
+            //Act
+            itemPriceService.CreateItemPrice(itemPrice);
+
+            //Assert
+            this.unitOfWorkMock.Verify(_ => _.SaveChanges());
+        }
+
+        [Test]
+        public void GetLatestItemPrice_WillSucceed()
+        {
+            //Arrange
+            var item = ModelConstruct.ConstructItem(id: 1);
+            var newestItemPrice = ModelConstruct.ConstructItemPrice(
+                id: 1,
+                priceDate: DateTime.Now,
+                currentPrice: 100,
+                itemId: item.Id);
+            var itemPrice = ModelConstruct.ConstructItemPrice(
+                id: 2,
+                priceDate: new DateTime(2000, 1, 15),
+                currentPrice: 120,
+                itemId: item.Id);
+
+            var itemPriceService = new ItemPriceService(this.unitOfWorkMock.Object);
+
+            this.unitOfWorkMock.SetupGet(_ => _.ItemPriceRepository).Returns(this.itemPriceRepositoryMock.Object);
+
+            MockMethods<ItemPrice>.GetAll(this.itemPriceRepositoryMock,
+                new List<ItemPrice> { itemPrice, newestItemPrice }.OrderByDescending(p => p.PriceDate).ToList());
+
+            //Act
+            var latestPrice = itemPriceService.GetLatestItemPrice(item.Id);
+
+            //Assert
+            Assert.AreEqual(newestItemPrice.Price, latestPrice);
         }
     }
 }
