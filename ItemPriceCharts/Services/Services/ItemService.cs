@@ -91,31 +91,34 @@ namespace ItemPriceCharts.Services.Services
             this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
 
         public bool IsItemExisting(ItemModel item) =>
-            this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.Any();
+            this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.FirstOrDefault() != null;
 
         public ItemPrice UpdateItemPrice(ItemModel item)
         {
             try
             {
-                if (this.IsItemExisting(item))
+                if (this.TryGetItem(item, out var existingItem))
                 {
                     var itemDocument = this.htmlService.Load(item.URL);
                     var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
 
-                    item.Description = updatedItem.Description;
-                    item.CurrentPrice = updatedItem.CurrentPrice;
+                    if (!existingItem.Equals(item))
+                    {
+                        item.Description = updatedItem.Description;
+                        item.CurrentPrice = updatedItem.CurrentPrice;
 
-                    this.UpdateItem(item);
+                        this.UpdateItem(item);
 
-                    var newestItemPrice = new ItemPrice(
-                        id: default,
-                        priceDate: DateTime.Now,
-                        currentPrice: item.CurrentPrice,
-                        itemId: item.Id);
+                        var newestItemPrice = new ItemPrice(
+                            id: default,
+                            priceDate: DateTime.Now,
+                            currentPrice: item.CurrentPrice,
+                            itemId: item.Id);
 
-                    this.itemPriceService.CreateItemPrice(newestItemPrice);
+                        this.itemPriceService.CreateItemPrice(newestItemPrice);
 
-                    return newestItemPrice;
+                        return newestItemPrice;
+                    }
                 }
 
                 return null;
@@ -124,6 +127,13 @@ namespace ItemPriceCharts.Services.Services
             {
                 throw e;
             }
+        }
+
+        private bool TryGetItem(ItemModel item, out ItemModel existingItem)
+        {
+            existingItem = this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.FirstOrDefault();
+
+            return existingItem != null;
         }
     }
 }

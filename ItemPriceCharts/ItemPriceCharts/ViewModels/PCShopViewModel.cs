@@ -41,7 +41,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
             {
-                if (this.itemService.IsItemExisting(e.Message))
+                if (this.itemService.IsItemExisting(e.Message, out _))
                 {
                     this.ItemsList.Add(e.Message);
                 }

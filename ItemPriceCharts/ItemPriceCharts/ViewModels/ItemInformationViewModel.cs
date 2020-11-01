@@ -90,7 +90,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
-                throw e;
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
         }
 
@@ -112,16 +116,20 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 }
                 else
                 {
-                    UIEvents.ShowMessageDialog.Publish(
-                        new Models.Message(
-                            title: "alalalala",
-                            description: "babababab babababba babababab bababababa bababab",
-                            positiveButtonText: "Ok"));
+                    UIEvents.ShowMessageDialog(
+                        new MessageDialogViewModel(
+                            title: "Item Price Chart",
+                            description: "The price of the item hasn't been changed.",
+                            buttonType: ButtonType.Close));
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
         }
 
