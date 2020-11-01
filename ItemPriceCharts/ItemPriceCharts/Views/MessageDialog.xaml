@@ -17,10 +17,8 @@
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
-        <Rectangle Grid.ColumnSpan="3"
-                   Fill="White"/>
-        <Rectangle Grid.ColumnSpan="3"
-                   Grid.Row="1"
+        <Rectangle Fill="White"/>
+        <Rectangle Grid.Row="1"
                    Fill="#d6d6d6"/>
 
         <Grid>

@@ -104,9 +104,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 this.IsInProgress = true;
 
-                var updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
+                ItemPrice updatedItemPrice = null;
+                var isUpdated = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item, out updatedItemPrice));
 
-                if (this.Item.CurrentPrice != updatedItemPrice.Price)
+                if (isUpdated &&
+                    this.Item.CurrentPrice != updatedItemPrice.Price)
                 {
                     this.lineSeries.Values.Add(updatedItemPrice.Price);
                     this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());

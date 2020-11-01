@@ -93,10 +93,11 @@ namespace ItemPriceCharts.Services.Services
         public bool IsItemExisting(ItemModel item) =>
             this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.FirstOrDefault() != null;
 
-        public ItemPrice UpdateItemPrice(ItemModel item)
+        public bool UpdateItemPrice(ItemModel item, out ItemPrice updatedItemPrice)
         {
             try
             {
+                updatedItemPrice = null;
                 if (this.TryGetItem(item, out var existingItem))
                 {
                     var itemDocument = this.htmlService.Load(item.URL);
@@ -109,19 +110,19 @@ namespace ItemPriceCharts.Services.Services
 
                         this.UpdateItem(item);
 
-                        var newestItemPrice = new ItemPrice(
+                        updatedItemPrice = new ItemPrice(
                             id: default,
                             priceDate: DateTime.Now,
                             currentPrice: item.CurrentPrice,
                             itemId: item.Id);
 
-                        this.itemPriceService.CreateItemPrice(newestItemPrice);
+                        this.itemPriceService.CreateItemPrice(updatedItemPrice);
 
-                        return newestItemPrice;
+                        return true;
                     }
                 }
 
-                return null;
+                return false;
             }
             catch (Exception e)
             {

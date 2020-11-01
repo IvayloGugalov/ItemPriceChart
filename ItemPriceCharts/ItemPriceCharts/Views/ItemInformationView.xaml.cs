@@ -10,7 +10,6 @@ namespace ItemPriceCharts.UI.WPF.Views
         public ItemInformationView()
         {
             InitializeComponent();
-            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
     }
 }

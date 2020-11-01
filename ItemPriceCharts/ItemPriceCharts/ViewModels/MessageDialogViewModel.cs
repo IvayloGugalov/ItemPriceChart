@@ -22,7 +22,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public string PositiveButtonText { get; }
 
         public bool IsSingleButtonShown { get; }
-        public bool IsImageShown { get; }
 
         public MessageDialogViewModel(string title, string description, ButtonType buttonType)
         {
