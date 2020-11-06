@@ -24,6 +24,10 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             UIEvents.ShowDeleteShopViewModel.Subscribe(this.DeleteShopWindow);
             UIEvents.ShowCreateItemViewModel.Subscribe(this.CreateItemWindow);
             UIEvents.ShowItemInformatioViewModel.Subscribe(this.CreateItemInformationWindow);
+            UIEvents.ShowMessageDialog = (vm) =>
+            {
+                return System.Windows.Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
+            };
         }
 
         public void Stop()

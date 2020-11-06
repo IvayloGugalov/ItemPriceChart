@@ -199,6 +199,34 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Styles.MessageDialogButton" TargetType="{x:Type ButtonBase}">
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="#9c9c9c"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="#0f0f0f" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontWeight" Value="Regular" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Margin" Value="0 10 0 5" />
+        <Setter Property="Template" Value="{StaticResource Templates.MenuButtons}" />
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="#5c5c5c" Opacity="0.7" />
+                        </Setter.Value>
+                    </Setter>
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="Styles.CloseButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Width" Value="23"/>
@@ -347,6 +375,14 @@
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="Styles.MessageDialogTextBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="#0f0f0f"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
 </ResourceDictionary>
