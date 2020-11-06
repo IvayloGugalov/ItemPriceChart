@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 using ItemPriceCharts.Services.Services;
@@ -47,7 +46,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
-                MessageBox.Show($"We had an error: {e.Message}");
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
         }
     }

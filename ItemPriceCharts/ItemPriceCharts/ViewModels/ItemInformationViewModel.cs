@@ -10,6 +10,7 @@ using LiveCharts.Wpf;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -89,7 +90,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
-                throw e;
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
         }
 
@@ -98,11 +103,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             try
             {
                 this.IsInProgress = true;
-                this.OnPropertyChanged(() => this.IsInProgress);
 
-                var updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
+                ItemPrice updatedItemPrice = null;
+                var isUpdated = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item, out updatedItemPrice));
 
-                if (this.Item.CurrentPrice != updatedItemPrice.Price)
+                if (isUpdated &&
+                    this.Item.CurrentPrice != updatedItemPrice.Price)
                 {
                     this.lineSeries.Values.Add(updatedItemPrice.Price);
                     this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
@@ -112,12 +118,20 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 }
                 else
                 {
-                    
+                    UIEvents.ShowMessageDialog(
+                        new MessageDialogViewModel(
+                            title: "Item Price Chart",
+                            description: "The price of the item hasn't been changed.",
+                            buttonType: ButtonType.Close));
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
         }
 
