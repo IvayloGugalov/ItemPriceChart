@@ -6,8 +6,8 @@ namespace ItemPriceCharts.Services.Services
 {
     public interface IOnlineShopService
     {
-        OnlineShopModel GetById(int id);
-        IEnumerable<OnlineShopModel> GetAll();
+        OnlineShopModel FindShop(int id);
+        IEnumerable<OnlineShopModel> GetAllShops();
         void CreateShop(string shopURL, string shopTitle);
         void UpdateShop(OnlineShopModel onlineShop);
         void DeleteShop(OnlineShopModel onlineShop);
