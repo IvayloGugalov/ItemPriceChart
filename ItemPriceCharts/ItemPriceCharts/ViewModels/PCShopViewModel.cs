@@ -41,7 +41,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
             {
-                if (this.itemService.IsItemExisting(e.Message))
+                if (this.itemService.IsItemExisting(e.Message.Id))
                 {
                     this.ItemsList.Add(e.Message);
                 }
@@ -74,7 +74,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private void AddShopsToViewModel()
         {
             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
-                this.onlineShopService.GetAll());
+                this.onlineShopService.GetAllShops());
 
             this.IsListOfShopsShown = this.OnlineShops.Any();
         }
@@ -82,7 +82,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private void AddItemsForShopAction(object parameter)
         {
             this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                 this.itemService.GetAll(this.SelectedShop));
+                 this.itemService.GetAllItemsForShop(this.SelectedShop));
 
             this.AreItemsShown = true;
             if (this.ItemsList.Any())

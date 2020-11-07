@@ -21,7 +21,7 @@ namespace ItemPriceCharts.Services.Data
             this.dbContext = dbContext;
         }
 
-        public void SaveChanges()
+        public void SaveChangesAsync()
         {
             this.dbContext.SaveChangesAsync();
         }

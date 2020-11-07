@@ -23,8 +23,17 @@ namespace ItemPriceCharts.Services.Services
             this.htmlService = new HtmlWeb();
         }
 
-        public ItemModel GetBy(object id) =>
-            this.unitOfWork.ItemRepository.GetBy(id).Result ?? throw new Exception();
+        public ItemModel FindItem(int id) =>
+            this.unitOfWork.ItemRepository.FindAsync(id).Result ?? throw new Exception();
+
+        public IEnumerable<ItemModel> GetAllItemsForShop(OnlineShopModel onlineShop) =>
+            this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
+
+        public bool IsItemExisting(int id) =>
+            this.unitOfWork.ItemRepository.IsExisting(id).Result;
+
+        internal bool IsItemExisting(string url) =>
+            this.unitOfWork.ItemRepository.All(filter: item => item.URL == url).Result.FirstOrDefault() != null;
 
         public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type)
         {
@@ -36,7 +45,7 @@ namespace ItemPriceCharts.Services.Services
                     var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
 
                     this.unitOfWork.ItemRepository.Add(item);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
 
                     this.itemPriceService.CreateItemPrice(new ItemPrice(
                         id: default,
@@ -60,7 +69,7 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Update(item);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -76,7 +85,7 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Delete(item);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
 
                     Events.ItemDeleted.Publish(item);
                 }
@@ -87,23 +96,17 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop) =>
-            this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
-
-        public bool IsItemExisting(object id) =>
-            this.unitOfWork.ItemRepository.GetBy(id) != null;
-
         public bool UpdateItemPrice(ItemModel item, out ItemPrice updatedItemPrice)
         {
             try
             {
                 updatedItemPrice = null;
-                if (this.TryGetItem(item, out var existingItem))
+                if (this.IsItemExisting(item.Id))
                 {
                     var itemDocument = this.htmlService.Load(item.URL);
                     var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
 
-                    if (!existingItem.Equals(item))
+                    if (!updatedItem.Equals(item))
                     {
                         item.Description = updatedItem.Description;
                         item.CurrentPrice = updatedItem.CurrentPrice;
@@ -128,13 +131,6 @@ namespace ItemPriceCharts.Services.Services
             {
                 throw e;
             }
-        }
-
-        private bool TryGetItem(ItemModel item, out ItemModel existingItem)
-        {
-            existingItem = this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.FirstOrDefault();
-
-            return existingItem != null;
         }
     }
 }

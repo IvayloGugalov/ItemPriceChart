@@ -23,7 +23,7 @@ namespace ItemPriceCharts.Services.Data
             this.dbContext.Database.CanConnectAsync();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> All(
+        public async Task<IEnumerable<TEntity>> All(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null,
@@ -52,19 +52,21 @@ namespace ItemPriceCharts.Services.Data
             }
         }
 
-        public virtual async Task<TEntity> GetBy(object id) => await this.dbSet.FindAsync(id);
+        public async Task<TEntity> FindAsync(int id) => await this.dbSet.FindAsync(id);
 
-        public virtual async Task Add(TEntity entity)
+        public async Task<bool> IsExisting(int id) => await this.dbSet.FindAsync(id) != null;
+
+        public void Add(TEntity entity)
         {
-            await this.dbSet.AddAsync(entity);
+            this.dbSet.Add(entity);
         }
 
-        public virtual void Update(TEntity entityToUpdate)
+        public void Update(TEntity entityToUpdate)
         {
             this.dbSet.Update(entityToUpdate);
         }
 
-        public virtual void Delete(TEntity entityToDelete)
+        public void Delete(TEntity entityToDelete)
         {
             if (this.dbContext.Entry(entityToDelete).State == EntityState.Deleted)
             {
