@@ -8,13 +8,14 @@ namespace ItemPriceCharts.Services.Data
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<TEntity> GetById(int id);
+        Task<TEntity> FindAsync(int id);
+        Task<bool> IsExisting(int id);
         Task<IEnumerable<TEntity>> All(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
-        Task Add(TEntity entity);
+        void Add(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
     }

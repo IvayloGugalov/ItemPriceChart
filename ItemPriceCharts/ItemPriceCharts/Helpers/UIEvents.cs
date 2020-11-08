@@ -1,6 +1,8 @@
 ﻿using System;
+
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
@@ -10,6 +12,6 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         public static IChannel<OnlineShopModel> ShowDeleteShopViewModel { get; set; } = new Channel<OnlineShopModel>();
         public static IChannel<OnlineShopModel> ShowCreateItemViewModel { get; set; } = new Channel<OnlineShopModel>();
         public static IChannel<ItemModel> ShowItemInformatioViewModel { get; set; } = new Channel<ItemModel>();
-
+        public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
     }
 }

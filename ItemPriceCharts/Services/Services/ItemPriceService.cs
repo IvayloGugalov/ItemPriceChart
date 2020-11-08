@@ -16,6 +16,9 @@ namespace ItemPriceCharts.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
+        public IEnumerable<ItemPrice> GetPricesForItem(int itemId) =>
+           this.unitOfWork.ItemPriceRepository.All(filter: i => i.ItemId == itemId).Result;
+
         public void CreateItemPrice(ItemPrice itemPrice)
         {
             try
@@ -23,7 +26,7 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsItemExisting(itemPrice.ItemId))
                 {
                     this.unitOfWork.ItemPriceRepository.Add(itemPrice);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -31,9 +34,6 @@ namespace ItemPriceCharts.Services.Services
                 throw e;
             }
         }
-
-        public IEnumerable<ItemPrice> GetPricesForItem(int itemId) =>
-           this.unitOfWork.ItemPriceRepository.All(filter: i => i.ItemId == itemId).Result;
 
         public double GetLatestItemPrice(int itemId)
         {
@@ -51,7 +51,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public bool IsItemExisting(int itemId) =>
-           this.unitOfWork.ItemRepository.All(i => i.Id == itemId).Result.First() != null;
+        private bool IsItemExisting(int id) =>
+           this.unitOfWork.ItemRepository.IsExisting(id).Result;
     }
 }

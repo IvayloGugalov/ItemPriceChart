@@ -104,8 +104,8 @@
                       Style="{StaticResource Styles.ListViewForItems}">
 
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseRightButtonUp">
-                        <i:InvokeCommandAction Command="{Binding ShowItemMenuCommand}"
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding ShowItemInformationDialogCommand}"
                                                CommandParameter="{Binding ElementName=ItemsListView,
                                                Path=SelectedItem}"/>
                     </i:EventTrigger>

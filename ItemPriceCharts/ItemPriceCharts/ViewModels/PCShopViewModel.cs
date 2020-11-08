@@ -3,9 +3,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
@@ -28,42 +29,42 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
 
-            Events.ShopAdded.Subscribe(this.UpdateShopsListHandler);
-            Events.ShopDeleted.Subscribe(this.UpdateShopsListHandler);
-            Events.ItemAdded.Subscribe(this.UpdateItemsListHandler);
-            Events.ItemDeleted.Subscribe(this.UpdateItemsListHandler);
+            EventsLocator.ShopAdded.Subscribe(this.UpdateShopsListHandler);
+            EventsLocator.ShopDeleted.Subscribe(this.UpdateShopsListHandler);
+            EventsLocator.ItemAdded.Subscribe(this.UpdateItemsListHandler);
+            EventsLocator.ItemDeleted.Subscribe(this.UpdateItemsListHandler);
 
             this.AddShopsToViewModel();
         }
 
-        private void UpdateItemsListHandler(object sender, MessageArgument<ItemModel> e)
+        private void UpdateItemsListHandler(object sender, ItemModel e)
         {
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
             {
-                if (this.itemService.IsItemExisting(e.Message))
+                if (this.itemService.IsItemExisting(e.Id))
                 {
-                    this.ItemsList.Add(e.Message);
+                    this.ItemsList.Add(e);
                 }
                 else
                 {
-                    this.ItemsList.Remove(e.Message);
+                    this.ItemsList.Remove(e);
                 }
             });
         }
 
-        private void UpdateShopsListHandler(object sender, MessageArgument<OnlineShopModel> e)
+        private void UpdateShopsListHandler(object sender, OnlineShopModel e)
         {
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
             {
-                if (this.onlineShopService.IsShopExisting(e.Message.Id))
+                if (this.onlineShopService.IsShopExisting(e.Id))
                 {
-                    this.OnlineShops.Add(e.Message);
+                    this.OnlineShops.Add(e);
                 }
                 else
                 {
-                    this.OnlineShops.Remove(e.Message);
+                    this.OnlineShops.Remove(e);
                 }
 
                 this.OnPropertyChanged(() => this.IsListOfShopsShown);
@@ -74,7 +75,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private void AddShopsToViewModel()
         {
             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
-                this.onlineShopService.GetAll());
+                this.onlineShopService.GetAllShops());
 
             this.IsListOfShopsShown = this.OnlineShops.Any();
         }
@@ -82,7 +83,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private void AddItemsForShopAction(object parameter)
         {
             this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                 this.itemService.GetAll(this.SelectedShop));
+                 this.itemService.GetAllItemsForShop(this.SelectedShop));
 
             this.AreItemsShown = true;
             if (this.ItemsList.Any())

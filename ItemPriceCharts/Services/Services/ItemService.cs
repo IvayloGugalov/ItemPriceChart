@@ -5,6 +5,7 @@ using System.Linq;
 using HtmlAgilityPack;
 
 using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Helpers;
 using ItemPriceCharts.Services.Models;
 
@@ -12,7 +13,7 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemService : IItemService
     {
-        private readonly HtmlWeb htmlService = new HtmlWeb();
+        private readonly HtmlWeb htmlService;
         private readonly IUnitOfWork unitOfWork;
         private readonly IItemPriceService itemPriceService;
 
@@ -20,23 +21,32 @@ namespace ItemPriceCharts.Services.Services
         {
             this.unitOfWork = unitOfWork;
             this.itemPriceService = itemPriceService;
+            this.htmlService = new HtmlWeb();
         }
 
-        public ItemModel GetById(int id) =>
-            this.unitOfWork.ItemRepository.All(item => item.Id == id).Result
-                .FirstOrDefault() ?? throw new Exception();
+        public ItemModel FindItem(int id) =>
+            this.unitOfWork.ItemRepository.FindAsync(id).Result ?? throw new Exception();
+
+        public IEnumerable<ItemModel> GetAllItemsForShop(OnlineShopModel onlineShop) =>
+            this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
+
+        public bool IsItemExisting(int id) =>
+            this.unitOfWork.ItemRepository.IsExisting(id).Result;
+
+        internal bool IsItemExisting(string url) =>
+            this.unitOfWork.ItemRepository.All(filter: item => item.URL == url).Result.FirstOrDefault() != null;
 
         public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type)
         {
             try
             {
-                var itemDocument = this.htmlService.Load(itemURL);
-                var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
-
-                if (!this.IsItemExisting(item))
+                if (!this.IsItemExisting(itemURL))
                 {
+                    var itemDocument = this.htmlService.Load(itemURL);
+                    var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
+
                     this.unitOfWork.ItemRepository.Add(item);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
 
                     this.itemPriceService.CreateItemPrice(new ItemPrice(
                         id: default,
@@ -44,7 +54,7 @@ namespace ItemPriceCharts.Services.Services
                         currentPrice: item.CurrentPrice,
                         itemId: item.Id));
 
-                    Events.ItemAdded.Publish(item);
+                    EventsLocator.ItemAdded.Publish(item);
                 }
             }
             catch (Exception e)
@@ -57,10 +67,10 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                if (this.IsItemExisting(item))
+                if (this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Update(item);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -73,12 +83,12 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                if (this.IsItemExisting(item))
+                if (this.IsItemExisting(item.Id))
                 {
                     this.unitOfWork.ItemRepository.Delete(item);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
 
-                    Events.ItemDeleted.Publish(item);
+                    EventsLocator.ItemDeleted.Publish(item);
                 }
             }
             catch (Exception e)
@@ -87,38 +97,36 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public IEnumerable<ItemModel> GetAll(OnlineShopModel onlineShop) =>
-            this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
-
-        public bool IsItemExisting(ItemModel item) =>
-            this.unitOfWork.ItemRepository.All(i => i.URL == item.URL || i.Id == item.Id).Result.Any();
-
-        public ItemPrice UpdateItemPrice(ItemModel item)
+        public bool UpdateItemPrice(ItemModel item, out ItemPrice updatedItemPrice)
         {
             try
             {
-                if (this.IsItemExisting(item))
+                updatedItemPrice = null;
+                if (this.IsItemExisting(item.Id))
                 {
                     var itemDocument = this.htmlService.Load(item.URL);
                     var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
 
-                    item.Description = updatedItem.Description;
-                    item.CurrentPrice = updatedItem.CurrentPrice;
+                    if (!updatedItem.Equals(item))
+                    {
+                        item.Description = updatedItem.Description;
+                        item.CurrentPrice = updatedItem.CurrentPrice;
 
-                    this.UpdateItem(item);
+                        this.UpdateItem(item);
 
-                    var newestItemPrice = new ItemPrice(
-                        id: default,
-                        priceDate: DateTime.Now,
-                        currentPrice: item.CurrentPrice,
-                        itemId: item.Id);
+                        updatedItemPrice = new ItemPrice(
+                            id: default,
+                            priceDate: DateTime.Now,
+                            currentPrice: item.CurrentPrice,
+                            itemId: item.Id);
 
-                    this.itemPriceService.CreateItemPrice(newestItemPrice);
+                        this.itemPriceService.CreateItemPrice(updatedItemPrice);
 
-                    return newestItemPrice;
+                        return true;
+                    }
                 }
 
-                return null;
+                return false;
             }
             catch (Exception e)
             {

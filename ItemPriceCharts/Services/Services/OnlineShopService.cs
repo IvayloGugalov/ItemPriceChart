@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.Services.Services
@@ -16,9 +17,17 @@ namespace ItemPriceCharts.Services.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public OnlineShopModel GetById(int id) =>
-            this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == id).Result
-                .FirstOrDefault() ?? throw new Exception();
+        public OnlineShopModel FindShop(int id) =>
+            this.unitOfWork.OnlineShopRepository.FindAsync(id).Result ?? throw new Exception();
+
+        public IEnumerable<OnlineShopModel> GetAllShops() =>
+            this.unitOfWork.OnlineShopRepository.All().Result;
+
+        public bool IsShopExisting(int shopId) =>
+            this.unitOfWork.OnlineShopRepository.IsExisting(shopId).Result;
+
+        internal bool IsShopExisting(string url) =>
+            this.unitOfWork.OnlineShopRepository.All(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
 
         public void CreateShop(string shopURL, string shopTitle)
         {
@@ -32,9 +41,9 @@ namespace ItemPriceCharts.Services.Services
                         title: shopTitle);
 
                     this.unitOfWork.OnlineShopRepository.Add(newShop);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
 
-                    Events.ShopAdded.Publish(newShop);
+                    EventsLocator.ShopAdded.Publish(newShop);
                 }
             }
             catch (Exception e)
@@ -50,7 +59,7 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsShopExisting(onlineShop.Id))
                 {
                     this.unitOfWork.OnlineShopRepository.Update(onlineShop);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -66,9 +75,9 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsShopExisting(onlineShop.Id))
                 {
                     this.unitOfWork.OnlineShopRepository.Delete(onlineShop);
-                    this.unitOfWork.SaveChanges();
+                    this.unitOfWork.SaveChangesAsync();
 
-                    Events.ShopDeleted.Publish(onlineShop);
+                    EventsLocator.ShopDeleted.Publish(onlineShop);
                 }
             }
             catch (Exception e)
@@ -76,14 +85,5 @@ namespace ItemPriceCharts.Services.Services
                 throw e;
             }
         }
-
-        public IEnumerable<OnlineShopModel> GetAll() =>
-            this.unitOfWork.OnlineShopRepository.All().Result;
-
-        private bool IsShopExisting(string newShopUrl) =>
-            this.unitOfWork.OnlineShopRepository.All(shop => shop.URL == newShopUrl).Result.Any();
-
-        public bool IsShopExisting(int shopId) =>
-            this.unitOfWork.OnlineShopRepository.All(shop => shop.Id == shopId).Result.Any();
     }
 }

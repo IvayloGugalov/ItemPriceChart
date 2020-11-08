@@ -7,6 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen"
         SizeToContent="Height" 
         ResizeMode="CanMinimize"
         Width="600"
@@ -22,6 +23,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -35,15 +37,28 @@
                    FontWeight="SemiBold"
                    FontSize="15"
                    TextTrimming="WordEllipsis"/>
-        <TextBlock Grid.Row="2" 
+        <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"
                    Foreground="WhiteSmoke"
-                   Text="{Binding Item.Description}"
-                   FontSize="13"
+                   FontSize="15"
+                   Text="Item Description"
                    FontFamily="Tahoma"
-                   TextTrimming="WordEllipsis"/>
+                   Margin="0 0 0 5"/>
+        <Border Grid.Row="3"
+                CornerRadius="10"
+                BorderBrush="WhiteSmoke"
+                BorderThickness="1">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0 5 0 5"
+                       Foreground="WhiteSmoke"
+                       Text="{Binding Item.Description}"
+                       FontSize="13"
+                       FontFamily="Tahoma"
+                       TextTrimming="WordEllipsis"/>
+        </Border>
 
-        <Border Grid.Row="4"
+        <Border Grid.Row="5"
                 CornerRadius="10"
                 BorderBrush="WhiteSmoke"
                 BorderThickness="1"
@@ -71,7 +86,7 @@
             </lvc:CartesianChart>
         </Border>
 
-        <Button Grid.Row="5"
+        <Button Grid.Row="6"
                 Style="{StaticResource Styles.MenuButtons}"
                 HorizontalAlignment="Center"
                 Command="{Binding UpdatePriceCommand}"

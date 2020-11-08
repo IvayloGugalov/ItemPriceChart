@@ -24,7 +24,7 @@ namespace ItemPriceCharts.Services.Data
             this.OnlineShopRepository = new Repository<OnlineShopModel>(this.dbContext);
         }
 
-        public void SaveChanges()
+        public void SaveChangesAsync()
         {
             this.dbContext.SaveChangesAsync();
         }

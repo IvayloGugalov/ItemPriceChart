@@ -10,6 +10,7 @@ using LiveCharts.Wpf;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -22,10 +23,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private SeriesCollection priceCollection;
         private LineSeries lineSeries;
         private List<string> labels;
+        private bool isInProgress;
 
         public ItemModel Item { get; }
 
         public Func<double, string> YFormatter { get; private set; }
+
+        public bool IsInProgress
+        {
+            get => this.isInProgress;
+            set => this.SetValue(ref this.isInProgress, value);
+        }
 
         public List<string> Labels
         {
@@ -49,14 +57,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.LoadItemPriceInformation();
 
-            this.UpdatePriceCommand = new RelayCommand(_ => this.UpdatePriceAction());
+            this.UpdatePriceCommand = new RelayCommand<object>(this.UpdatePriceAction, this.UpdatePricePredicate);
         }
 
-        private void LoadItemPriceInformation()
+        private async void LoadItemPriceInformation()
         {
             try
             {
-                var priceInformation = Task.Run(() => this.itemPriceService.GetPricesForItem(this.Item.Id)).Result;
+                var priceInformation = await Task.Run(() => this.itemPriceService.GetPricesForItem(this.Item.Id));
 
                 var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
                 var oldPrices = priceInformation.Select(p => p.Price);
@@ -82,29 +90,54 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
-                throw e;
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
         }
 
-        private void UpdatePriceAction()
+        private async void UpdatePriceAction(object obj)
         {
             try
             {
-                var itemPrice = Task.Run(() => this.itemService.UpdateItemPrice(this.Item)).Result;
+                this.IsInProgress = true;
 
-                if (itemPrice != null)
+                ItemPrice updatedItemPrice = null;
+                var isUpdated = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item, out updatedItemPrice));
+
+                if (isUpdated &&
+                    this.Item.CurrentPrice != updatedItemPrice.Price)
                 {
-                    this.lineSeries.Values.Add(itemPrice.Price);
-                    this.Labels.Add(itemPrice.PriceDate.ToShortDateString());
+                    this.lineSeries.Values.Add(updatedItemPrice.Price);
+                    this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
 
                     this.OnPropertyChanged(() => this.PriceCollection);
                     this.OnPropertyChanged(() => this.Labels);
                 }
+                else
+                {
+                    UIEvents.ShowMessageDialog(
+                        new MessageDialogViewModel(
+                            title: "Item Price Chart",
+                            description: "The price of the item hasn't been changed.",
+                            buttonType: ButtonType.Close));
+                }
             }
             catch (Exception e)
             {
-                throw e;
+                UIEvents.ShowMessageDialog(
+                    new MessageDialogViewModel(
+                        title: "Error",
+                        description: e.Message,
+                        buttonType: ButtonType.Close));
             }
+        }
+
+        private bool UpdatePricePredicate()
+        {
+            return !this.IsInProgress;
         }
 
         private void CreateTestData(out List<string> dateOfPrices, out double[] oldPrices)

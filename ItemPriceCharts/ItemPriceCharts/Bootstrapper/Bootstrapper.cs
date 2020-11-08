@@ -2,7 +2,6 @@
 using Autofac.Core;
 
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Modules;
@@ -24,6 +23,10 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             UIEvents.ShowDeleteShopViewModel.Subscribe(this.DeleteShopWindow);
             UIEvents.ShowCreateItemViewModel.Subscribe(this.CreateItemWindow);
             UIEvents.ShowItemInformatioViewModel.Subscribe(this.CreateItemInformationWindow);
+            UIEvents.ShowMessageDialog = (vm) =>
+            {
+                return System.Windows.Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
+            };
         }
 
         public void Stop()
@@ -62,29 +65,29 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
         }
 
-        protected void CreateShopWindow(object sender, MessageArgument<object> e)
+        protected void CreateShopWindow(object sender, object e)
         {
             var window = this.viewFactory.Resolve<CreateShopViewModel>();
             window.ShowDialog();
         }
 
-        protected void DeleteShopWindow(object sender, MessageArgument<OnlineShopModel> e)
+        protected void DeleteShopWindow(object sender, OnlineShopModel e)
         {
-            var parameters = new Parameter[] { new NamedParameter("selectedShop", e.Message) };
+            var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
             var window = this.viewFactory.Resolve<DeleteShopViewModel>(parameters);
             window.ShowDialog();
         }
 
-        protected void CreateItemWindow(object sender, MessageArgument<OnlineShopModel> e)
+        protected void CreateItemWindow(object sender, OnlineShopModel e)
         {
-            var parameters = new Parameter[] { new NamedParameter("selectedShop", e.Message) };
+            var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
             var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
             window.ShowDialog();
         }
 
-        protected void CreateItemInformationWindow(object sender, MessageArgument<ItemModel> e)
+        protected void CreateItemInformationWindow(object sender, ItemModel e)
         {
-            var parameters = new Parameter[] { new NamedParameter("item", e.Message) };
+            var parameters = new Parameter[] { new NamedParameter("item", e) };
             var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
             window.ShowDialog();
         }
