@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.Services.Services
@@ -42,7 +43,7 @@ namespace ItemPriceCharts.Services.Services
                     this.unitOfWork.OnlineShopRepository.Add(newShop);
                     this.unitOfWork.SaveChangesAsync();
 
-                    Events.ShopAdded.Publish(newShop);
+                    EventsLocator.ShopAdded.Publish(newShop);
                 }
             }
             catch (Exception e)
@@ -76,7 +77,7 @@ namespace ItemPriceCharts.Services.Services
                     this.unitOfWork.OnlineShopRepository.Delete(onlineShop);
                     this.unitOfWork.SaveChangesAsync();
 
-                    Events.ShopDeleted.Publish(onlineShop);
+                    EventsLocator.ShopDeleted.Publish(onlineShop);
                 }
             }
             catch (Exception e)

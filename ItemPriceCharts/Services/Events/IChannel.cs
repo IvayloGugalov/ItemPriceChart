@@ -1,18 +1,18 @@
 ﻿using System;
 
-namespace ItemPriceCharts.Services.Services
+namespace ItemPriceCharts.Services.Events
 {
     public interface IChannel<T>
     {
         /// <summary>
-        /// Subscribe to an event end recieve a generic message
+        /// Subscribe to an event and recieve requested object
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        IDisposable Subscribe(EventHandler<MessageArgument<T>> action);
+        IDisposable Subscribe(EventHandler<T> action);
 
         /// <summary>
-        /// Publish an event and send a generic message
+        /// Publish an event and send requested object
         /// </summary>
         /// <param name="msg"></param>
         void Publish(T msg);
@@ -21,6 +21,6 @@ namespace ItemPriceCharts.Services.Services
         /// Unsubscribe from an event
         /// </summary>
         /// <param name="unSubscriber"></param>
-        void Unsubscribe(EventHandler<MessageArgument<T>> unSubscriber);
+        void Unsubscribe(EventHandler<T> unSubscriber);
     }
 }

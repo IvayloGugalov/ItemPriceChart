@@ -5,6 +5,7 @@ using System.Linq;
 using HtmlAgilityPack;
 
 using ItemPriceCharts.Services.Data;
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Helpers;
 using ItemPriceCharts.Services.Models;
 
@@ -53,7 +54,7 @@ namespace ItemPriceCharts.Services.Services
                         currentPrice: item.CurrentPrice,
                         itemId: item.Id));
 
-                    Events.ItemAdded.Publish(item);
+                    EventsLocator.ItemAdded.Publish(item);
                 }
             }
             catch (Exception e)
@@ -87,7 +88,7 @@ namespace ItemPriceCharts.Services.Services
                     this.unitOfWork.ItemRepository.Delete(item);
                     this.unitOfWork.SaveChangesAsync();
 
-                    Events.ItemDeleted.Publish(item);
+                    EventsLocator.ItemDeleted.Publish(item);
                 }
             }
             catch (Exception e)

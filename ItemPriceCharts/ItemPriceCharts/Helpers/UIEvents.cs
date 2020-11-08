@@ -1,7 +1,7 @@
 ﻿using System;
 
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Helpers

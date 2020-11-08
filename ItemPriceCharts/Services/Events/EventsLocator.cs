@@ -1,8 +1,8 @@
 ﻿using ItemPriceCharts.Services.Models;
 
-namespace ItemPriceCharts.Services.Services
+namespace ItemPriceCharts.Services.Events
 {
-    public static class Events
+    public static class EventsLocator
     {
         /// <summary>
         /// Event raised when a shop has been added
