@@ -70,7 +70,7 @@ namespace ItemPriceCharts.Services.Data
 
         public void Delete(TEntity entityToDelete)
         {
-            if (this.dbContext.Entry(entityToDelete).State == EntityState.Deleted)
+            if (this.dbContext.GetEntityState(entityToDelete) == EntityState.Deleted)
             {
                 this.dbSet.Attach(entityToDelete);
             }

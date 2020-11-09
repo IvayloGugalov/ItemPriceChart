@@ -39,7 +39,7 @@ namespace ItemPriceCharts.ServicesTest
         { }
 
         [Test]
-        public void GetAllPrices_WillSucceed()
+        public void GetAllPricesForItem_WillSucceed()
         {
             //Arrange
             var item = ModelConstruct.ConstructItem(id: 1);
@@ -79,15 +79,14 @@ namespace ItemPriceCharts.ServicesTest
             this.unitOfWorkMock.SetupGet(_ => _.ItemRepository).Returns(this.itemRepositoryMock.Object);
             this.unitOfWorkMock.SetupGet(_ => _.ItemPriceRepository).Returns(this.itemPriceRepositoryMock.Object);
 
-            MockMethods<ItemModel>.GetAll(itemRepositoryMock, new List<ItemModel> { item });
-
             itemPriceRepositoryMock.Setup(_ => _.Add(itemPrice));
+            this.itemRepositoryMock.Setup(_ => _.IsExisting(item.Id)).ReturnsAsync(true);
 
             //Act
             itemPriceService.CreateItemPrice(itemPrice);
 
             //Assert
-            this.unitOfWorkMock.Verify(_ => _.SaveChanges());
+            this.unitOfWorkMock.Verify(_ => _.SaveChangesAsync());
         }
 
         [Test]
@@ -118,6 +117,24 @@ namespace ItemPriceCharts.ServicesTest
 
             //Assert
             Assert.AreEqual(newestItemPrice.Price, latestPrice);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void IsItemExisting_WithTestCases(bool isExisting)
+        {
+            //Arrange
+            var item = ModelConstruct.ConstructItem(id: 1);
+            var itemPriceService = new ItemPriceService(this.unitOfWorkMock.Object);
+
+            this.unitOfWorkMock.SetupGet(_ => _.ItemRepository).Returns(this.itemRepositoryMock.Object);
+            this.itemRepositoryMock.Setup(_ => _.IsExisting(item.Id)).ReturnsAsync(isExisting);
+            //Act
+            var isItemExisting = itemPriceService.IsItemExisting(item.Id);
+
+            //Assert
+            Assert.AreEqual(isExisting, isItemExisting);
         }
     }
 }

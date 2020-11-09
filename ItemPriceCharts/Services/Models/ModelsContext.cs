@@ -31,5 +31,7 @@ namespace ItemPriceCharts.Services.Models
                 .WithMany(shop => shop.Items)
                 .IsRequired();
         }
+
+        public virtual EntityState GetEntityState(object entity) => this.Entry(entity).State;
     }
 }

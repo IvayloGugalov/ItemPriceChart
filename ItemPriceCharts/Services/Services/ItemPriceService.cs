@@ -51,7 +51,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        private bool IsItemExisting(int id) =>
+        public bool IsItemExisting(int id) =>
            this.unitOfWork.ItemRepository.IsExisting(id).Result;
     }
 }
