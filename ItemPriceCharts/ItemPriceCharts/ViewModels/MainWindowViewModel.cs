@@ -6,8 +6,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class MainWindowViewModel : BindableViewModel
     {
-        private readonly PCShopViewModel shopViewModelPC;
-        private readonly PhoneShopViewModel shopViewModelPhone;
+        private readonly ShopsViewModel shopViewModelPC;
+        private readonly ViewItemsViewModel itemsViewModel;
 
         private object currentView;
         private bool isNewViewDisplayed;
@@ -24,17 +24,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.currentView, value);
         }
 
-        public ICommand ShowPCPartsCommand { get; }
+        public ICommand ShowAllShopsCommand { get; }
         public ICommand ShowPhonesCommand { get; }
         public ICommand ClearViewCommand { get; }
 
-        public MainWindowViewModel(PCShopViewModel shopViewModelPC, PhoneShopViewModel shopViewModelPhone)
+        public MainWindowViewModel(ShopsViewModel shopsViewModel, ViewItemsViewModel shopViewModelPhone)
         {
-            this.shopViewModelPC = shopViewModelPC;
-            this.shopViewModelPhone = shopViewModelPhone;
+            this.shopViewModelPC = shopsViewModel;
+            this.itemsViewModel = shopViewModelPhone;
             this.currentView = this;
 
-            this.ShowPCPartsCommand = new RelayCommand(_ => this.ShowPCPartsAction());
+            this.ShowAllShopsCommand = new RelayCommand(_ => this.ShowAllShopsAction());
             this.ShowPhonesCommand = new RelayCommand(_ => this.ShowPhonesAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
         }
@@ -44,7 +44,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsNewViewDisplayed = false;
         }
 
-        private void ShowPCPartsAction()
+        private void ShowAllShopsAction()
         {
             this.CurrentView = this.shopViewModelPC;
             this.IsNewViewDisplayed = true;
@@ -52,7 +52,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowPhonesAction()
         {
-            this.CurrentView = this.shopViewModelPhone;
+            this.CurrentView = this.itemsViewModel;
             this.IsNewViewDisplayed = true;
         }
     }

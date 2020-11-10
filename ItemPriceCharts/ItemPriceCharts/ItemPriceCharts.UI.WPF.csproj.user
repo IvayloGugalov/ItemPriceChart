@@ -27,13 +27,16 @@
     <Compile Update="Views\ItemInformationView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\ListOfItemsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\MainWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\MessageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\ShopView.xaml.cs">
+    <Compile Update="Views\UserControls\ShopsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -56,13 +59,16 @@
     <Page Update="Views\ItemInformationView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\UserControls\ListOfItemsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\ShopView.xaml">
+    <Page Update="Views\UserControls\ShopsView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Styles.xaml">

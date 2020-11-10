@@ -28,15 +28,15 @@
 
             <Button Grid.Row="1" 
                     Style="{StaticResource Styles.MenuButtons}"
-                    Name="ComputerParts"
-                    Content="PC parts"
-                    Command="{Binding ShowPCPartsCommand}">
+                    Name="allShops"
+                    Content="View shops"
+                    Command="{Binding ShowAllShopsCommand}">
             </Button>
 
             <Button Grid.Row="2"
                     Style="{StaticResource Styles.MenuButtons}"
-                    Name="Phones"
-                    Content="Phones"
+                    Name="allItems"
+                    Content="View items"
                     Command="{Binding ShowPhonesCommand}">
             </Button>
 

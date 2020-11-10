@@ -7,6 +7,7 @@ using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Modules;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
+using ItemPriceCharts.UI.WPF.Views.UserControls;
 
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
@@ -54,8 +55,8 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         {
             viewFactory.Register<MainWindowViewModel, MainWindow>();
 
-            viewFactory.RegisterUserControl<PhoneShopViewModel, ShopView>();
-            viewFactory.RegisterUserControl<PCShopViewModel, ShopView>();
+            viewFactory.RegisterUserControl<ViewItemsViewModel, ShopsView>();
+            viewFactory.RegisterUserControl<ShopsViewModel, ShopsView>();
 
             viewFactory.Register<CreateShopViewModel, CreateShopView>();
             viewFactory.Register<DeleteShopViewModel, DeleteShopView>();
@@ -87,9 +88,12 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         protected void CreateItemInformationWindow(object sender, ItemModel e)
         {
-            var parameters = new Parameter[] { new NamedParameter("item", e) };
-            var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
-            window.ShowDialog();
+            if (e != null)
+            {
+                var parameters = new Parameter[] { new NamedParameter("item", e) };
+                var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
+                window.ShowDialog();
+            }
         }
     }
 }

@@ -63,7 +63,7 @@
 
             <Button Style="{StaticResource Styles.MenuButtons}"
                     HorizontalAlignment="Center"
-                    Name="addUrl"
+                    Name="createShop"
                     Foreground="Black"
                     Content="Add"
                     Command="{Binding AddShopCommand}"/>

@@ -9,6 +9,7 @@
         WindowStyle="None"
         WindowState="Normal"
         WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
         MouseDown="Window_MouseDown"
         Height="180"
         Width="450">
@@ -70,7 +71,7 @@
             <Button Style="{StaticResource Styles.MenuButtons}"
                     Grid.Row="6"
                     HorizontalAlignment="Center"
-                    Name="addUrl"
+                    Name="createItem"
                     Foreground="Black"
                     Height="30"
                     Content="Add"

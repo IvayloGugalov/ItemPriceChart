@@ -1,7 +1,11 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
+using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -9,11 +13,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ShopViewModel : BindableViewModel
     {
+        private readonly IItemService itemService;
         private ObservableCollection<ItemModel> itemsList;
         private OnlineShopModel selectedShop;
         private ItemModel selectedItem;
         private bool areItemsShown;
         private bool isListOfShopsShown;
+        private bool shouldShowShopInformation;
 
         public ObservableCollection<ItemModel> ItemsList
         {
@@ -47,23 +53,48 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isListOfShopsShown, value);
         }
 
-        public ICommand ShowCreateShopCommand { get; }
-
-        public ICommand ShowDeleteShopCommand { get; }
-
-        public ICommand ShowAddItemCommand { get; }
-
-        public ShopViewModel()
+        public bool ShouldShowShopInformation
         {
-            this.ShowCreateShopCommand = new RelayCommand(_ => this.ShowCreateShopAction());
-            this.ShowDeleteShopCommand = new RelayCommand(_ => this.ShowDeleteShopAction());
-            this.ShowAddItemCommand = new RelayCommand(_ => this.ShowAddItemAction());
+            get => this.shouldShowShopInformation;
+            set => this.SetValue(ref this.shouldShowShopInformation, value);
         }
 
-        private void ShowCreateShopAction() => UIEvents.ShowCreateShopViewModel.Publish(null);
+        public ICommand ShowItemInformationDialogCommand { get; }
+        public ICommand DeleteItemCommand { get; }
+        public ICommand ShowAddItemCommand { get; }
 
-        private void ShowDeleteShopAction() => UIEvents.ShowDeleteShopViewModel.Publish(this.SelectedShop);
+        public ShopViewModel(ItemService itemService)
+        {
+            this.itemService = itemService;
+
+            this.ShowAddItemCommand = new RelayCommand(_ => this.ShowAddItemAction());
+            this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
+            this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
+
+            EventsLocator.ItemAdded.Subscribe(this.AddItemToItemsListHandler);
+            EventsLocator.ItemDeleted.Subscribe(this.RemoveItemFromItemsListHandler);
+        }
 
         private void ShowAddItemAction() => UIEvents.ShowCreateItemViewModel.Publish(this.SelectedShop);
+        private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioViewModel.Publish(this.SelectedItem);
+        private void DeleteItemAction() => this.itemService.DeleteItem(this.SelectedItem);
+
+        private void AddItemToItemsListHandler(object sender, ItemModel e)
+        {
+            Dispatcher dispatcher = Application.Current.Dispatcher;
+            dispatcher.Invoke(() =>
+            {
+                this.ItemsList.Add(e);
+            });
+        }
+
+        private void RemoveItemFromItemsListHandler(object sender, ItemModel e)
+        {
+            Dispatcher dispatcher = Application.Current.Dispatcher;
+            dispatcher.Invoke(() =>
+            {
+                this.ItemsList.Remove(e);
+            });
+        }
     }
 }
