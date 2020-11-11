@@ -15,9 +15,6 @@ namespace ItemPriceCharts.UI.WPF.Factories
             where TViewModel : class, IViewModel
             where TView : Window;
 
-        Window Resolve<TViewModel>()
-           where TViewModel : class, IViewModel;
-
         Window Resolve<TViewModel>(Parameter[] parameters)
             where TViewModel : class, IViewModel;
 
