@@ -44,7 +44,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         protected override void ConfigureApplication(IContainer container)
         {
             this.viewFactory = container.Resolve<IViewFactory>();
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>();
+            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>());
 
             this.app.MainWindow = mainWindow;
             this.app.MainWindow.Show();
@@ -67,7 +67,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         protected void CreateShopWindow(object sender, object e)
         {
-            var window = this.viewFactory.Resolve<CreateShopViewModel>();
+            var window = this.viewFactory.Resolve<CreateShopViewModel>(System.Array.Empty<Parameter>());
             window.ShowDialog();
         }
 
