@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="ItemPriceCharts.UI.WPF.Views.UserControls.WindowTemplate"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+             mc:Ignorable="d"
+             Height="600"
+             Width="850">
+    <Grid Background="#6eb6ff">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Visibility="{Binding ShouldShowShopInformation, Converter={cv:BoolToVisibilityConverter}}"
+              Margin="30 0 0 0">
+            <controls:ListOfShopsView/>
+        </Grid>
+
+        <Grid Grid.Column="2"
+              Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}">
+            <controls:ListOfItemsView/>
+        </Grid>
+    </Grid>
+</UserControl>

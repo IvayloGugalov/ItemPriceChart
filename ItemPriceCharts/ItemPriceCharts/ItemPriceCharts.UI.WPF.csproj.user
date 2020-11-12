@@ -36,7 +36,10 @@
     <Compile Update="Views\MessageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\UserControls\ShopsView.xaml.cs">
+    <Compile Update="Views\UserControls\ListOfShopsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\WindowTemplate.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -68,7 +71,10 @@
     <Page Update="Views\MessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\UserControls\ShopsView.xaml">
+    <Page Update="Views\UserControls\ListOfShopsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\WindowTemplate.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Styles.xaml">

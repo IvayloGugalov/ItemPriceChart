@@ -15,7 +15,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private readonly IItemService itemService;
         private ObservableCollection<ItemModel> itemsList;
-        private OnlineShopModel selectedShop;
         private ItemModel selectedItem;
         private bool areItemsShown;
         private bool isListOfShopsShown;
@@ -28,12 +27,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
 
         public ObservableCollection<OnlineShopModel> OnlineShops { get; set; }
-
-        public OnlineShopModel SelectedShop
-        {
-            get => this.selectedShop;
-            set => SetValue(ref this.selectedShop, value);
-        }
 
         public ItemModel SelectedItem
         {
@@ -61,13 +54,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand ShowItemInformationDialogCommand { get; }
         public ICommand DeleteItemCommand { get; }
-        public ICommand ShowAddItemCommand { get; }
 
         public ShopViewModel(ItemService itemService)
         {
             this.itemService = itemService;
 
-            this.ShowAddItemCommand = new RelayCommand(_ => this.ShowAddItemAction());
             this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
 
@@ -75,7 +66,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             EventsLocator.ItemDeleted.Subscribe(this.RemoveItemFromItemsListHandler);
         }
 
-        private void ShowAddItemAction() => UIEvents.ShowCreateItemViewModel.Publish(this.SelectedShop);
         private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioViewModel.Publish(this.SelectedItem);
         private void DeleteItemAction() => this.itemService.DeleteItem(this.SelectedItem);
 

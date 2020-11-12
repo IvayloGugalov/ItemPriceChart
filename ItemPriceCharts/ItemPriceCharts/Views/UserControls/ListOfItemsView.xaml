@@ -8,34 +8,40 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
              mc:Ignorable="d" 
-             d:MinHeight="400"
-             d:MinWidth="450">
+             d:DesignHeight="480"
+             d:DesignWidth="450">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <ListView Grid.Row="0"
-
-                  Name="ItemsListView"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="29*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ListView Name="ItemsListView"
                   Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
-                  ItemsSource="{Binding Path=ItemsList}"
+                  ItemsSource="{Binding ItemsList}"
                   SelectedItem="{Binding SelectedItem}"
-                  DisplayMemberPath="Title"
-                  Style="{StaticResource Styles.ListViewForItems}">
+                  Style="{StaticResource Styles.ListViewForItems}" Grid.ColumnSpan="2">
 
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseLeftButtonUp">
-                    <i:InvokeCommandAction Command="{Binding ShowItemInformationDialogCommand}"
+
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="0">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding Path=ShowItemInformationDialogCommand}"
                                            CommandParameter="{Binding ElementName=ItemsListView,
                                            Path=SelectedItem}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <TextBlock Text="{Binding Title}" />
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
-            <ListView.ContextMenu>
-                <ContextMenu Style="{StaticResource Styles.ItemContextMenu}">
-                    <MenuItem Command="{Binding ShowItemInformationDialogCommand}">
+            <ListView.Resources>
+                <ContextMenu x:Key="ItemContextMenu"
+                             Style="{StaticResource Styles.ItemContextMenu}">
+                    <MenuItem Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}">
                         <MenuItem.Icon>
                             <materialDesign:PackIcon Kind="InformationVariant"
                                                      Foreground="#3d9bff"
@@ -48,7 +54,7 @@
                         </MenuItem.Header>
                     </MenuItem>
 
-                    <MenuItem Command="{Binding DeleteItemCommand}">
+                    <MenuItem Command="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}">
                         <MenuItem.Icon>
                             <materialDesign:PackIcon Kind="Remove"
                                                      Foreground="#ff2626"
@@ -61,7 +67,41 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </ContextMenu>
-            </ListView.ContextMenu>
+            </ListView.Resources>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
+                    <Setter Property="Height" Value="25"/>
+                    <Setter Property="FontSize" Value="15"/>
+                    <Setter Property="Margin" Value="0 5 0 5"/>
+                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="Width" Value="440" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Foreground" Value="#ededed"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}" >
+
+                                <ContentPresenter HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Width="{TemplateBinding Width}"
+                                        Height="{TemplateBinding Height}"
+                                        TextBlock.TextAlignment="Center"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+
         </ListView>
     </Grid>
+
 </UserControl>

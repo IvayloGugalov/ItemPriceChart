@@ -1,13 +1,7 @@
-﻿using ItemPriceCharts.Services.Events;
-using ItemPriceCharts.Services.Models;
+﻿using System.Linq;
+
 using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
-using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {

@@ -50,40 +50,10 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.ListViewItemShop}"/>
     </Style>
-
-    <Style x:Key="Styles.ListViewItems" TargetType="{x:Type ListViewItem}">
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Margin" Value="0 5 0 5"/>
-        <Setter Property="FontFamily" Value="Segoe UI"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Width" Value="440" />
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="#ededed"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ListBoxItem}" >
-                    
-                        <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Width="600"
-                                          TextBlock.TextAlignment="Center">
-                        </ContentPresenter>
-                    
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="Cursor" Value="Hand" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
     
     <Style x:Key="Styles.ListViewForItems" TargetType="{x:Type ListView}">
         <Setter Property="Width" Value="450"/>
-        <Setter Property="Height" Value="480"/>
+        <Setter Property="MaxHeight" Value="480"/>
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background">
             <Setter.Value>
@@ -94,7 +64,6 @@
             </Setter.Value>
         </Setter>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=Styles.ListViewItems}"/>
     </Style>
 
     <Style x:Key="Styles.TextBox.Common" TargetType="{x:Type TextBox}">

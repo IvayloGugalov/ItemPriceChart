@@ -10,7 +10,7 @@ namespace ItemPriceCharts.UI.WPF.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ShopsView>();
+            builder.RegisterType<WindowTemplate>();
             builder.RegisterType<ShopsViewModel>();
             builder.RegisterType<ViewItemsViewModel>();
 

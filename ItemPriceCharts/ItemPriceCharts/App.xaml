@@ -8,14 +8,19 @@
              xmlns:viewModels="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels">
     <Application.Resources>
         <ResourceDictionary>
-            <DataTemplate DataType="{x:Type viewModels:ShopViewModel}">
-                <controls:ShopsView />
-            </DataTemplate>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="Views/EnumConverters.xaml"/>
                 <ResourceDictionary Source="Views/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModels:ShopsViewModel}">
+                <controls:WindowTemplate />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModels:ViewItemsViewModel}">
+                <controls:ListOfItemsView />
+            </DataTemplate>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>
