@@ -3,18 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF"
              xmlns:views="clr-namespace:ItemPriceCharts.UI.WPF.Views"
+             xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
              xmlns:converters="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
              xmlns:viewModels="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels">
     <Application.Resources>
         <ResourceDictionary>
-            <DataTemplate DataType="{x:Type viewModels:ShopViewModel}">
-                <views:ShopView />
-            </DataTemplate>
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="Views/EnumConverters.xaml"/>
                 <ResourceDictionary Source="Views/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModels:ShopsAndItemListingsViewModel}">
+                <controls:ShopsAndItemListingsView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModels:ItemListingViewModel}">
+                <controls:ItemListingView />
+            </DataTemplate>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

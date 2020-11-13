@@ -12,6 +12,8 @@ namespace ItemPriceCharts.UI.WPF.Views
         public CreateShopView()
         {
             InitializeComponent();
+
+            this.createShop.Click += (s, e) => this.CloseButton_Click(s, e);
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -19,7 +21,7 @@ namespace ItemPriceCharts.UI.WPF.Views
             this.Close();
         }
 
-        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {

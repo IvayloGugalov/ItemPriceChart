@@ -2,6 +2,7 @@
 
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
+using ItemPriceCharts.UI.WPF.Views.UserControls;
 
 namespace ItemPriceCharts.UI.WPF.Modules
 {
@@ -9,9 +10,9 @@ namespace ItemPriceCharts.UI.WPF.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ShopView>();
-            builder.RegisterType<PCShopViewModel>();
-            builder.RegisterType<PhoneShopViewModel>();
+            builder.RegisterType<ShopsAndItemListingsView>();
+            builder.RegisterType<ShopsAndItemListingsViewModel>();
+            builder.RegisterType<ItemListingViewModel>();
 
             builder.RegisterType<CreateShopViewModel>();
             builder.RegisterType<CreateShopView>();

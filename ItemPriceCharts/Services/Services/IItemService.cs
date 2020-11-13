@@ -8,6 +8,7 @@ namespace ItemPriceCharts.Services.Services
     {
         ItemModel FindItem(int id);
         IEnumerable<ItemModel> GetAllItemsForShop(OnlineShopModel onlineShop);
+        IEnumerable<ItemModel> GetAllItems();
         void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type);
         void UpdateItem(ItemModel item);
         bool UpdateItemPrice(ItemModel item, out ItemPrice updatedItemPrice);

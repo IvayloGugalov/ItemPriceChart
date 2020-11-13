@@ -12,6 +12,8 @@ namespace ItemPriceCharts.UI.WPF.Views
         public CreateItemView()
         {
             InitializeComponent();
+
+            this.createItem.Click += (s, e) => this.CloseButton_Click(s, e);
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

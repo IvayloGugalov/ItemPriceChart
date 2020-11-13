@@ -30,6 +30,8 @@ namespace ItemPriceCharts.Services.Services
         public IEnumerable<ItemModel> GetAllItemsForShop(OnlineShopModel onlineShop) =>
             this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
 
+        public IEnumerable<ItemModel> GetAllItems() => this.unitOfWork.ItemRepository.All().Result;
+
         public bool IsItemExisting(int id) =>
             this.unitOfWork.ItemRepository.IsExisting(id).Result;
 
@@ -107,7 +109,7 @@ namespace ItemPriceCharts.Services.Services
                     var itemDocument = this.htmlService.Load(item.URL);
                     var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
 
-                    if (!updatedItem.Equals(item))
+                    if (updatedItem == item)
                     {
                         item.Description = updatedItem.Description;
                         item.CurrentPrice = updatedItem.CurrentPrice;

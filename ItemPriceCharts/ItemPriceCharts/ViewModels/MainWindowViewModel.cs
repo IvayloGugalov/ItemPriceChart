@@ -6,8 +6,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class MainWindowViewModel : BindableViewModel
     {
-        private readonly PCShopViewModel shopViewModelPC;
-        private readonly PhoneShopViewModel shopViewModelPhone;
+        private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
+        private readonly ItemListingViewModel itemListingViewModel;
 
         private object currentView;
         private bool isNewViewDisplayed;
@@ -24,18 +24,18 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.currentView, value);
         }
 
-        public ICommand ShowPCPartsCommand { get; }
-        public ICommand ShowPhonesCommand { get; }
+        public ICommand ShowShopsAndItemListingsCommand { get; }
+        public ICommand ShowItemListingCommand { get; }
         public ICommand ClearViewCommand { get; }
 
-        public MainWindowViewModel(PCShopViewModel shopViewModelPC, PhoneShopViewModel shopViewModelPhone)
+        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel)
         {
-            this.shopViewModelPC = shopViewModelPC;
-            this.shopViewModelPhone = shopViewModelPhone;
+            this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
+            this.itemListingViewModel = itemListingViewModel;
             this.currentView = this;
 
-            this.ShowPCPartsCommand = new RelayCommand(_ => this.ShowPCPartsAction());
-            this.ShowPhonesCommand = new RelayCommand(_ => this.ShowPhonesAction());
+            this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
+            this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
         }
 
@@ -44,15 +44,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsNewViewDisplayed = false;
         }
 
-        private void ShowPCPartsAction()
+        private void ShowShopsAndItemListingsAction()
         {
-            this.CurrentView = this.shopViewModelPC;
+            this.CurrentView = this.shopsAndItemListingsViewModel;
             this.IsNewViewDisplayed = true;
         }
 
-        private void ShowPhonesAction()
+        private void ShowItemListingAction()
         {
-            this.CurrentView = this.shopViewModelPhone;
+            this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;
         }
     }
