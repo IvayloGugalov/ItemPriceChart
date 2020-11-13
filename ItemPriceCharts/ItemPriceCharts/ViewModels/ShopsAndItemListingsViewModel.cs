@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -11,11 +12,12 @@ using ItemPriceCharts.UI.WPF.CommandHelpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class ShopsViewModel : ShopViewModel
+    public class ShopsAndItemListingsViewModel : BaseListingViewModel
     {
         private readonly IItemService itemService;
         private readonly IOnlineShopService onlineShopService;
         private OnlineShopModel selectedShop;
+        private bool isListOfShopsShown;
 
         public OnlineShopModel SelectedShop
         {
@@ -23,12 +25,20 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => SetValue(ref this.selectedShop, value);
         }
 
+        public bool IsListOfShopsShown
+        {
+            get => this.isListOfShopsShown;
+            set => this.SetValue(ref this.isListOfShopsShown, value);
+        }
+
+        public ObservableCollection<OnlineShopModel> OnlineShops { get; set; }
+
         public ICommand ShowItemsCommand { get; }
         public ICommand ShowCreateShopCommand { get; }
         public ICommand ShowDeleteShopCommand { get; }
         public ICommand ShowAddItemCommand { get; }
 
-        public ShopsViewModel(ItemService itemService, OnlineShopService onlineShopService)
+        public ShopsAndItemListingsViewModel(ItemService itemService, OnlineShopService onlineShopService)
             : base (itemService)
         {
             this.itemService = itemService;
@@ -55,13 +65,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
+
+                if (this.ItemsList != null &&
+                    this.ItemsList.Any(i => i.OnlineShop.Equals(this.SelectedShop)))
+                {
+                    return;
+                }
+
                 this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                this.itemService.GetAllItemsForShop(this.SelectedShop));
+                    this.itemService.GetAllItemsForShop(this.SelectedShop));
 
                 if (this.ItemsList.Any())
                 {
                     this.AreItemsShown = true;
-                    //this.SelectedItem = this.ItemsList.First();
                 }
             }
             catch (System.Exception e)

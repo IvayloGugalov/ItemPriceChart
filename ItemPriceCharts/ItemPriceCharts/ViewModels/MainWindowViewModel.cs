@@ -6,8 +6,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class MainWindowViewModel : BindableViewModel
     {
-        private readonly ShopsViewModel shopViewModelPC;
-        private readonly ViewItemsViewModel itemsViewModel;
+        private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
+        private readonly ItemListingViewModel itemListingViewModel;
 
         private object currentView;
         private bool isNewViewDisplayed;
@@ -28,10 +28,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowPhonesCommand { get; }
         public ICommand ClearViewCommand { get; }
 
-        public MainWindowViewModel(ShopsViewModel shopsViewModel, ViewItemsViewModel shopViewModelPhone)
+        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel)
         {
-            this.shopViewModelPC = shopsViewModel;
-            this.itemsViewModel = shopViewModelPhone;
+            this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
+            this.itemListingViewModel = itemListingViewModel;
             this.currentView = this;
 
             this.ShowAllShopsCommand = new RelayCommand(_ => this.ShowAllShopsAction());
@@ -46,13 +46,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowAllShopsAction()
         {
-            this.CurrentView = this.shopViewModelPC;
+            this.CurrentView = this.shopsAndItemListingsViewModel;
             this.IsNewViewDisplayed = true;
         }
 
         private void ShowPhonesAction()
         {
-            this.CurrentView = this.itemsViewModel;
+            this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;
         }
     }

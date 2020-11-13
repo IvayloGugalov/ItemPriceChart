@@ -5,11 +5,11 @@ using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class ViewItemsViewModel : ShopViewModel
+    public class ItemListingViewModel : BaseListingViewModel
     {
         private readonly IItemService itemService;
 
-        public ViewItemsViewModel(ItemService itemService, OnlineShopService onlineShopService)
+        public ItemListingViewModel(ItemService itemService, OnlineShopService onlineShopService)
             : base (itemService)
         {
             this.itemService = itemService;

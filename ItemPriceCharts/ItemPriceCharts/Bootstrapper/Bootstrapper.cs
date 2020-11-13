@@ -55,8 +55,8 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         {
             viewFactory.Register<MainWindowViewModel, MainWindow>();
 
-            viewFactory.RegisterUserControl<ViewItemsViewModel, WindowTemplate>();
-            viewFactory.RegisterUserControl<ShopsViewModel, WindowTemplate>();
+            viewFactory.RegisterUserControl<ItemListingViewModel, ShopsAndItemListingsView>();
+            viewFactory.RegisterUserControl<ShopsAndItemListingsViewModel, ShopsAndItemListingsView>();
 
             viewFactory.Register<CreateShopViewModel, CreateShopView>();
             viewFactory.Register<DeleteShopViewModel, DeleteShopView>();

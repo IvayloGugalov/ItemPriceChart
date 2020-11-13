@@ -3,11 +3,11 @@
 namespace ItemPriceCharts.UI.WPF.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for ListOfItemsView.xaml
+    /// Interaction logic for ShopListingView.xaml
     /// </summary>
-    public partial class ListOfItemsView : UserControl
+    public partial class ShopListingView : UserControl
     {
-        public ListOfItemsView()
+        public ShopListingView()
         {
             InitializeComponent();
         }

@@ -11,13 +11,12 @@ using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class ShopViewModel : BindableViewModel
+    public class BaseListingViewModel : BindableViewModel
     {
         private readonly IItemService itemService;
         private ObservableCollection<ItemModel> itemsList;
         private ItemModel selectedItem;
         private bool areItemsShown;
-        private bool isListOfShopsShown;
         private bool shouldShowShopInformation;
 
         public ObservableCollection<ItemModel> ItemsList
@@ -25,8 +24,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             get => this.itemsList;
             set => this.SetValue(ref this.itemsList, value);
         }
-
-        public ObservableCollection<OnlineShopModel> OnlineShops { get; set; }
 
         public ItemModel SelectedItem
         {
@@ -40,12 +37,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.areItemsShown, value);
         }
 
-        public bool IsListOfShopsShown
-        {
-            get => this.isListOfShopsShown;
-            set => this.SetValue(ref this.isListOfShopsShown, value);
-        }
-
         public bool ShouldShowShopInformation
         {
             get => this.shouldShowShopInformation;
@@ -55,7 +46,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowItemInformationDialogCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public ShopViewModel(ItemService itemService)
+        public BaseListingViewModel(ItemService itemService)
         {
             this.itemService = itemService;
 

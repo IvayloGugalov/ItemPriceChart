@@ -1,14 +1,13 @@
 ﻿using System.Windows.Controls;
 
-
 namespace ItemPriceCharts.UI.WPF.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for WindowTemplate.xaml
+    /// Interaction logic for ItemListingView.xaml
     /// </summary>
-    public partial class WindowTemplate : UserControl
+    public partial class ItemListingView : UserControl
     {
-        public WindowTemplate()
+        public ItemListingView()
         {
             InitializeComponent();
         }
