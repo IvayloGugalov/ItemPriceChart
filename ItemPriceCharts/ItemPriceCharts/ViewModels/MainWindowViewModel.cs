@@ -24,8 +24,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.currentView, value);
         }
 
-        public ICommand ShowAllShopsCommand { get; }
-        public ICommand ShowPhonesCommand { get; }
+        public ICommand ShowShopsAndItemListingsCommand { get; }
+        public ICommand ShowItemListingCommand { get; }
         public ICommand ClearViewCommand { get; }
 
         public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel)
@@ -34,8 +34,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.itemListingViewModel = itemListingViewModel;
             this.currentView = this;
 
-            this.ShowAllShopsCommand = new RelayCommand(_ => this.ShowAllShopsAction());
-            this.ShowPhonesCommand = new RelayCommand(_ => this.ShowPhonesAction());
+            this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
+            this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
         }
 
@@ -44,13 +44,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsNewViewDisplayed = false;
         }
 
-        private void ShowAllShopsAction()
+        private void ShowShopsAndItemListingsAction()
         {
             this.CurrentView = this.shopsAndItemListingsViewModel;
             this.IsNewViewDisplayed = true;
         }
 
-        private void ShowPhonesAction()
+        private void ShowItemListingAction()
         {
             this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;

@@ -30,14 +30,14 @@
                     Style="{StaticResource Styles.MenuButtons}"
                     Name="allShops"
                     Content="View shops"
-                    Command="{Binding ShowAllShopsCommand}">
+                    Command="{Binding ShowShopsAndItemListingsCommand}">
             </Button>
 
             <Button Grid.Row="2"
                     Style="{StaticResource Styles.MenuButtons}"
                     Name="allItems"
                     Content="View items"
-                    Command="{Binding ShowPhonesCommand}">
+                    Command="{Binding ShowItemListingCommand}">
             </Button>
 
             <Button Grid.Row="3"

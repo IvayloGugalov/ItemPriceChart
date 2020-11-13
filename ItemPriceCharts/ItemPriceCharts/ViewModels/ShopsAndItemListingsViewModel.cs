@@ -51,8 +51,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.ShouldShowShopInformation = true;
 
-            EventsLocator.ShopAdded.Subscribe(this.AddShopToShopsList);
-            EventsLocator.ShopDeleted.Subscribe(this.RemoveShopFromShopsList);
+            EventsLocator.ShopAdded.Subscribe(this.OnAddedShop);
+            EventsLocator.ShopDeleted.Subscribe(this.OnDeletedShop);
 
             this.AddShopsToViewModel();
         }
@@ -65,7 +65,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-
+                //Don't make call if the items for the shop are already shown
                 if (this.ItemsList != null &&
                     this.ItemsList.Any(i => i.OnlineShop.Equals(this.SelectedShop)))
                 {
@@ -90,7 +90,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private void AddShopToShopsList(object sender, OnlineShopModel e)
+        private void OnAddedShop(object sender, OnlineShopModel e)
         {
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
@@ -102,7 +102,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             });
         }
 
-        private void RemoveShopFromShopsList(object sender, OnlineShopModel e)
+        private void OnDeletedShop(object sender, OnlineShopModel e)
         {
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
