@@ -14,7 +14,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private readonly IItemService itemService;
         private string operationResult;
 
-        public ItemModel ItemToDelete { get; }
+        public Item ItemToDelete { get; }
         public string OperationResult
         {
             get => this.operationResult;
@@ -23,7 +23,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand DeleteItemCommand { get; }
 
-        public DeleteItemViewModel(ItemService itemService, ItemModel item)
+        public DeleteItemViewModel(ItemService itemService, Item item)
         {
             this.itemService = itemService;
             this.ItemToDelete = item;

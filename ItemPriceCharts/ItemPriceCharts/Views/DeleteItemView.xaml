@@ -24,7 +24,7 @@
                    Foreground="Black"
                    HorizontalAlignment="Center">
             <Run Text="Are you sure you want to delete"/>
-            <Run Text="{Binding ItemToDelete.Title}"/>
+            <Run Text="{Binding ItemToDelete.Title, Mode=OneWay}"/>
             <Run Text="?"/>
         </TextBlock>
 

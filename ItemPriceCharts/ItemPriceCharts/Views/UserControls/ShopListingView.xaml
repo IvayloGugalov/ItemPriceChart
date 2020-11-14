@@ -60,7 +60,7 @@
                             <MenuItem.Header>
                                 <TextBlock>
                                     <Run Text="Add a product to"/>
-                                    <Run Text="{Binding Title}"/>
+                                    <Run Text="{Binding Title, Mode=OneWay}"/>
                                 </TextBlock>
                             </MenuItem.Header>
                         </MenuItem>
@@ -76,7 +76,7 @@
                             <MenuItem.Header>
                                 <TextBlock>
                                     <Run Text="Delete shop"/>
-                                    <Run Text="{Binding Title}"/>
+                                    <Run Text="{Binding Title, Mode=OneWay}"/>
                                 </TextBlock>
                             </MenuItem.Header>
                         </MenuItem>

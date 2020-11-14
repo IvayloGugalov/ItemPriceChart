@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
-using ItemPriceCharts.Services.Models;
-
 namespace ItemPriceCharts.Services.Data
 {
     public class Repository<TEntity> : IRepository<TEntity>

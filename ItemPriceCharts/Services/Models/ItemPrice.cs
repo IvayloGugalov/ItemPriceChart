@@ -1,27 +1,21 @@
 ﻿using System;
 
-using System.ComponentModel.DataAnnotations;
-
 namespace ItemPriceCharts.Services.Models
 {
-    public sealed class ItemPrice
+    public sealed class ItemPrice : EntityModel
     {
-        [Key]
-        public int Id { get; set; }
-        public DateTime PriceDate { get; set; }
-        public double Price { get; set; }
+        public DateTime PriceDate { get; }
+        public double Price { get; }
+        public int ItemId { get; }
 
-        public int ItemId { get; set; }
-
-        public ItemPrice()
+        private ItemPrice()
         {
         }
 
-        public ItemPrice(int id, DateTime priceDate, double currentPrice, int itemId)
+        public ItemPrice(double currentPrice, int itemId)
         {
-            this.Id = id;
-            this.PriceDate = priceDate;
-            this.Price = currentPrice;
+            this.PriceDate = DateTime.Now;
+            this.Price = currentPrice >= 0 ? currentPrice : throw new ArgumentNullException(nameof(currentPrice));
             this.ItemId = itemId;
         }
     }

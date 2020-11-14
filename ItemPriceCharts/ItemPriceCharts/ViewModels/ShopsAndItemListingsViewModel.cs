@@ -16,10 +16,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private readonly IItemService itemService;
         private readonly IOnlineShopService onlineShopService;
-        private OnlineShopModel selectedShop;
+        private OnlineShop selectedShop;
         private bool isListOfShopsShown;
 
-        public OnlineShopModel SelectedShop
+        public OnlineShop SelectedShop
         {
             get => this.selectedShop;
             set => SetValue(ref this.selectedShop, value);
@@ -31,7 +31,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isListOfShopsShown, value);
         }
 
-        public ObservableCollection<OnlineShopModel> OnlineShops { get; set; }
+        public ObservableCollection<OnlineShop> OnlineShops { get; set; }
 
         public ICommand ShowItemsCommand { get; }
         public ICommand ShowCreateShopCommand { get; }
@@ -66,14 +66,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             try
             {
                 //Don't make call if the items for the shop are already shown
-                if (this.ItemsList != null &&
-                    this.ItemsList.Any(i => i.OnlineShop.Equals(this.SelectedShop)))
+                if (this.ItemsList != null && this.ItemsList.Count > 0 &&
+                    this.ItemsList.FirstOrDefault().OnlineShop.Equals(this.SelectedShop))
                 {
                     return;
                 }
 
                 this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                    this.itemService.GetAllItemsForShop(this.SelectedShop));
+                    this.itemService.GetItemsForShop(this.SelectedShop));
 
                 if (this.ItemsList.Any())
                 {
@@ -90,19 +90,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private void OnAddedShop(object sender, OnlineShopModel e)
+        private void OnAddedShop(object sender, OnlineShop e)
         {
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
             {
                 this.OnlineShops.Add(e);
-
-                this.OnPropertyChanged(() => this.IsListOfShopsShown);
-                this.OnPropertyChanged(() => this.OnlineShops);
+                this.IsListOfShopsShown = true;
             });
         }
 
-        private void OnDeletedShop(object sender, OnlineShopModel e)
+        private void OnDeletedShop(object sender, OnlineShop e)
         {
             Dispatcher dispatcher = Application.Current.Dispatcher;
             dispatcher.Invoke(() =>
