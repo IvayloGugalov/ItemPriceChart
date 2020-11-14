@@ -96,9 +96,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             dispatcher.Invoke(() =>
             {
                 this.OnlineShops.Add(e);
-
-                this.OnPropertyChanged(() => this.IsListOfShopsShown);
-                this.OnPropertyChanged(() => this.OnlineShops);
+                this.IsListOfShopsShown = true;
             });
         }
 
