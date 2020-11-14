@@ -25,7 +25,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private List<string> labels;
         private bool isInProgress;
 
-        public ItemModel Item { get; }
+        public Item Item { get; }
 
         public Func<double, string> YFormatter { get; private set; }
 
@@ -49,7 +49,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand UpdatePriceCommand { get; }
 
-        public ItemInformationViewModel(ItemPriceService itemPriceService, ItemService itemService, ItemModel item)
+        public ItemInformationViewModel(ItemPriceService itemPriceService, ItemService itemService, Item item)
         {
             this.itemPriceService = itemPriceService;
             this.itemService = itemService;
@@ -107,8 +107,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 ItemPrice updatedItemPrice = null;
                 var isUpdated = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item, out updatedItemPrice));
 
-                if (isUpdated &&
-                    this.Item.CurrentPrice != updatedItemPrice.Price)
+                if (isUpdated)
                 {
                     this.lineSeries.Values.Add(updatedItemPrice.Price);
                     this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());

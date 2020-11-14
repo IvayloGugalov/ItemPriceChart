@@ -7,21 +7,21 @@ namespace ItemPriceCharts.Services.Events
         /// <summary>
         /// Event raised when a shop has been added
         /// </summary>
-        public static IChannel<OnlineShopModel> ShopAdded { get; set; } = new Channel<OnlineShopModel>();
+        public static IChannel<OnlineShop> ShopAdded { get; set; } = new Channel<OnlineShop>();
         /// <summary>
         /// Event raised when a shop has been deleted
         /// </summary>
-        public static IChannel<OnlineShopModel> ShopDeleted { get; set; } = new Channel<OnlineShopModel>();
+        public static IChannel<OnlineShop> ShopDeleted { get; set; } = new Channel<OnlineShop>();
 
         /// <summary>
         /// Event raised when an item has been added
         /// </summary>
-        public static IChannel<ItemModel> ItemAdded { get; set; } = new Channel<ItemModel>();
+        public static IChannel<Item> ItemAdded { get; set; } = new Channel<Item>();
 
         /// <summary>
         /// Event raised when an item has been deleted
         /// </summary>
-        public static IChannel<ItemModel> ItemDeleted { get; set; } = new Channel<ItemModel>();
+        public static IChannel<Item> ItemDeleted { get; set; } = new Channel<Item>();
 
     }
 }

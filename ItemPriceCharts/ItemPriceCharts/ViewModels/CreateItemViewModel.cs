@@ -27,11 +27,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.selectedItemType, value);
         }
 
-        public OnlineShopModel SelectedShop { get; }
+        public OnlineShop SelectedShop { get; }
 
         public ICommand AddItemCommand { get; }
 
-        public CreateItemViewModel(ItemService itemService, OnlineShopModel selectedShop)
+        public CreateItemViewModel(ItemService itemService, OnlineShop selectedShop)
         {
             this.itemService = itemService;
             this.SelectedShop = selectedShop ?? throw new ArgumentNullException();

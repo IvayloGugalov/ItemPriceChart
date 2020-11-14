@@ -10,24 +10,24 @@ namespace ItemPriceCharts.Services.Services
 {
     public class OnlineShopService : IOnlineShopService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IModelsContext modelsContext;
 
-        public OnlineShopService(UnitOfWork unitOfWork)
+        public OnlineShopService(ModelsContext modelsContext)
         {
-            this.unitOfWork = unitOfWork;
+            this.modelsContext = modelsContext;
         }
 
-        public OnlineShopModel FindShop(int id) =>
-            this.unitOfWork.OnlineShopRepository.FindAsync(id).Result ?? throw new Exception();
+        public OnlineShop FindShop(int id) =>
+            this.modelsContext.OnlineShopRepository.FindAsync(id).Result ?? throw new Exception();
 
-        public IEnumerable<OnlineShopModel> GetAllShops() =>
-            this.unitOfWork.OnlineShopRepository.All().Result;
+        public IEnumerable<OnlineShop> GetAllShops() =>
+            this.modelsContext.OnlineShopRepository.All().Result;
 
         public bool IsShopExisting(int shopId) =>
-            this.unitOfWork.OnlineShopRepository.IsExisting(shopId).Result;
+            this.modelsContext.OnlineShopRepository.IsExisting(shopId).Result;
 
         internal bool IsShopExisting(string url) =>
-            this.unitOfWork.OnlineShopRepository.All(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
+            this.modelsContext.OnlineShopRepository.All(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
 
         public void CreateShop(string shopURL, string shopTitle)
         {
@@ -35,13 +35,12 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (!this.IsShopExisting(shopURL))
                 {
-                    var newShop = new OnlineShopModel(
-                        id: default,
+                    var newShop = new OnlineShop(
                         url: shopURL,
                         title: shopTitle);
 
-                    this.unitOfWork.OnlineShopRepository.Add(newShop);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.OnlineShopRepository.Add(newShop);
+                    this.modelsContext.CommitChangesAsync();
 
                     EventsLocator.ShopAdded.Publish(newShop);
                 }
@@ -52,14 +51,14 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public void UpdateShop(OnlineShopModel onlineShop)
+        public void UpdateShop(OnlineShop onlineShop)
         {
             try
             {
                 if (this.IsShopExisting(onlineShop.Id))
                 {
-                    this.unitOfWork.OnlineShopRepository.Update(onlineShop);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.OnlineShopRepository.Update(onlineShop);
+                    this.modelsContext.CommitChangesAsync();
                 }
             }
             catch (Exception e)
@@ -68,14 +67,14 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public void DeleteShop(OnlineShopModel onlineShop)
+        public void DeleteShop(OnlineShop onlineShop)
         {
             try
             {
                 if (this.IsShopExisting(onlineShop.Id))
                 {
-                    this.unitOfWork.OnlineShopRepository.Delete(onlineShop);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.OnlineShopRepository.Delete(onlineShop);
+                    this.modelsContext.CommitChangesAsync();
 
                     EventsLocator.ShopDeleted.Publish(onlineShop);
                 }

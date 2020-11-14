@@ -10,8 +10,7 @@ namespace ItemPriceCharts.Services.Helpers
 {
     public static class RetrieveItemData
     {
-
-        public static ItemModel CreateModel(string itemURL, HtmlDocument itemDocument, OnlineShopModel onlineShop, ItemType type)
+        public static Item CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
         {
             switch (onlineShop.Title)
             {
@@ -19,8 +18,7 @@ namespace ItemPriceCharts.Services.Helpers
                 {
                     var data = VarioRetrieveData(itemDocument);
 
-                    return new ItemModel(
-                        id: default,
+                    return new Item(
                         url: itemURL,
                         title: data.Item1,
                         description: data.Item2,
@@ -32,15 +30,14 @@ namespace ItemPriceCharts.Services.Helpers
                 {
                     var data = PlesioRetrieveData(itemDocument);
 
-                    return new ItemModel(
-                        id: default,
+                    return new Item(
                         url: itemURL,
                         title: data.Item1,
                         description: data.Item2,
                         price: data.Item3,
                         onlineShop: onlineShop,
                         type: type);
-                }
+                    }
                 default:
                     return null;
             }

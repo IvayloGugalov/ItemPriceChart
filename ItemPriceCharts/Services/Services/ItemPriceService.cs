@@ -9,15 +9,15 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemPriceService : IItemPriceService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IModelsContext modelsContext;
 
-        public ItemPriceService(UnitOfWork unitOfWork)
+        public ItemPriceService(ModelsContext modelsContext)
         {
-            this.unitOfWork = unitOfWork;
+            this.modelsContext = modelsContext;
         }
 
         public IEnumerable<ItemPrice> GetPricesForItem(int itemId) =>
-           this.unitOfWork.ItemPriceRepository.All(filter: i => i.ItemId == itemId).Result;
+           this.modelsContext.ItemPriceRepository.All(filter: i => i.ItemId == itemId).Result;
 
         public void CreateItemPrice(ItemPrice itemPrice)
         {
@@ -25,8 +25,8 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsItemExisting(itemPrice.ItemId))
                 {
-                    this.unitOfWork.ItemPriceRepository.Add(itemPrice);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.ItemPriceRepository.Add(itemPrice);
+                    this.modelsContext.CommitChangesAsync();
                 }
             }
             catch (Exception e)
@@ -39,7 +39,7 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                return this.unitOfWork.ItemPriceRepository.All(
+                return this.modelsContext.ItemPriceRepository.All(
                     filter: price => price.ItemId == itemId,
                     orderBy: prices => prices.OrderByDescending(price => price.PriceDate))
                 .Result.First()
@@ -52,6 +52,6 @@ namespace ItemPriceCharts.Services.Services
         }
 
         private bool IsItemExisting(int id) =>
-           this.unitOfWork.ItemRepository.IsExisting(id).Result;
+           this.modelsContext.ItemRepository.IsExisting(id).Result;
     }
 }

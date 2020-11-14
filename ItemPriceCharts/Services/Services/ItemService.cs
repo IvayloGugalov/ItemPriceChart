@@ -13,46 +13,42 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemService : IItemService
     {
-        private readonly HtmlWeb htmlService;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IModelsContext modelsContext;
         private readonly IItemPriceService itemPriceService;
 
-        public ItemService(UnitOfWork unitOfWork, ItemPriceService itemPriceService)
+        public ItemService(ModelsContext modelsContext, ItemPriceService itemPriceService)
         {
-            this.unitOfWork = unitOfWork;
+            this.modelsContext = modelsContext;
             this.itemPriceService = itemPriceService;
-            this.htmlService = new HtmlWeb();
         }
 
-        public ItemModel FindItem(int id) =>
-            this.unitOfWork.ItemRepository.FindAsync(id).Result ?? throw new Exception();
+        public Item FindItem(int id) =>
+            this.modelsContext.ItemRepository.FindAsync(id).Result ?? throw new Exception();
 
-        public IEnumerable<ItemModel> GetAllItemsForShop(OnlineShopModel onlineShop) =>
-            this.unitOfWork.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
+        public IEnumerable<Item> GetAllItems() => this.modelsContext.ItemRepository.All().Result;
 
-        public IEnumerable<ItemModel> GetAllItems() => this.unitOfWork.ItemRepository.All().Result;
+        public IEnumerable<Item> GetItemsForShop(OnlineShop onlineShop) =>
+            this.modelsContext.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
 
         public bool IsItemExisting(int id) =>
-            this.unitOfWork.ItemRepository.IsExisting(id).Result;
+            this.modelsContext.ItemRepository.IsExisting(id).Result;
 
         internal bool IsItemExisting(string url) =>
-            this.unitOfWork.ItemRepository.All(filter: item => item.URL == url).Result.FirstOrDefault() != null;
+            this.modelsContext.ItemRepository.All(filter: item => item.URL == url).Result.FirstOrDefault() != null;
 
-        public void CreateItem(string itemURL, OnlineShopModel onlineShop, ItemType type)
+        public void CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
         {
+            Item item = null;
             try
             {
                 if (!this.IsItemExisting(itemURL))
                 {
-                    var itemDocument = this.htmlService.Load(itemURL);
-                    var item = RetrieveItemData.CreateModel(itemURL, itemDocument, onlineShop, type);
+                    item = this.LoadItemFromWeb(itemURL, onlineShop, type);
 
-                    this.unitOfWork.ItemRepository.Add(item);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.ItemRepository.Add(item);
+                    this.modelsContext.CommitChangesAsync();
 
                     this.itemPriceService.CreateItemPrice(new ItemPrice(
-                        id: default,
-                        priceDate: DateTime.Now,
                         currentPrice: item.CurrentPrice,
                         itemId: item.Id));
 
@@ -65,14 +61,14 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public void UpdateItem(ItemModel item)
+        public void UpdateItem(Item item)
         {
             try
             {
                 if (this.IsItemExisting(item.Id))
                 {
-                    this.unitOfWork.ItemRepository.Update(item);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.ItemRepository.Update(item);
+                    this.modelsContext.CommitChangesAsync();
                 }
             }
             catch (Exception e)
@@ -81,14 +77,14 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public void DeleteItem(ItemModel item)
+        public void DeleteItem(Item item)
         {
             try
             {
                 if (this.IsItemExisting(item.Id))
                 {
-                    this.unitOfWork.ItemRepository.Delete(item);
-                    this.unitOfWork.SaveChangesAsync();
+                    this.modelsContext.ItemRepository.Delete(item);
+                    this.modelsContext.CommitChangesAsync();
 
                     EventsLocator.ItemDeleted.Publish(item);
                 }
@@ -99,30 +95,23 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public bool UpdateItemPrice(ItemModel item, out ItemPrice updatedItemPrice)
+        public bool UpdateItemPrice(Item item, out ItemPrice updatedItemPrice)
         {
             try
             {
                 updatedItemPrice = null;
                 if (this.IsItemExisting(item.Id))
                 {
-                    var itemDocument = this.htmlService.Load(item.URL);
-                    var updatedItem = RetrieveItemData.CreateModel(item.URL, itemDocument, item.OnlineShop, item.Type);
+                    var updatedItem = this.LoadItemFromWeb(item.URL, item.OnlineShop, item.Type);
 
-                    if (updatedItem == item)
+                    if (updatedItem != item)
                     {
                         item.Description = updatedItem.Description;
                         item.CurrentPrice = updatedItem.CurrentPrice;
 
-                        this.UpdateItem(item);
+                        this.modelsContext.ItemRepository.Update(item);
 
-                        updatedItemPrice = new ItemPrice(
-                            id: default,
-                            priceDate: DateTime.Now,
-                            currentPrice: item.CurrentPrice,
-                            itemId: item.Id);
-
-                        this.itemPriceService.CreateItemPrice(updatedItemPrice);
+                        updatedItemPrice = this.CreateNewItemPrice(item.CurrentPrice, item.Id);
 
                         return true;
                     }
@@ -134,6 +123,24 @@ namespace ItemPriceCharts.Services.Services
             {
                 throw e;
             }
+        }
+
+        private Item LoadItemFromWeb(string itemUrl, OnlineShop onlineShop, ItemType type)
+        {
+            var htmlService = new HtmlWeb();
+            var itemDocument = htmlService.Load(itemUrl);
+
+            return RetrieveItemData.CreateItem(itemUrl, itemDocument, onlineShop, type);
+        }
+
+        private ItemPrice CreateNewItemPrice(double price, int itemId)
+        {
+            var newItemPrice = new ItemPrice(
+                                   currentPrice: price,
+                                   itemId: itemId);
+            this.itemPriceService.CreateItemPrice(newItemPrice);
+
+            return newItemPrice;
         }
     }
 }

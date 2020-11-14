@@ -6,14 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ItemPriceChartsDB.db" />
     <None Remove="Services\j5ch35wc.wyb~" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="ItemPriceChartsDB.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +17,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ItemPriceChartsDB.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -26,11 +26,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isOperationFinished, value);
         }
 
-        public OnlineShopModel SelectedShop { get; }
+        public OnlineShop SelectedShop { get; }
 
         public ICommand DeleteShopCommand { get; }
 
-        public DeleteShopViewModel(OnlineShopService onlineShopService, OnlineShopModel selectedShop)
+        public DeleteShopViewModel(OnlineShopService onlineShopService, OnlineShop selectedShop)
         {
             this.onlineShopService = onlineShopService;
             this.SelectedShop = selectedShop ?? throw new ArgumentNullException();

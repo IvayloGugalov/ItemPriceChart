@@ -72,21 +72,21 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             window.ShowDialog();
         }
 
-        protected void DeleteShopWindow(object sender, OnlineShopModel e)
+        protected void DeleteShopWindow(object sender, OnlineShop e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
             var window = this.viewFactory.Resolve<DeleteShopViewModel>(parameters);
             window.ShowDialog();
         }
 
-        protected void CreateItemWindow(object sender, OnlineShopModel e)
+        protected void CreateItemWindow(object sender, OnlineShop e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
             var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
             window.ShowDialog();
         }
 
-        protected void CreateItemInformationWindow(object sender, ItemModel e)
+        protected void CreateItemInformationWindow(object sender, Item e)
         {
             if (e != null)
             {
