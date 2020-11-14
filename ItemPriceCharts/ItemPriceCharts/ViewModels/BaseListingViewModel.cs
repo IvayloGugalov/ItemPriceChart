@@ -67,7 +67,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 this.ItemsList.Add(e);
                 this.AreItemsShown = true;
-                this.OnPropertyChanged(() => this.AreItemsShown);
             });
         }
 

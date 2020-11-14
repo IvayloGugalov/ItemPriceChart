@@ -5,8 +5,8 @@ namespace ItemPriceCharts.Services.Models
 {
     public sealed class OnlineShop: EntityModel
     {
-        public string URL { get; set; }
-        public string Title { get; set; }
+        public string URL { get; }
+        public string Title { get; }
 
         public ICollection<Item> Items { get; set; }
 

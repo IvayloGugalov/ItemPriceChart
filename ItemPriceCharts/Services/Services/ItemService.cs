@@ -38,12 +38,11 @@ namespace ItemPriceCharts.Services.Services
 
         public void CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
         {
-            Item item = null;
             try
             {
                 if (!this.IsItemExisting(itemURL))
                 {
-                    item = this.LoadItemFromWeb(itemURL, onlineShop, type);
+                    var item = this.LoadItemFromWeb(itemURL, onlineShop, type);
 
                     this.modelsContext.ItemRepository.Add(item);
                     this.modelsContext.CommitChangesAsync();
@@ -95,11 +94,10 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public bool UpdateItemPrice(Item item, out ItemPrice updatedItemPrice)
+        public ItemPrice UpdateItemPrice(Item item)
         {
             try
             {
-                updatedItemPrice = null;
                 if (this.IsItemExisting(item.Id))
                 {
                     var updatedItem = this.LoadItemFromWeb(item.URL, item.OnlineShop, item.Type);
@@ -111,13 +109,10 @@ namespace ItemPriceCharts.Services.Services
 
                         this.modelsContext.ItemRepository.Update(item);
 
-                        updatedItemPrice = this.CreateNewItemPrice(item.CurrentPrice, item.Id);
-
-                        return true;
+                        return this.CreateNewItemPrice(item.CurrentPrice, item.Id);
                     }
                 }
-
-                return false;
+                return null;
             }
             catch (Exception e)
             {

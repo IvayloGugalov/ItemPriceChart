@@ -37,7 +37,7 @@ namespace ItemPriceCharts.Services.Helpers
                         price: data.Item3,
                         onlineShop: onlineShop,
                         type: type);
-                    }
+                }
                 default:
                     return null;
             }

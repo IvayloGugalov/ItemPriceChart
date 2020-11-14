@@ -11,7 +11,7 @@ namespace ItemPriceCharts.Services.Services
         IEnumerable<Item> GetAllItems();
         void CreateItem(string itemURL, OnlineShop onlineShop, ItemType type);
         void UpdateItem(Item item);
-        bool UpdateItemPrice(Item item, out ItemPrice updatedItemPrice);
+        ItemPrice UpdateItemPrice(Item item);
         void DeleteItem(Item item);
         bool IsItemExisting(int id);
     }
