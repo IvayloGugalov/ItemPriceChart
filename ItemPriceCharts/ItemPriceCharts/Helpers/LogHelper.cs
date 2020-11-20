@@ -10,6 +10,8 @@ namespace ItemPriceCharts.UI.WPF.Helpers
     public static class LogHelper
     {
         private static string logFolder;
+        private const string EXPLORER_PROCESS = "explorer.exe";
+        private const string LOG_FILE_NAME = "logFile";
 
         private static readonly IEnumerable<LogLevel> AllLevels = new[]
         {
@@ -37,9 +39,6 @@ namespace ItemPriceCharts.UI.WPF.Helpers
 
         public static void ReconfigureLoggerToLevel(LogLevel level)
         {
-            GlobalDiagnosticsContext.Set("Application", "My cool app");
-            GlobalDiagnosticsContext.Set("Version", "1.0.42");
-
             var disableLevels = AllLevels.Where(x => x < level)
                 .ToArray();
 
@@ -69,12 +68,12 @@ namespace ItemPriceCharts.UI.WPF.Helpers
 
         public static void OpenLogFolder()
         {
-            System.Diagnostics.Process.Start("explorer.exe", LogFolder);
+            System.Diagnostics.Process.Start(LogHelper.EXPLORER_PROCESS, LogFolder);
         }
 
         private static string GetLogFolder()
         {
-            var fileTarget = (FileTarget)LogManager.Configuration.FindTargetByName("logFile");
+            var fileTarget = (FileTarget)LogManager.Configuration.FindTargetByName(LogHelper.LOG_FILE_NAME);
             var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now };
             var filePath = fileTarget.FileName.Render(logEventInfo);
 

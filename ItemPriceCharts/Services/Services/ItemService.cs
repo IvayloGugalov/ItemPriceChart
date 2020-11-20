@@ -61,7 +61,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Couldn't create an item: {e}");
+                logger.Error($"Couldn't create an item: {e}");
                 throw e;
             }
         }
@@ -79,7 +79,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Couldn't update an item: {e}");
+                logger.Error($"Couldn't update an item: {e}");
                 throw e;
             }
         }
@@ -99,7 +99,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Couldn't delete item: '{item}'.\t{e}");
+                logger.Error($"Couldn't delete item: '{item}'.\t{e}");
                 throw e;
             }
         }
@@ -129,7 +129,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Couldn't update item price for '{item}'.\t{e}");
+                logger.Error($"Couldn't update item price for '{item}'.\t{e}");
                 throw e;
             }
         }

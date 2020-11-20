@@ -36,7 +36,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Error when saving item price for itemId: {itemPrice.ItemId}.\t{e}");
+                logger.Error($"Error when saving item price for itemId: {itemPrice.ItemId}.\t{e}");
                 throw e;
             }
         }
@@ -53,7 +53,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Error when retrieving item price for itemId: {itemId}.\t{e}");
+                logger.Error($"Error when retrieving item price for itemId: {itemId}.\t{e}");
                 throw e;
             }
         }

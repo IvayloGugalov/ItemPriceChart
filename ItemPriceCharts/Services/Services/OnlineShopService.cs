@@ -52,7 +52,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Can't create shop: {e}");
+                logger.Error($"Can't create shop: {e}");
                 throw e;
             }
         }
@@ -70,7 +70,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Can't update shop: {e}");
+                logger.Error($"Can't update shop: {e}");
                 throw e;
             }
         }
@@ -90,7 +90,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Debug($"Can't delete shop: '{onlineShop}'");
+                logger.Error($"Can't delete shop: '{onlineShop}'");
                 throw e;
             }
         }
