@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using HtmlAgilityPack;
+using NLog;
+
 using ItemPriceCharts.Services.Constants;
 using ItemPriceCharts.Services.Models;
 
@@ -10,6 +12,8 @@ namespace ItemPriceCharts.Services.Helpers
 {
     public static class RetrieveItemData
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static Item CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
         {
             switch (onlineShop.Title)
@@ -61,6 +65,7 @@ namespace ItemPriceCharts.Services.Helpers
             }
             catch (Exception e)
             {
+                logger.Debug($"Can't get information for item: {e}");
                 throw e;
             }
         }
@@ -80,6 +85,7 @@ namespace ItemPriceCharts.Services.Helpers
             }
             catch (Exception e)
             {
+                logger.Debug($"Can't get information for item: {e}");
                 throw e;
             }
         }

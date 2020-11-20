@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using NLog;
+
 using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
@@ -10,6 +12,8 @@ namespace ItemPriceCharts.Services.Services
 {
     public class OnlineShopService : IOnlineShopService
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IModelsContext modelsContext;
 
         public OnlineShopService(ModelsContext modelsContext)
@@ -41,12 +45,14 @@ namespace ItemPriceCharts.Services.Services
 
                     this.modelsContext.OnlineShopRepository.Add(newShop);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Created shop: '{newShop}'");
 
                     EventsLocator.ShopAdded.Publish(newShop);
                 }
             }
             catch (Exception e)
             {
+                logger.Debug($"Can't create shop: {e}");
                 throw e;
             }
         }
@@ -59,10 +65,12 @@ namespace ItemPriceCharts.Services.Services
                 {
                     this.modelsContext.OnlineShopRepository.Update(onlineShop);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Updated shop: '{onlineShop}'");
                 }
             }
             catch (Exception e)
             {
+                logger.Debug($"Can't update shop: {e}");
                 throw e;
             }
         }
@@ -75,12 +83,14 @@ namespace ItemPriceCharts.Services.Services
                 {
                     this.modelsContext.OnlineShopRepository.Delete(onlineShop);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Deleted shop: '{onlineShop}'");
 
                     EventsLocator.ShopDeleted.Publish(onlineShop);
                 }
             }
             catch (Exception e)
             {
+                logger.Debug($"Can't delete shop: '{onlineShop}'");
                 throw e;
             }
         }

@@ -62,6 +62,11 @@ namespace ItemPriceCharts.Services.Models
             return true;
         }
 
+        public override string ToString()
+        {
+            return $"Id: {this.Id}, Title:{this.Title}, Price: {this.CurrentPrice}, Type: {this.Type}, Shop id: {this.OnlineShop.Id}";
+        }
+
         public static bool operator ==(Item a, Item b)
         {
             if (a is null && b is null)

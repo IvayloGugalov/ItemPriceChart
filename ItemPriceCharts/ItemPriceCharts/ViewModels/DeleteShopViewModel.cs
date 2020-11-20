@@ -2,6 +2,8 @@
 using System.Windows.Input;
 using System.Threading.Tasks;
 
+using NLog;
+
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
@@ -10,9 +12,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteShopViewModel : BindableViewModel
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IOnlineShopService onlineShopService;
         private string operationResult = string.Empty;
-        private bool isOperationFinished;
+        private bool isOperationRunning;
 
         public string OperationResult
         {
@@ -20,10 +24,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.operationResult, value);
         }
 
-        public bool IsOperationFinished
+        public bool IsOperationRunning
         {
-            get => this.isOperationFinished;
-            set => this.SetValue(ref this.isOperationFinished, value);
+            get => this.isOperationRunning;
+            set => this.SetValue(ref this.isOperationRunning, value);
         }
 
         public OnlineShop SelectedShop { get; }
@@ -44,15 +48,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 await Task.Run(() => this.onlineShopService.DeleteShop(this.SelectedShop));
 
-                this.IsOperationFinished = true;
+                this.IsOperationRunning = true;
                 this.OperationResult = $"Deleted {this.SelectedShop.Title} with id: {this.SelectedShop.Id}";
-
-                this.OnPropertyChanged(() => this.IsOperationFinished);
-                this.OnPropertyChanged(() => this.OperationResult);
             }
             catch (Exception e)
             {
+                logger.Info($"Can't delete {this.SelectedShop}.\t{e}");
                 this.OperationResult = $"{e}. Failed to delete";
+            }
+            finally
+            {
+                this.IsOperationRunning = false;
             }
         }
     }

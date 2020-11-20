@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -27,6 +28,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowShopsAndItemListingsCommand { get; }
         public ICommand ShowItemListingCommand { get; }
         public ICommand ClearViewCommand { get; }
+        public ICommand ShowLogFileCommand { get; }
 
         public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel)
         {
@@ -37,6 +39,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
             this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
+            this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
         }
 
         private void ClearViewAction()

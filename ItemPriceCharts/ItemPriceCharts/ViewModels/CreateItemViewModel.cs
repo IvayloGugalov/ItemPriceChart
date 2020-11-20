@@ -6,11 +6,14 @@ using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
+using NLog;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateItemViewModel : BindableViewModel
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IItemService itemService;
         private ItemType selectedItemType;
         private string newItemURL;
@@ -47,6 +50,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
+                logger.Info($"Failed to create {this.NewItemURL} due to: {e}");
                 UIEvents.ShowMessageDialog(
                         new MessageDialogViewModel(
                             title: "Error",

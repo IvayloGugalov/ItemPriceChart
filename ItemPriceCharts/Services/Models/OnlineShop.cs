@@ -19,5 +19,10 @@ namespace ItemPriceCharts.Services.Models
             this.URL = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
         }
+
+        public override string ToString()
+        {
+            return $"Id: {this.Id}, Url: {this.URL}, Title: {this.Title}";
+        }
     }
 }
