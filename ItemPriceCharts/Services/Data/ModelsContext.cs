@@ -10,8 +10,7 @@ namespace ItemPriceCharts.Services.Data
 {
     public class ModelsContext : DbContext, IModelsContext
     {
-        private readonly StreamWriter logStream = new StreamWriter(@"D:\Visual Studio Apps\ItemPriceChart\database.log", append: true);
-        
+        private readonly StreamWriter logStream = new StreamWriter(@"\database.log", append: true);
         private bool disposed = false;
 
         public DbSet<OnlineShop> OnlineShops { get; set; }

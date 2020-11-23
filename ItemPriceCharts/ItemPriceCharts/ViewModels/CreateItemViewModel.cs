@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using NLog;
+
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
-using NLog;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Windows.Input;
 using System.Windows.Media;
 
 using MaterialDesignThemes.Wpf;
+
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -23,11 +27,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public bool IsSingleButtonShown { get; }
 
+        public ICommand ShowLogFileCommand { get; }
+
         public MessageDialogViewModel(string title, string description, ButtonType buttonType)
         {
             this.Title = title;
             this.Description = description;
             this.IconType = PackIconKind.Exclamation;
+
+            this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 
             switch (buttonType)
             {

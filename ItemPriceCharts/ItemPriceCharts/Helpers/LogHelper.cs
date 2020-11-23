@@ -5,13 +5,16 @@ using System.Linq;
 using NLog;
 using NLog.Targets;
 
+using ItemPriceCharts.Services.Helpers;
+
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
     public static class LogHelper
     {
-        private static string logFolder;
         private const string EXPLORER_PROCESS = "explorer.exe";
         private const string LOG_FILE_NAME = "logFile";
+
+        private static string logFolder;
 
         private static readonly IEnumerable<LogLevel> AllLevels = new[]
         {
@@ -54,16 +57,6 @@ namespace ItemPriceCharts.UI.WPF.Helpers
             }
 
             LogManager.ReconfigExistingLoggers();
-        }
-
-        private static IEnumerable<T> ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
-        {
-            foreach (var i in enumerable)
-            {
-                action(i);
-            }
-
-            return enumerable;
         }
 
         public static void OpenLogFolder()

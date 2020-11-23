@@ -121,7 +121,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             try
             {
                 this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
-                this.onlineShopService.GetAllShops());
+                    this.onlineShopService.GetAllShops());
 
                 this.IsListOfShopsShown = this.OnlineShops.Any();
             }
