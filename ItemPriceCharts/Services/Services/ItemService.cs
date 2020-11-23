@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using HtmlAgilityPack;
+using NLog;
 
 using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Events;
@@ -13,6 +14,8 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemService : IItemService
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemService));
+
         private readonly IModelsContext modelsContext;
         private readonly IItemPriceService itemPriceService;
 
@@ -46,16 +49,19 @@ namespace ItemPriceCharts.Services.Services
 
                     this.modelsContext.ItemRepository.Add(item);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Saved item: '{item}' to database");
 
                     this.itemPriceService.CreateItemPrice(new ItemPrice(
                         currentPrice: item.CurrentPrice,
                         itemId: item.Id));
+                    logger.Debug($"Saved item price for itemId: {item.Id} to database");
 
                     EventsLocator.ItemAdded.Publish(item);
                 }
             }
             catch (Exception e)
             {
+                logger.Error($"Couldn't create an item: {e}");
                 throw e;
             }
         }
@@ -68,10 +74,12 @@ namespace ItemPriceCharts.Services.Services
                 {
                     this.modelsContext.ItemRepository.Update(item);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Updated item: '{item}'");
                 }
             }
             catch (Exception e)
             {
+                logger.Error($"Couldn't update an item: {e}");
                 throw e;
             }
         }
@@ -84,12 +92,14 @@ namespace ItemPriceCharts.Services.Services
                 {
                     this.modelsContext.ItemRepository.Delete(item);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Deleted item: '{item}'");
 
                     EventsLocator.ItemDeleted.Publish(item);
                 }
             }
             catch (Exception e)
             {
+                logger.Error($"Couldn't delete item: '{item}'.\t{e}");
                 throw e;
             }
         }
@@ -108,6 +118,9 @@ namespace ItemPriceCharts.Services.Services
                         item.CurrentPrice = updatedItem.CurrentPrice;
 
                         this.modelsContext.ItemRepository.Update(item);
+                        logger.Debug($"Updated item: {item.Title}:" +
+                            $"\nFrom {item.CurrentPrice} to {updatedItem.Description}" +
+                            $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
 
                         return this.CreateNewItemPrice(item.CurrentPrice, item.Id);
                     }
@@ -116,6 +129,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
+                logger.Error($"Couldn't update item price for '{item}'.\t{e}");
                 throw e;
             }
         }

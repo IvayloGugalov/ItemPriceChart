@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using NLog;
+
 using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Models;
 
@@ -9,6 +11,8 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemPriceService : IItemPriceService
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemPriceService));
+
         private readonly IModelsContext modelsContext;
 
         public ItemPriceService(ModelsContext modelsContext)
@@ -27,10 +31,12 @@ namespace ItemPriceCharts.Services.Services
                 {
                     this.modelsContext.ItemPriceRepository.Add(itemPrice);
                     this.modelsContext.CommitChangesAsync();
+                    logger.Debug($"Saved '{itemPrice}' for itemId: {itemPrice.ItemId} in database");
                 }
             }
             catch (Exception e)
             {
+                logger.Error($"Error when saving item price for itemId: {itemPrice.ItemId}.\t{e}");
                 throw e;
             }
         }
@@ -47,6 +53,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
+                logger.Error($"Error when retrieving item price for itemId: {itemId}.\t{e}");
                 throw e;
             }
         }

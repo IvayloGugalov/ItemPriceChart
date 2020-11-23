@@ -6,6 +6,7 @@ using System.Windows.Input;
 
 using LiveCharts;
 using LiveCharts.Wpf;
+using NLog;
 
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
@@ -16,6 +17,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ItemInformationViewModel : BindableViewModel
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemInformationViewModel));
 
         private readonly IItemPriceService itemPriceService;
         private readonly IItemService itemService;
@@ -110,9 +112,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 {
                     this.lineSeries.Values.Add(updatedItemPrice.Price);
                     this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
-
-                    this.OnPropertyChanged(() => this.PriceCollection);
-                    this.OnPropertyChanged(() => this.Labels);
                 }
                 else
                 {
@@ -125,6 +124,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
+                logger.Info($"Couldn't update item price: {e}");
                 UIEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         title: "Error",

@@ -22,6 +22,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Image Margin="0 25"/>
@@ -45,6 +47,13 @@
                     VerticalAlignment="Bottom"
                     Content="Clear View"
                     Command="{Binding ClearViewCommand}">
+            </Button>
+
+            <Button Grid.Row="5"
+                    Style="{StaticResource Styles.MenuButtons}"
+                    VerticalAlignment="Bottom"
+                    Content="Show log file"
+                    Command="{Binding ShowLogFileCommand}">
             </Button>
         </Grid>
 

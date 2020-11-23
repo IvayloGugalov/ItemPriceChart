@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+using NLog;
+
 using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
@@ -14,6 +16,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ShopsAndItemListingsViewModel : BaseListingViewModel
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ShopsAndItemListingsViewModel));
+
         private readonly IItemService itemService;
         private readonly IOnlineShopService onlineShopService;
         private OnlineShop selectedShop;
@@ -82,6 +86,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (System.Exception e)
             {
+                logger.Info($"Can't load items for {this.SelectedShop}: {e}");
                 UIEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         "Error",
@@ -113,10 +118,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void AddShopsToViewModel()
         {
-            this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
-                this.onlineShopService.GetAllShops());
+            try
+            {
+                this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
+                    this.onlineShopService.GetAllShops());
 
-            this.IsListOfShopsShown = this.OnlineShops.Any();
+                this.IsListOfShopsShown = this.OnlineShops.Any();
+            }
+            catch (System.Exception e)
+            {
+                logger.Info($"Can't load shops: {e}");
+            }
         }
 
         private bool ShowItemsPredicate()

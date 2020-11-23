@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using NLog;
+
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
@@ -11,10 +13,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteItemViewModel : BindableViewModel
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(DeleteItemViewModel));
+
         private readonly IItemService itemService;
         private string operationResult;
 
         public Item ItemToDelete { get; }
+
         public string OperationResult
         {
             get => this.operationResult;
@@ -39,6 +44,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (Exception e)
             {
+                logger.Info($"Can't delete item {this.ItemToDelete}.\t{e}");
                 UIEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         title: "Error",

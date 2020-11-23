@@ -28,7 +28,7 @@
                 <RowDefinition Height="20"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="7*"/>
@@ -37,7 +37,7 @@
 
             <materialDesign:PackIcon Grid.Row="1"
                                      Grid.Column="1"
-                                     VerticalAlignment="Center"
+                                     VerticalAlignment="Top"
                                      Height="45"
                                      Width="45"
                                      Foreground="{Binding IconColor}"
@@ -51,21 +51,32 @@
         </Grid>
 
         <Grid Grid.Row="2"
-              VerticalAlignment="Center"
-              HorizontalAlignment="Right">
+              VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="15"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="15"/>
             </Grid.ColumnDefinitions>
 
-            <Button Name="positiveButton"
+            <TextBlock VerticalAlignment="Center"
+                       Margin="15 15 0 0"
+                       FontSize="12">
+                <Hyperlink Command="{Binding ShowLogFileCommand}"
+                           Style="{StaticResource Styles.HyperLink}">
+                    <Run Text="Show log file" />
+                </Hyperlink>
+            </TextBlock>
+
+            <Button Grid.Column="2"
+                    Name="positiveButton"
                     Content="{Binding PositiveButtonText}"
                     Visibility="{Binding Path=IsSingleButtonShown, Converter={cv:BoolToVisibilityConverter Invert=True}}"
                     Style="{StaticResource Styles.MessageDialogButton}"/>
 
-            <Button Grid.Column="2"
+            <Button Grid.Column="4"
                     Name="negativeButton"
                     Content="{Binding NegativeButtonText}"
                     Style="{StaticResource Styles.MessageDialogButton}"/>

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using ItemPriceCharts.Services.Models;
 
@@ -8,6 +10,7 @@ namespace ItemPriceCharts.Services.Data
 {
     public class ModelsContext : DbContext, IModelsContext
     {
+        private readonly StreamWriter logStream = new StreamWriter(@"\database.log", append: true);
         private bool disposed = false;
 
         public DbSet<OnlineShop> OnlineShops { get; set; }
@@ -20,7 +23,12 @@ namespace ItemPriceCharts.Services.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=ItemPriceChartsDB.db");
+            optionsBuilder.UseSqlite("Data Source=ItemPriceChartsDB.db")
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .LogTo(this.logStream.WriteLine,
+                       Microsoft.Extensions.Logging.LogLevel.Debug,
+                       DbContextLoggerOptions.DefaultWithUtcTime);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -45,9 +53,10 @@ namespace ItemPriceCharts.Services.Data
             this.disposed = true;
         }
 
-        new public void Dispose()
+        public override void Dispose()
         {
-            this.Dispose(true);
+            base.Dispose();
+            this.logStream.Dispose();
             GC.SuppressFinalize(this);
         }
     }
