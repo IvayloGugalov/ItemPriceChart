@@ -12,7 +12,7 @@ namespace ItemPriceCharts.Services.Services
 {
     public class OnlineShopService : IOnlineShopService
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(OnlineShopService));
 
         private readonly IModelsContext modelsContext;
 

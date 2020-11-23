@@ -14,7 +14,7 @@ namespace ItemPriceCharts.Services.Services
 {
     public class ItemService : IItemService
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemService));
 
         private readonly IModelsContext modelsContext;
         private readonly IItemPriceService itemPriceService;

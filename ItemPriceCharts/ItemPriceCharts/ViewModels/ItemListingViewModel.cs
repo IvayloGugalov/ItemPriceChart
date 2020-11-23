@@ -9,7 +9,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ItemListingViewModel : BaseListingViewModel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
         private readonly IItemService itemService;
 

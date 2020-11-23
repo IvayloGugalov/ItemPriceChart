@@ -12,7 +12,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateItemViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(CreateItemViewModel));
 
         private readonly IItemService itemService;
         private ItemType selectedItemType;

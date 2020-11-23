@@ -12,7 +12,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateShopViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(CreateShopViewModel));
 
         private readonly IOnlineShopService onlineShopService;
         private string newShopURL;

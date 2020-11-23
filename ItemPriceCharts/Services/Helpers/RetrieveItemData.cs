@@ -12,7 +12,7 @@ namespace ItemPriceCharts.Services.Helpers
 {
     public static class RetrieveItemData
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(RetrieveItemData));
 
         public static Item CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
         {

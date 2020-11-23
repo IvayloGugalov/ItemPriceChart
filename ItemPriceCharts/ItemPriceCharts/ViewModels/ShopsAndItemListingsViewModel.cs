@@ -16,7 +16,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ShopsAndItemListingsViewModel : BaseListingViewModel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(ShopsAndItemListingsViewModel));
 
         private readonly IItemService itemService;
         private readonly IOnlineShopService onlineShopService;

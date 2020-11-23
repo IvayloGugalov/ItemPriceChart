@@ -17,7 +17,7 @@ namespace ItemPriceCharts.UI.WPF
     public partial class App : Application
     {
         private readonly Dictionary<Type, Type> mappedTypes = new Dictionary<Type, Type>();
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(App));
 
         protected override void OnStartup(StartupEventArgs e)
         {

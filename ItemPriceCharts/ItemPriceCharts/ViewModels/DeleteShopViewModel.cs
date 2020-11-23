@@ -12,7 +12,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteShopViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(DeleteShopViewModel));
 
         private readonly IOnlineShopService onlineShopService;
         private string operationResult = string.Empty;
