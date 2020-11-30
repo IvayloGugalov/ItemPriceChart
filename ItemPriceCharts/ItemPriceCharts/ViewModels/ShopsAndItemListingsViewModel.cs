@@ -1,12 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 using NLog;
 
-using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
@@ -18,7 +15,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ShopsAndItemListingsViewModel));
 
-        private readonly IItemService itemService;
         private readonly IOnlineShopService onlineShopService;
         private OnlineShop selectedShop;
         private bool isListOfShopsShown;
@@ -45,7 +41,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ShopsAndItemListingsViewModel(ItemService itemService, OnlineShopService onlineShopService)
             : base (itemService)
         {
-            this.itemService = itemService;
             this.onlineShopService = onlineShopService;
 
             this.ShowCreateShopCommand = new RelayCommand(_ => this.ShowCreateShopAction());
@@ -55,8 +50,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.ShouldShowShopInformation = true;
 
-            EventsLocator.ShopAdded.Subscribe(this.OnAddedShop);
-            EventsLocator.ShopDeleted.Subscribe(this.OnDeletedShop);
+            UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
+            UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
 
             this.AddShopsToViewModel();
         }
@@ -77,7 +72,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 }
 
                 this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                    this.itemService.GetItemsForShop(this.SelectedShop));
+                    this.ItemService.GetItemsForShop(this.SelectedShop));
 
                 if (this.ItemsList.Any())
                 {
@@ -97,23 +92,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void OnAddedShop(object sender, OnlineShop e)
         {
-            Dispatcher dispatcher = Application.Current.Dispatcher;
-            dispatcher.Invoke(() =>
-            {
-                this.OnlineShops.Add(e);
-                this.IsListOfShopsShown = true;
-            });
+            this.OnlineShops.Add(e);
+            this.IsListOfShopsShown = true;
         }
 
         private void OnDeletedShop(object sender, OnlineShop e)
         {
-            Dispatcher dispatcher = Application.Current.Dispatcher;
-            dispatcher.Invoke(() =>
-            {
-                this.OnlineShops.Remove(e);
-
-                this.OnPropertyChanged(() => this.IsListOfShopsShown);
-            });
+            this.OnlineShops.Remove(e);
+            this.OnPropertyChanged(() => this.IsListOfShopsShown);
         }
 
         private void AddShopsToViewModel()

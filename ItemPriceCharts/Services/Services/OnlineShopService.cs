@@ -53,7 +53,6 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Can't create shop: {e}");
-                throw e;
             }
         }
 
@@ -71,7 +70,6 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Can't update shop: {e}");
-                throw e;
             }
         }
 
@@ -90,8 +88,7 @@ namespace ItemPriceCharts.Services.Services
             }
             catch (Exception e)
             {
-                logger.Error($"Can't delete shop: '{onlineShop}'");
-                throw e;
+                logger.Error($"Can't delete shop: '{onlineShop}': {e}");
             }
         }
     }

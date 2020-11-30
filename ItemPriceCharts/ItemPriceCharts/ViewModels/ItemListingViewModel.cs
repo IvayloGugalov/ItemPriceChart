@@ -11,13 +11,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
-        private readonly IItemService itemService;
-
-        public ItemListingViewModel(ItemService itemService, OnlineShopService onlineShopService)
+        public ItemListingViewModel(ItemService itemService)
             : base (itemService)
         {
-            this.itemService = itemService;
-
             this.ShouldShowShopInformation = false;
 
             this.ShowAllItems();
@@ -27,7 +23,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             try
             {
-                this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(this.itemService.GetAllItems());
+                this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(this.ItemService.GetAllItems());
 
                 this.AreItemsShown = true;
                 if (this.ItemsList.Any())

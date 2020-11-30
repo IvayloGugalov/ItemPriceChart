@@ -1,4 +1,9 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+
+using Autofac;
 using Autofac.Core;
 
 using ItemPriceCharts.Services.Models;
@@ -11,89 +16,73 @@ using ItemPriceCharts.UI.WPF.Views.UserControls;
 
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
-    public class Bootstrapper : AutofacBootstrapper
+    public class Bootstrapper
     {
         private readonly App app;
+        private readonly Dictionary<Type, Type> mappedTypes;
         private IViewFactory viewFactory;
+        private ILifetimeScope lifetimeScope;
 
-        public Bootstrapper(App app)
+        public Bootstrapper(App app, Dictionary<Type, Type> mappedTypes)
         {
             this.app = app;
+            this.mappedTypes = mappedTypes;
 
-            UIEvents.ShowCreateShopViewModel.Subscribe(this.CreateShopWindow);
-            UIEvents.ShowDeleteShopViewModel.Subscribe(this.DeleteShopWindow);
-            UIEvents.ShowCreateItemViewModel.Subscribe(this.CreateItemWindow);
-            UIEvents.ShowItemInformatioViewModel.Subscribe(this.CreateItemInformationWindow);
-            UIEvents.ShowMessageDialog = (vm) =>
-            {
-                return System.Windows.Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
-            };
+            var builder = new ContainerBuilder();
+
+            this.ConfigureContainer(builder);
+            this.Start(builder);
+
+            _ = new DialogCreatorFactory(this.viewFactory);
         }
 
         public void Stop()
         {
-            this.viewFactory.LifetimeScope.Dispose();
+            this.lifetimeScope.Dispose();
         }
 
-        protected override void ConfigureContainer(ContainerBuilder builder)
+        private void Start(ContainerBuilder builder)
         {
-            base.ConfigureContainer(builder);
+            //LifetimeScope must be init, after all dependencies are registered.
+            this.lifetimeScope = builder.Build();
+            this.viewFactory = this.lifetimeScope.Resolve<IViewFactory>(new Parameter[] { new NamedParameter("lifetimeScope", this.lifetimeScope) });
+
+            this.RegisterViews();
+            this.ConfigureApplication();
+        }
+
+        private void ConfigureContainer(ContainerBuilder builder)
+        {
+            if (this.mappedTypes != null && this.mappedTypes.Any())
+            {
+                builder.RegisterModule(new MappedTypeModules(this.mappedTypes));
+            }
+
             builder.RegisterModule<MainModule>();
             builder.RegisterModule<ViewModelsModule>();
+            builder.RegisterModule<AutofacModule>();
         }
 
-        protected override void ConfigureApplication(IContainer container)
+        private void RegisterViews()
         {
-            this.viewFactory = container.Resolve<IViewFactory>();
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>());
+            this.viewFactory.Register<MainWindowViewModel, MainWindow>();
 
+            this.viewFactory.RegisterUserControl<ItemListingViewModel, ItemListingView>();
+            this.viewFactory.RegisterUserControl<ShopsAndItemListingsViewModel, ShopsAndItemListingsView>();
+
+            this.viewFactory.Register<CreateShopViewModel, CreateShopView>();
+            this.viewFactory.Register<DeleteShopViewModel, DeleteShopView>();
+
+            this.viewFactory.Register<CreateItemViewModel, CreateItemView>();
+            this.viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
+            this.viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
+        }
+
+        private void ConfigureApplication()
+        {
+            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>());
             this.app.MainWindow = mainWindow;
             this.app.MainWindow.Show();
-        }
-
-        protected override void RegisterViews(IViewFactory viewFactory)
-        {
-            viewFactory.Register<MainWindowViewModel, MainWindow>();
-
-            viewFactory.RegisterUserControl<ItemListingViewModel, ShopsAndItemListingsView>();
-            viewFactory.RegisterUserControl<ShopsAndItemListingsViewModel, ShopsAndItemListingsView>();
-
-            viewFactory.Register<CreateShopViewModel, CreateShopView>();
-            viewFactory.Register<DeleteShopViewModel, DeleteShopView>();
-
-            viewFactory.Register<CreateItemViewModel, CreateItemView>();
-            viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
-            viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
-        }
-
-        protected void CreateShopWindow(object sender, object e)
-        {
-            var window = this.viewFactory.Resolve<CreateShopViewModel>(System.Array.Empty<Parameter>());
-            window.ShowDialog();
-        }
-
-        protected void DeleteShopWindow(object sender, OnlineShop e)
-        {
-            var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
-            var window = this.viewFactory.Resolve<DeleteShopViewModel>(parameters);
-            window.ShowDialog();
-        }
-
-        protected void CreateItemWindow(object sender, OnlineShop e)
-        {
-            var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
-            var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
-            window.ShowDialog();
-        }
-
-        protected void CreateItemInformationWindow(object sender, Item e)
-        {
-            if (e != null)
-            {
-                var parameters = new Parameter[] { new NamedParameter("item", e) };
-                var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
-                window.ShowDialog();
-            }
         }
     }
 }

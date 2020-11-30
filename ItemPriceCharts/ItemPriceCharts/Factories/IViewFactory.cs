@@ -1,16 +1,14 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Autofac;
+
 using Autofac.Core;
+
 using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Factories
 {
     public interface IViewFactory
     {
-        ILifetimeScope LifetimeScope { get; }
-
         void Register<TViewModel, TView>()
             where TViewModel : class, IViewModel
             where TView : Window;

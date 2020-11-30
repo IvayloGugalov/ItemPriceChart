@@ -38,6 +38,6 @@
                    Margin="0 5 0 0"
                    HorizontalAlignment="Center"
                    Text="{Binding OperationResult}"
-                   Visibility="{Binding IsOperationFinished, Converter={cv:BoolToVisibilityConverter}}"/>
+                   Visibility="{Binding IsOperationRunning, Converter={cv:BoolToVisibilityConverter}}"/>
     </Grid>
 </Window>
