@@ -14,24 +14,24 @@ namespace ItemPriceCharts.Services.Services
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(OnlineShopService));
 
-        private readonly IModelsContext modelsContext;
+        private readonly IRepository<OnlineShop> onlineShopRepository;
 
-        public OnlineShopService(ModelsContext modelsContext)
+        public OnlineShopService(IRepository<OnlineShop> onlineShopRepository)
         {
-            this.modelsContext = modelsContext;
+            this.onlineShopRepository = onlineShopRepository;
         }
 
         public OnlineShop FindShop(int id) =>
-            this.modelsContext.OnlineShopRepository.FindAsync(id).Result ?? throw new Exception();
+            this.onlineShopRepository.FindAsync(id).Result ?? throw new Exception();
 
         public IEnumerable<OnlineShop> GetAllShops() =>
-            this.modelsContext.OnlineShopRepository.All().Result;
+            this.onlineShopRepository.GetAll().Result;
 
         public bool IsShopExisting(int shopId) =>
-            this.modelsContext.OnlineShopRepository.IsExisting(shopId).Result;
+            this.onlineShopRepository.IsExisting(shopId).Result;
 
         internal bool IsShopExisting(string url) =>
-            this.modelsContext.OnlineShopRepository.All(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
+            this.onlineShopRepository.GetAll(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
 
         public void CreateShop(string shopURL, string shopTitle)
         {
@@ -43,8 +43,7 @@ namespace ItemPriceCharts.Services.Services
                         url: shopURL,
                         title: shopTitle);
 
-                    this.modelsContext.OnlineShopRepository.Add(newShop);
-                    this.modelsContext.CommitChangesAsync();
+                    this.onlineShopRepository.Add(newShop);
                     logger.Debug($"Created shop: '{newShop}'");
 
                     EventsLocator.ShopAdded.Publish(newShop);
@@ -62,8 +61,7 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsShopExisting(onlineShop.Id))
                 {
-                    this.modelsContext.OnlineShopRepository.Update(onlineShop);
-                    this.modelsContext.CommitChangesAsync();
+                    this.onlineShopRepository.Update(onlineShop);
                     logger.Debug($"Updated shop: '{onlineShop}'");
                 }
             }
@@ -79,8 +77,7 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsShopExisting(onlineShop.Id))
                 {
-                    this.modelsContext.OnlineShopRepository.Delete(onlineShop);
-                    this.modelsContext.CommitChangesAsync();
+                    this.onlineShopRepository.Delete(onlineShop);
                     logger.Debug($"Deleted shop: '{onlineShop}'");
 
                     EventsLocator.ShopDeleted.Publish(onlineShop);

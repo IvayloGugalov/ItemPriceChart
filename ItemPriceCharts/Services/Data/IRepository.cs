@@ -10,13 +10,13 @@ namespace ItemPriceCharts.Services.Data
     {
         Task<TEntity> FindAsync(int id);
         Task<bool> IsExisting(int id);
-        Task<IEnumerable<TEntity>> All(
+        Task<IEnumerable<TEntity>> GetAll(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
-        void Add(TEntity entity);
-        void Update(TEntity entity);
-        void Delete(TEntity entity);
+        Task<TEntity> Add(TEntity entity);
+        Task<TEntity> Update(TEntity entity);
+        Task<bool> Delete(TEntity entity);
     }
 }

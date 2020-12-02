@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-using Microsoft.EntityFrameworkCore;
 using NLog;
 
-using ItemPriceCharts.Services.Data;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -40,7 +38,6 @@ namespace ItemPriceCharts.UI.WPF
             this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
             this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
             this.mappedTypes.Add(typeof(IItemPriceService), typeof(ItemPriceService));
-            this.mappedTypes.Add(typeof(DbContext), typeof(ModelsContext));
 
             var bootstrapper = new Bootstrapper.Bootstrapper(this, this.mappedTypes);
 
@@ -79,11 +76,22 @@ namespace ItemPriceCharts.UI.WPF
         {
             logger.Error(exception);
 
-            UIEvents.ShowMessageDialog(
-                new ViewModels.MessageDialogViewModel(
-                    title: nameof(exception),
-                    description: exception.Message,
-                    buttonType: ViewModels.ButtonType.Close));
+            if (UIEvents.ShowMessageDialog is not null)
+            {
+                UIEvents.ShowMessageDialog(
+                    new ViewModels.MessageDialogViewModel(
+                        title: nameof(exception),
+                        description: exception.Message,
+                        buttonType: ViewModels.ButtonType.Close));
+            }
+            else
+            {
+                MessageBox.Show(
+                    messageBoxText: exception.Message,
+                    caption: nameof(exception),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
         }
     }
 }

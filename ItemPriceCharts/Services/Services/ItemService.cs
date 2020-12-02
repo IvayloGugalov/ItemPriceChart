@@ -16,28 +16,29 @@ namespace ItemPriceCharts.Services.Services
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemService));
 
-        private readonly IModelsContext modelsContext;
         private readonly IItemPriceService itemPriceService;
+        private readonly IRepository<Item> itemRepository;
 
-        public ItemService(ModelsContext modelsContext, ItemPriceService itemPriceService)
+        public ItemService(IItemPriceService itemPriceService, IRepository<Item> itemRepository)
         {
-            this.modelsContext = modelsContext;
             this.itemPriceService = itemPriceService;
+            this.itemRepository = itemRepository;
         }
 
         public Item FindItem(int id) =>
-            this.modelsContext.ItemRepository.FindAsync(id).Result ?? throw new Exception();
+            this.itemRepository.FindAsync(id).Result ?? throw new Exception();
 
-        public IEnumerable<Item> GetAllItems() => this.modelsContext.ItemRepository.All().Result;
+        public IEnumerable<Item> GetAllItems() =>
+            this.itemRepository.GetAll(includeProperties: nameof(OnlineShop)).Result;
 
         public IEnumerable<Item> GetItemsForShop(OnlineShop onlineShop) =>
-            this.modelsContext.ItemRepository.All(filter: item => item.OnlineShop.Id == onlineShop.Id).Result;
+            this.itemRepository.GetAll(filter: item => item.OnlineShop.Id == onlineShop.Id, includeProperties: nameof(OnlineShop)).Result;
 
         public bool IsItemExisting(int id) =>
-            this.modelsContext.ItemRepository.IsExisting(id).Result;
+            this.itemRepository.IsExisting(id).Result;
 
         internal bool IsItemExisting(string url) =>
-            this.modelsContext.ItemRepository.All(filter: item => item.URL == url).Result.FirstOrDefault() != null;
+            this.itemRepository.GetAll(filter: item => item.URL == url).Result.FirstOrDefault() != null;
 
         public void CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
         {
@@ -47,8 +48,7 @@ namespace ItemPriceCharts.Services.Services
                 {
                     var item = this.LoadItemFromWeb(itemURL, onlineShop, type);
 
-                    this.modelsContext.ItemRepository.Add(item);
-                    this.modelsContext.CommitChangesAsync();
+                    this.itemRepository.Add(item);
                     logger.Debug($"Saved item: '{item}' to database");
 
                     this.itemPriceService.CreateItemPrice(new ItemPrice(
@@ -71,8 +71,7 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsItemExisting(item.Id))
                 {
-                    this.modelsContext.ItemRepository.Update(item);
-                    this.modelsContext.CommitChangesAsync();
+                    this.itemRepository.Update(item);
                     logger.Debug($"Updated item: '{item}'");
                 }
             }
@@ -88,8 +87,7 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsItemExisting(item.Id))
                 {
-                    this.modelsContext.ItemRepository.Delete(item);
-                    this.modelsContext.CommitChangesAsync();
+                    this.itemRepository.Delete(item);
                     logger.Debug($"Deleted item: '{item}'");
 
                     EventsLocator.ItemDeleted.Publish(item);
@@ -114,7 +112,7 @@ namespace ItemPriceCharts.Services.Services
                         item.Description = updatedItem.Description;
                         item.CurrentPrice = updatedItem.CurrentPrice;
 
-                        this.modelsContext.ItemRepository.Update(item);
+                        this.itemRepository.Update(item);
                         logger.Debug($"Updated item: {item.Title}:" +
                             $"\nFrom {item.CurrentPrice} to {updatedItem.Description}" +
                             $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
