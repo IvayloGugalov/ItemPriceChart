@@ -72,7 +72,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 }
 
                 this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                    this.ItemService.GetItemsForShop(this.SelectedShop));
+                    this.SelectedShop.Items);
 
                 if (this.ItemsList.Any())
                 {

@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
+using ItemPriceCharts.Services.Constants;
 using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.Services.Data
@@ -13,7 +14,7 @@ namespace ItemPriceCharts.Services.Data
         private readonly StreamWriter logStream = new StreamWriter(
             string.Concat(
                 Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData), @"\ItemPriceCharts\database.log"), append: true);
+                    Environment.SpecialFolder.LocalApplicationData), DatabaseKeyWordConstants.DATABASE_LOG_PATH), append: true);
 
         public DbSet<OnlineShop> OnlineShops { get; set; }
         public DbSet<Item> Items { get; set; }
@@ -21,7 +22,7 @@ namespace ItemPriceCharts.Services.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=ItemPriceChartsDB.db")
+            optionsBuilder.UseSqlite(DatabaseKeyWordConstants.CONNECTION_STRING)
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
                 .LogTo(this.logStream.WriteLine,

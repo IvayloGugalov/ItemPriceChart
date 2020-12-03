@@ -25,7 +25,7 @@ namespace ItemPriceCharts.Services.Services
             this.onlineShopRepository.FindAsync(id).Result ?? throw new Exception();
 
         public IEnumerable<OnlineShop> GetAllShops() =>
-            this.onlineShopRepository.GetAll().Result;
+            this.onlineShopRepository.GetAll(includeProperties: "Items").Result;
 
         public bool IsShopExisting(int shopId) =>
             this.onlineShopRepository.IsExisting(shopId).Result;

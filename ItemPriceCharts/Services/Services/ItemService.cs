@@ -49,6 +49,8 @@ namespace ItemPriceCharts.Services.Services
                     var item = this.LoadItemFromWeb(itemURL, onlineShop, type);
 
                     this.itemRepository.Add(item);
+                    onlineShop.AddItem(item);
+
                     logger.Debug($"Saved item: '{item}' to database");
 
                     this.itemPriceService.CreateItemPrice(new ItemPrice(
@@ -88,6 +90,8 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsItemExisting(item.Id))
                 {
                     this.itemRepository.Delete(item);
+                    item.OnlineShop.DeleteItem(item);
+
                     logger.Debug($"Deleted item: '{item}'");
 
                     EventsLocator.ItemDeleted.Publish(item);
