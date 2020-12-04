@@ -13,15 +13,17 @@ namespace ItemPriceCharts.Services.Services
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemPriceService));
 
-        private readonly IModelsContext modelsContext;
+        private readonly IRepository<ItemPrice> itemPriceRepository;
+        private readonly IRepository<Item> itemRepository;
 
-        public ItemPriceService(ModelsContext modelsContext)
+        public ItemPriceService(IRepository<ItemPrice> itemPriceRepository, IRepository<Item> itemRepository)
         {
-            this.modelsContext = modelsContext;
+            this.itemPriceRepository = itemPriceRepository;
+            this.itemRepository = itemRepository;
         }
 
         public IEnumerable<ItemPrice> GetPricesForItem(int itemId) =>
-           this.modelsContext.ItemPriceRepository.All(filter: i => i.ItemId == itemId).Result;
+           this.itemPriceRepository.GetAll(filter: i => i.ItemId == itemId).Result;
 
         public void CreateItemPrice(ItemPrice itemPrice)
         {
@@ -29,15 +31,13 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsItemExisting(itemPrice.ItemId))
                 {
-                    this.modelsContext.ItemPriceRepository.Add(itemPrice);
-                    this.modelsContext.CommitChangesAsync();
+                    this.itemPriceRepository.Add(itemPrice);
                     logger.Debug($"Saved '{itemPrice}' for itemId: {itemPrice.ItemId} in database");
                 }
             }
             catch (Exception e)
             {
                 logger.Error($"Error when saving item price for itemId: {itemPrice.ItemId}.\t{e}");
-                throw e;
             }
         }
 
@@ -45,7 +45,7 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                return this.modelsContext.ItemPriceRepository.All(
+                return this.itemPriceRepository.GetAll(
                     filter: price => price.ItemId == itemId,
                     orderBy: prices => prices.OrderByDescending(price => price.PriceDate))
                 .Result.First()
@@ -54,11 +54,11 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Error when retrieving item price for itemId: {itemId}.\t{e}");
-                throw e;
+                return 0;
             }
         }
 
         private bool IsItemExisting(int id) =>
-           this.modelsContext.ItemRepository.IsExisting(id).Result;
+           this.itemRepository.IsExisting(id).Result;
     }
 }

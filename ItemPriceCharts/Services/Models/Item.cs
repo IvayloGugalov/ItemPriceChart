@@ -28,7 +28,7 @@ namespace ItemPriceCharts.Services.Models
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Item other))
+            if (obj is not Item other)
             {
                 return false;
             }
