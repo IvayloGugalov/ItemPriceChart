@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Topmost="False"
+        ResizeMode="CanMinimize"
         Height="600"
         Width="1000">
     <Grid>
@@ -15,51 +19,137 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Grid Background="#7098da"
-              Width="150">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromLeft}">
 
-            <Image Margin="0 25"/>
+            <Grid Background="#024f94"
+                  Width="150">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Button Grid.Row="1"
-                    Style="{StaticResource Styles.MenuButtons}"
-                    Name="allShops"
-                    Content="View shops"
-                    Command="{Binding ShowShopsAndItemListingsCommand}">
-            </Button>
+                <materialDesign:PackIcon Kind="ShoppingCart"
+                                         Foreground="White"
+                                         HorizontalAlignment="Center"
+                                         Width="40"
+                                         Height="40"
+                                         Margin="0 15 0 0"/>
 
-            <Button Grid.Row="2"
-                    Style="{StaticResource Styles.MenuButtons}"
-                    Name="allItems"
-                    Content="View items"
-                    Command="{Binding ShowItemListingCommand}">
-            </Button>
+                <Button Grid.Row="1"
+                        Style="{StaticResource Styles.MenuButtons}"
+                        Name="allShops"
+                        Content="View shops"
+                        Command="{Binding ShowShopsAndItemListingsCommand}"/>
 
-            <Button Grid.Row="3"
-                    Style="{StaticResource Styles.MenuButtons}"
-                    VerticalAlignment="Bottom"
-                    Content="Clear View"
-                    Command="{Binding ClearViewCommand}">
-            </Button>
+                <Button Grid.Row="5"
+                        Style="{StaticResource Styles.MenuButtons}"
+                        Name="allItems"
+                        Content="View items"
+                        Command="{Binding ShowItemListingCommand}"/>
 
-            <Button Grid.Row="5"
-                    Style="{StaticResource Styles.MenuButtons}"
-                    VerticalAlignment="Bottom"
-                    Content="Show log file"
-                    Command="{Binding ShowLogFileCommand}">
-            </Button>
-        </Grid>
+                <Button Grid.Row="4"
+                        Style="{StaticResource Styles.MenuButtons}"
+                        VerticalAlignment="Bottom"
+                        Content="Clear View"
+                        Command="{Binding ClearViewCommand}"/>
 
-        <Grid Grid.Column="1" Background="CornflowerBlue">
+                <Button Grid.Row="2"
+                        Style="{StaticResource Styles.MenuButtons}"
+                        Click="Button_Click">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="20 0 0 0">
+                            <materialDesign:PackIcon Margin="0 3 3 0"
+                                                     Kind="Shop" />
+                            <Label Padding="0"
+                                   Content="Shops"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="1"
+                              Margin="25 4 10 4">
+                            <materialDesign:PackIcon Name="ArrowUp"
+                                                     Kind="ArrowUp" />
+                            <materialDesign:PackIcon Name="ArrowDown"
+                                                     Kind="ArrowDown" />
+                        </Grid>
+                    </Grid>
+                </Button>
+
+                <ListView Grid.Row="3"
+                          Style="{StaticResource VisibleAnimation}"
+                          Name="listOfShops"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          ItemsSource="{Binding OnlineShops}"
+                          SelectedItem="{Binding SelectedShop}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemListingCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding ElementName=listOfShops,
+                                            Path=SelectedItem}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <TextBlock Text="{Binding Title}" />
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="Margin" Value="0 3"/>
+                            <Setter Property="FontFamily" Value="Segoe UI"/>
+                            <Setter Property="Width" Value="100" />
+                            <Setter Property="Foreground" Value="LightGray"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}" >
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"
+                                                          Width="{TemplateBinding Width}"
+                                                          Height="{TemplateBinding Height}"
+                                                          TextBlock.TextAlignment="Left"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Cursor" Value="Hand" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+                <Button Grid.Row="6"
+                        Style="{StaticResource Styles.MenuButtons}"
+                        VerticalAlignment="Bottom"
+                        Content="Show log file"
+                        Command="{Binding ShowLogFileCommand}">
+                </Button>
+            </Grid>
+
+        </materialDesign:TransitioningContent>
+
+        <Grid Grid.Column="1" Background="#2283c9">
             <ContentControl Visibility="{Binding Path=IsNewViewDisplayed, Converter={cv:BoolToVisibilityConverter}}"
-                            Content="{Binding CurrentView}"/>
+                            Content="{Binding CurrentView}"
+                             Style="{StaticResource VisibleAnimation}"/>
         </Grid>
+        
     </Grid>
 </Window>

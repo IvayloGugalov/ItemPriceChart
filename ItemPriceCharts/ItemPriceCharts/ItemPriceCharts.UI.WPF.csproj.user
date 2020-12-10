@@ -44,6 +44,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Styles\Colors.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\CreateItemView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -77,7 +80,7 @@
     <Page Update="Views\UserControls\ShopsAndItemListingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\Styles.xaml">
+    <Page Update="Styles\Styles.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

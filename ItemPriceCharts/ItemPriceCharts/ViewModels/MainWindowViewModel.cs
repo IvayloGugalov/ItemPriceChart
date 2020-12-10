@@ -1,5 +1,9 @@
-﻿using System.Windows.Input;
-
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -8,10 +12,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     public class MainWindowViewModel : BindableViewModel
     {
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
-        private readonly ItemListingViewModel itemListingViewModel;
+        //private readonly ItemListingViewModel itemListingViewModel;
 
         private object currentView;
         private bool isNewViewDisplayed;
+        private OnlineShop selectedShop;
 
         public bool IsNewViewDisplayed
         {
@@ -30,16 +35,40 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ClearViewCommand { get; }
         public ICommand ShowLogFileCommand { get; }
 
-        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel)
+        public ObservableCollection<OnlineShop> OnlineShops { get; private set; }
+
+        public OnlineShop SelectedShop
+        {
+            get => this.selectedShop;
+            set => SetValue(ref this.selectedShop, value);
+        }
+
+        public ICommand ShowItemsForShopCommand { get; }
+
+        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, OnlineShopService onlineShopService)
         {
             this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
-            this.itemListingViewModel = itemListingViewModel;
             this.currentView = this;
+
+            this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(onlineShopService.GetAllShops());
 
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
             this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
+            this.ShowItemsForShopCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
+
+            UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
+            UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
+        }
+        private void OnAddedShop(object sender, OnlineShop e)
+        {
+            this.OnlineShops.Add(e);
+        }
+
+        private void OnDeletedShop(object sender, OnlineShop e)
+        {
+            this.OnlineShops.Remove(e);
         }
 
         private void ClearViewAction()
@@ -55,7 +84,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowItemListingAction()
         {
-            this.CurrentView = this.itemListingViewModel;
+            UIEvents.ShowItems.Publish(this.SelectedShop);
             this.IsNewViewDisplayed = true;
         }
     }

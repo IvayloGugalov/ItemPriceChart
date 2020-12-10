@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
@@ -19,7 +20,8 @@
                   Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
                   ItemsSource="{Binding ItemsList}"
                   SelectedItem="{Binding SelectedItem}"
-                  Style="{StaticResource Styles.ListViewForItems}" Grid.ColumnSpan="2">
+                  Style="{StaticResource Styles.ListViewForItems}"
+                  Grid.ColumnSpan="2">
 
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -27,8 +29,8 @@
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonUp">
                                 <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                           CommandParameter="{Binding ElementName=ItemsListView,
-                                           Path=SelectedItem}"/>
+                                                       CommandParameter="{Binding ElementName=ItemsListView,
+                                                       Path=SelectedItem}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <TextBlock Text="{Binding Title}" />

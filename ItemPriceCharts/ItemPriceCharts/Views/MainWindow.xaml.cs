@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace ItemPriceCharts.UI.WPF.Views
 {
@@ -20,6 +10,24 @@ namespace ItemPriceCharts.UI.WPF.Views
         public MainWindow()
         {
             InitializeComponent();
+            this.listOfShops.Visibility = Visibility.Collapsed;
+            this.ArrowUp.Visibility = Visibility.Collapsed;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.listOfShops.Visibility != Visibility.Visible)
+            {
+                this.listOfShops.Visibility = Visibility.Visible;
+                this.ArrowDown.Visibility = Visibility.Collapsed;
+                this.ArrowUp.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.listOfShops.Visibility = Visibility.Collapsed;
+                this.ArrowUp.Visibility = Visibility.Collapsed;
+                this.ArrowDown.Visibility = Visibility.Visible;
+            }
         }
     }
 }
