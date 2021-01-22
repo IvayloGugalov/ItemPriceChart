@@ -21,9 +21,6 @@
     <Compile Update="Views\DeleteItemView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DeleteShopView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\ItemInformationView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -56,10 +53,7 @@
     <Page Update="Views\DeleteItemView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DeleteShopView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\EnumConverters.xaml">
+    <Page Update="ResourceDictionaries\EnumConverters.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ItemInformationView.xaml">

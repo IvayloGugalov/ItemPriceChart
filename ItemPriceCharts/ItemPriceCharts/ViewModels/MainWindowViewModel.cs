@@ -12,7 +12,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     public class MainWindowViewModel : BindableViewModel
     {
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
-        //private readonly ItemListingViewModel itemListingViewModel;
+        private readonly ItemListingViewModel itemListingViewModel;
 
         private object currentView;
         private bool isNewViewDisplayed;
@@ -45,9 +45,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand ShowItemsForShopCommand { get; }
 
-        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, OnlineShopService onlineShopService)
+        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, OnlineShopService onlineShopService)
         {
             this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
+            this.itemListingViewModel = itemListingViewModel;
             this.currentView = this;
 
             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(onlineShopService.GetAllShops());
@@ -73,19 +74,28 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ClearViewAction()
         {
+            this.ResetSelectedShop();
             this.IsNewViewDisplayed = false;
         }
 
         private void ShowShopsAndItemListingsAction()
         {
+            this.ResetSelectedShop();
             this.CurrentView = this.shopsAndItemListingsViewModel;
             this.IsNewViewDisplayed = true;
         }
 
         private void ShowItemListingAction()
         {
-            UIEvents.ShowItems.Publish(this.SelectedShop);
+            this.itemListingViewModel.OnlineShop = this.SelectedShop;
+            this.itemListingViewModel.ShowItems();
+            this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;
+        }
+
+        private void ResetSelectedShop()
+        {
+            this.SelectedShop = null;
         }
     }
 }

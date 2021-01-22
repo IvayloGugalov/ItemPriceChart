@@ -4,12 +4,6 @@ using System.Windows.Input;
 
 namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
-    public interface IRelayAsyncCommand : ICommand
-    {
-        Task ExecuteAsync();
-        bool CanExecute();
-    }
-
     public interface IErrorHandler
     {
         void HandleError(Exception ex);
@@ -30,7 +24,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         }
     }
 
-    public class RelayAsyncCommand : IRelayAsyncCommand
+    public class RelayAsyncCommand : ICommand
     {
         private bool isExecuting;
         private readonly Func<Task> execute;
@@ -49,16 +43,6 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         public bool CanExecute()
         {
             return !this.isExecuting && (this.canExecute?.Invoke() ?? true);
-        }
-
-        bool ICommand.CanExecute(object parameter)
-        {
-            return this.CanExecute();
-        }
-
-        void ICommand.Execute(object parameter)
-        {
-            this.ExecuteAsync().FireAndForgetSafeAsync(this.errorHandler);
         }
 
         public async Task ExecuteAsync()
@@ -83,68 +67,17 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         {
             this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        #region Explicit implementations
+        bool ICommand.CanExecute(object parameter)
+        {
+            return this.CanExecute();
+        }
+
+        void ICommand.Execute(object parameter)
+        {
+            this.ExecuteAsync().FireAndForgetSafeAsync(this.errorHandler);
+        }
+        #endregion
     }
-
-    #region AsyncCommand<T>
-    //public interface IAsyncCommand<T> : ICommand
-    //{
-    //    Task ExecuteAsync(T parameter);
-    //    bool CanExecute(T parameter);
-    //}
-
-    //public class AsyncCommand<T> : IAsyncCommand<T>
-    //{
-    //    public event EventHandler CanExecuteChanged;
-
-    //    private bool isExecuting;
-    //    private readonly Func<T, Task> execute;
-    //    private readonly Func<T, bool> canExecute;
-    //    private readonly IErrorHandler errorHandler;
-
-    //    public AsyncCommand(Func<T, Task> execute, Func<T, bool> canExecute = null, IErrorHandler errorHandler = null)
-    //    {
-    //        this.execute = execute;
-    //        this.canExecute = canExecute;
-    //        this.errorHandler = errorHandler;
-    //    }
-
-    //    public bool CanExecute(T parameter)
-    //    {
-    //        return !this.isExecuting && (this.canExecute?.Invoke(parameter) ?? true);
-    //    }
-
-    //    public async Task ExecuteAsync(T parameter)
-    //    {
-    //        if (this.CanExecute(parameter))
-    //        {
-    //            try
-    //            {
-    //                this.isExecuting = true;
-    //                await this.execute(parameter);
-    //            }
-    //            finally
-    //            {
-    //                this.isExecuting = false;
-    //            }
-    //        }
-
-    //        this.RaiseCanExecuteChanged();
-    //    }
-
-    //    public void RaiseCanExecuteChanged()
-    //    {
-    //        this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    //    }
-
-    //    bool ICommand.CanExecute(object parameter)
-    //    {
-    //        return this.CanExecute((T)parameter);
-    //    }
-
-    //    void ICommand.Execute(object parameter)
-    //    {
-    //        this.ExecuteAsync((T)parameter).FireAndForgetSafeAsync(this.errorHandler);
-    //    }
-    //}
-    #endregion
 }

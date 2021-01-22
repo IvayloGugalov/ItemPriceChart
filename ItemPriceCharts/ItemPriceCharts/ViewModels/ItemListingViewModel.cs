@@ -18,11 +18,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             : base (itemService)
         {
             this.ShouldShowShopInformation = false;
-
-            this.ShowAllItems();
         }
 
-        private void ShowAllItems()
+        public void ShowItems()
         {
             try
             {

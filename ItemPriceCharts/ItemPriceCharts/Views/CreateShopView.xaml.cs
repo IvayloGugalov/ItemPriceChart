@@ -1,5 +1,4 @@
-﻿using ControlzEx.Theming;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 
 namespace ItemPriceCharts.UI.WPF.Views
 {
@@ -11,8 +10,6 @@ namespace ItemPriceCharts.UI.WPF.Views
         public CreateShopView()
         {
             InitializeComponent();
-
-            ThemeManager.Current.ChangeTheme(this, "Light.Cobalt");
         }
     }
 }

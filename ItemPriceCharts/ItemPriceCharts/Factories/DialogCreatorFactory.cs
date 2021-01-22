@@ -21,10 +21,10 @@ namespace ItemPriceCharts.UI.WPF.Factories
 
             UIEvents.AddSubscribers();
 
-            UIEvents.ShowCreateShopViewModel.Subscribe(this.CreateShopWindow);
-            UIEvents.ShowDeleteShopViewModel.Subscribe(this.DeleteShopWindow);
-            UIEvents.ShowCreateItemViewModel.Subscribe(this.CreateItemWindow);
-            UIEvents.ShowItemInformatioViewModel.Subscribe(this.CreateItemInformationWindow);
+            UIEvents.ShowCreateShopView.Subscribe(this.CreateShopView);
+            UIEvents.ShowCreateItemView.Subscribe(this.CreateItemView);
+            UIEvents.ShowDeleteItemView.Subscribe(this.CreateDeleteItemView);
+            UIEvents.ShowItemInformatioView.Subscribe(this.CreateItemInformationView);
             UIEvents.ShowMessageDialog = (vm) =>
             {
                 return Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
@@ -33,27 +33,27 @@ namespace ItemPriceCharts.UI.WPF.Factories
             UIEvents.FinishSubscribing();
         }
 
-        private void CreateShopWindow(object sender, object e)
+        private void CreateDeleteItemView(object sender, Item e)
+        {
+            var parameters = new Parameter[] { new NamedParameter("item", e) };
+            var window = this.viewFactory.Resolve<DeleteItemViewModel>(parameters);
+            window.ShowDialog();
+        }
+
+        private void CreateShopView(object sender, object e)
         {
             var window = this.viewFactory.Resolve<CreateShopViewModel>(Array.Empty<Parameter>());
             window.ShowDialog();
         }
 
-        private void DeleteShopWindow(object sender, OnlineShop e)
-        {
-            var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
-            var window = this.viewFactory.Resolve<DeleteShopViewModel>(parameters);
-            window.ShowDialog();
-        }
-
-        private void CreateItemWindow(object sender, OnlineShop e)
+        private void CreateItemView(object sender, OnlineShop e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
             var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
             window.ShowDialog();
         }
 
-        private void CreateItemInformationWindow(object sender, Item e)
+        private void CreateItemInformationView(object sender, Item e)
         {
             if (e != null)
             {

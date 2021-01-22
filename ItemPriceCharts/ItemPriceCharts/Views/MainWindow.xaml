@@ -69,9 +69,10 @@
 
                         <StackPanel Orientation="Horizontal"
                                     Margin="20 0 0 0">
-                            <materialDesign:PackIcon Margin="0 3 3 0"
+                            <materialDesign:PackIcon Margin="0 3 5 0"
                                                      Kind="Shop" />
                             <Label Padding="0"
+                                   Foreground="White"
                                    Content="Shops"/>
                         </StackPanel>
 

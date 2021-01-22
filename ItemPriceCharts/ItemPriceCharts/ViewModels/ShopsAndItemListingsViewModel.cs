@@ -35,7 +35,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand ShowItemsCommand { get; }
         public ICommand ShowCreateShopCommand { get; }
-        public ICommand ShowDeleteShopCommand { get; }
         public ICommand ShowAddItemCommand { get; }
 
         public ShopsAndItemListingsViewModel(ItemService itemService, OnlineShopService onlineShopService)
@@ -44,7 +43,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.onlineShopService = onlineShopService;
 
             this.ShowCreateShopCommand = new RelayCommand(_ => this.ShowCreateShopAction());
-            this.ShowDeleteShopCommand = new RelayCommand(_ => this.ShowDeleteShopAction());
             this.ShowAddItemCommand = new RelayCommand(_ => this.ShowAddItemAction());
             this.ShowItemsCommand = new RelayCommand<object>(this.AddItemsForShopAction, this.ShowItemsPredicate);
 
@@ -56,9 +54,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.AddShopsToViewModel();
         }
 
-        private void ShowCreateShopAction() => UIEvents.ShowCreateShopViewModel.Publish(null);
-        private void ShowDeleteShopAction() => UIEvents.ShowDeleteShopViewModel.Publish(this.SelectedShop);
-        private void ShowAddItemAction() => UIEvents.ShowCreateItemViewModel.Publish(this.SelectedShop);
+        private void ShowCreateShopAction() => UIEvents.ShowCreateShopView.Publish(null);
+        private void ShowAddItemAction() => UIEvents.ShowCreateItemView.Publish(this.SelectedShop);
 
         private void AddItemsForShopAction(object parameter)
         {

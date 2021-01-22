@@ -15,10 +15,10 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
 
         //Directly called on the UI thread
-        public static IChannel<object> ShowCreateShopViewModel { get; set; } = new Channel<object>();
-        public static IChannel<OnlineShop> ShowDeleteShopViewModel { get; set; } = new Channel<OnlineShop>();
-        public static IChannel<OnlineShop> ShowCreateItemViewModel { get; set; } = new Channel<OnlineShop>();
-        public static IChannel<Item> ShowItemInformatioViewModel { get; set; } = new Channel<Item>();
+        public static IChannel<object> ShowCreateShopView { get; set; } = new Channel<object>();
+        public static IChannel<OnlineShop> ShowCreateItemView { get; set; } = new Channel<OnlineShop>();
+        public static IChannel<Item> ShowDeleteItemView { get; set; } = new Channel<Item>();
+        public static IChannel<Item> ShowItemInformatioView { get; set; } = new Channel<Item>();
 
         //Events from EventsLocator for the UI
         public static IChannel<Item> ItemAdded { get; set; } = new Channel<Item>();

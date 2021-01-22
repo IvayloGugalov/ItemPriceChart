@@ -55,8 +55,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             UIEvents.ItemDeleted.Subscribe(this.RemoveItemFromItemsListHandler);
         }
 
-        private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioViewModel.Publish(this.SelectedItem);
-        private void DeleteItemAction() => this.ItemService.DeleteItem(this.SelectedItem);
+        private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioView.Publish(this.SelectedItem);
+        private void DeleteItemAction() => UIEvents.ShowDeleteItemView.Publish(this.SelectedItem);
 
         private void AddItemToItemsListHandler(object sender, Item e)
         {
