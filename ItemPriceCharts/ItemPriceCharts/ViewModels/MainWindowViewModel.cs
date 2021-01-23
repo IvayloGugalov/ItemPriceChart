@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
@@ -87,8 +86,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ShowItemListingAction()
         {
-            this.itemListingViewModel.OnlineShop = this.SelectedShop;
-            this.itemListingViewModel.ShowItems();
+            this.itemListingViewModel.SelectedShop = this.SelectedShop;
+            this.itemListingViewModel.ShowItems().FireAndForgetSafeAsync(shouldAwait: false);
             this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;
         }

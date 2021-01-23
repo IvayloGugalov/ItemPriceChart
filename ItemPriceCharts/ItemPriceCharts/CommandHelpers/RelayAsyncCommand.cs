@@ -2,28 +2,10 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using static ItemPriceCharts.UI.WPF.Helpers.TaskExtensions;
+
 namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
-    public interface IErrorHandler
-    {
-        void HandleError(Exception ex);
-    }
-
-    public static class TaskUtilities
-    {
-        public static async void FireAndForgetSafeAsync(this Task task, IErrorHandler errorHandler = null)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception ex)
-            {
-                errorHandler?.HandleError(ex);
-            }
-        }
-    }
-
     public class RelayAsyncCommand : ICommand
     {
         private bool isExecuting;
@@ -76,7 +58,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
 
         void ICommand.Execute(object parameter)
         {
-            this.ExecuteAsync().FireAndForgetSafeAsync(this.errorHandler);
+            this.ExecuteAsync().FireAndForgetSafeAsync(true, this.errorHandler);
         }
         #endregion
     }

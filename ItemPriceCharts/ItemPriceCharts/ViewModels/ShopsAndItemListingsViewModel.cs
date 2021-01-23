@@ -16,14 +16,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private static readonly Logger logger = LogManager.GetLogger(nameof(ShopsAndItemListingsViewModel));
 
         private readonly IOnlineShopService onlineShopService;
-        private OnlineShop selectedShop;
         private bool isListOfShopsShown;
-
-        public OnlineShop SelectedShop
-        {
-            get => this.selectedShop;
-            set => SetValue(ref this.selectedShop, value);
-        }
 
         public bool IsListOfShopsShown
         {

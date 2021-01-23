@@ -1,10 +1,10 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 using NLog;
 
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
-using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -12,32 +12,33 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
-        public OnlineShop OnlineShop { get; set; }
-
         public ItemListingViewModel(ItemService itemService)
             : base (itemService)
         {
             this.ShouldShowShopInformation = false;
         }
 
-        public void ShowItems()
+        public async Task ShowItems()
         {
             try
             {
-                if (this.OnlineShop is not null)
+                await Task.Run(() =>
                 {
-                    this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(this.OnlineShop.Items);
-                }
-                else
-                {
-                    this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(this.ItemService.GetAllItems());
-                }
+                    if (this.SelectedShop is not null)
+                    {
+                        this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(this.SelectedShop.Items);
+                    }
+                    else
+                    {
+                        this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(this.ItemService.GetAllItems());
+                    }
 
-                this.AreItemsShown = true;
-                if (this.ItemsList.Any())
-                {
-                    this.SelectedItem = this.ItemsList.First();
-                }
+                    this.AreItemsShown = true;
+                    if (this.ItemsList.Any())
+                    {
+                        this.SelectedItem = this.ItemsList.First();
+                    }
+                });
             }
             catch (System.Exception e)
             {

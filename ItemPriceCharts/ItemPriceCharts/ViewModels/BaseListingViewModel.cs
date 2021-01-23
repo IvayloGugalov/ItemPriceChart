@@ -11,6 +11,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     public class BaseListingViewModel : BindableViewModel
     {
         private ObservableCollection<Item> itemsList;
+        private OnlineShop selectedShop;
         private Item selectedItem;
         private bool areItemsShown;
         private bool shouldShowShopInformation;
@@ -21,6 +22,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             get => this.itemsList;
             set => this.SetValue(ref this.itemsList, value);
+        }
+
+        public OnlineShop SelectedShop
+        {
+            get => this.selectedShop;
+            set => SetValue(ref this.selectedShop, value);
         }
 
         public Item SelectedItem
