@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
+
+using NLog;
 
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
@@ -10,6 +13,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class MainWindowViewModel : BindableViewModel
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(MainWindowViewModel));
+
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
         private readonly ItemListingViewModel itemListingViewModel;
 
@@ -53,14 +58,26 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(onlineShopService.GetAllShops());
 
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
-            this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
+            this.ShowItemListingCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: (e) => this.HandleErrorOnItemLoad(e));
+            this.ShowItemsForShopCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: (e) => this.HandleErrorOnItemLoad(e));
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
-            this.ShowItemsForShopCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 
             UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
             UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
         }
+
+        private void HandleErrorOnItemLoad(Exception exception)
+        {
+            logger.Info($"Failed to get items.\t{exception}");
+
+            UIEvents.ShowMessageDialog(
+                new MessageDialogViewModel(
+                    "Error",
+                    exception.Message,
+                    ButtonType.Close));
+        }
+
         private void OnAddedShop(object sender, OnlineShop e)
         {
             this.OnlineShops.Add(e);
@@ -84,10 +101,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsNewViewDisplayed = true;
         }
 
-        private void ShowItemListingAction()
+        private async System.Threading.Tasks.Task ShowItemListingAction()
         {
             this.itemListingViewModel.SelectedShop = this.SelectedShop;
-            this.itemListingViewModel.ShowItems().FireAndForgetSafeAsync(shouldAwait: false);
+
+            await this.itemListingViewModel.ShowItems();
+
             this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;
         }

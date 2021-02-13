@@ -39,14 +39,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.AddShopCommand = new RelayCommand(_ => this.AddShopAction());
         }
 
-        private void AddShopAction()
+        private async void AddShopAction()
         {
             try
             {
                 if (ValidateURL.IsValidAddress(this.NewShopURL))
                 {
-                    Task.Run(() => this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle))
-                        .FireAndForgetSafeAsync(shouldAwait: false);
+                    await Task.Run(() => this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle));
                 }
             }
             catch (Exception e)

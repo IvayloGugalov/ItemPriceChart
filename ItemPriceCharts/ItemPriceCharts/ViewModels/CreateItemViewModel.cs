@@ -40,7 +40,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public CreateItemViewModel(ItemService itemService, OnlineShop selectedShop)
         {
             this.itemService = itemService;
-            this.SelectedShop = selectedShop ?? throw new ArgumentNullException();
+            this.SelectedShop = selectedShop ?? throw new ArgumentNullException(nameof(selectedShop));
 
             this.AddItemCommand = new RelayCommand<object>(this.AddItemAction, this.AddItemPredicate);
         }

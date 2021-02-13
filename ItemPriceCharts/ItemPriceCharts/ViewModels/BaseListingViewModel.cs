@@ -67,13 +67,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void AddItemToItemsListHandler(object sender, Item e)
         {
-            this.ItemsList.Add(e);
-            this.AreItemsShown = true;
+            if (this.ItemsList is not null)
+            {
+                this.ItemsList.Add(e);
+                this.AreItemsShown = true;
+            }
         }
 
         private void RemoveItemFromItemsListHandler(object sender, Item e)
         {
-            this.ItemsList.Remove(e);
+            if (this.ItemsList is not null)
+            {
+                this.ItemsList.Remove(e);
+            }
         }
     }
 }

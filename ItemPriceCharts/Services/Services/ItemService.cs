@@ -64,6 +64,7 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Couldn't create an item: {e}");
+                throw;
             }
         }
 
@@ -80,6 +81,7 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Couldn't update an item: {e}");
+                throw;
             }
         }
 
@@ -100,6 +102,7 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Couldn't delete item: '{item}'.\t{e}");
+                throw;
             }
         }
 

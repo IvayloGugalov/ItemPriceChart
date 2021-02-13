@@ -2,20 +2,21 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using static ItemPriceCharts.UI.WPF.Helpers.TaskExtensions;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
     public class RelayAsyncCommand : ICommand
     {
-        private bool isExecuting;
         private readonly Func<Task> execute;
         private readonly Func<bool> canExecute;
-        private readonly IErrorHandler errorHandler;
+        private readonly Action<Exception> errorHandler;
+
+        private bool isExecuting;
 
         public event EventHandler CanExecuteChanged;
 
-        public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, IErrorHandler errorHandler = null)
+        public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, Action<Exception> errorHandler = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;
@@ -47,7 +48,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
 
         public void RaiseCantExecuteChanged()
         {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.CanExecuteChanged?.Invoke(this, new EventArgs());
         }
 
         #region Explicit implementations
