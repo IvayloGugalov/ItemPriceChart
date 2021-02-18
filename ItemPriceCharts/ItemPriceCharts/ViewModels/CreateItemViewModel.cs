@@ -31,6 +31,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.selectedItemType, value);
         }
 
+        public bool IsAddingItemFinished { get; private set; }
+
         public OnlineShop SelectedShop { get; }
 
         public ICommand AddItemCommand { get; }
@@ -38,16 +40,24 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public CreateItemViewModel(ItemService itemService, OnlineShop selectedShop)
         {
             this.itemService = itemService;
-            this.SelectedShop = selectedShop ?? throw new ArgumentNullException();
+            this.SelectedShop = selectedShop ?? throw new ArgumentNullException(nameof(selectedShop));
 
             this.AddItemCommand = new RelayCommand<object>(this.AddItemAction, this.AddItemPredicate);
         }
 
-        private void AddItemAction(object obj)
+        private void AddItemAction(object param)
         {
             try
             {
-                Task.Run(() => this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType));
+                this.IsAddingItemFinished = true;
+                this.OnPropertyChanged(nameof(this.IsAddingItemFinished));
+
+                Task.Run(() => this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType))
+                    .ContinueWith((_) =>
+                    {
+                        this.IsAddingItemFinished = false;
+                        this.OnPropertyChanged(nameof(this.IsAddingItemFinished));
+                    });
             }
             catch (Exception e)
             {

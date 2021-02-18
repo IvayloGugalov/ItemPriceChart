@@ -1,16 +1,20 @@
-﻿<Window x:Class="ItemPriceCharts.UI.WPF.Views.MessageDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize"
-        Title="{Binding Title}"
-        Height="200"
-        Width="650">
+﻿<mah:MetroWindow x:Class="ItemPriceCharts.UI.WPF.Views.MessageDialog"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                 mc:Ignorable="d"
+                 GlowBrush="Crimson"
+                 Topmost="True"
+                 WindowStartupLocation="CenterScreen"
+                 Title="{Binding Title}"
+                 TitleBarHeight="25"
+                 ResizeMode="NoResize"
+                 Height="200"
+                 Width="650">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="7*"/>
@@ -45,7 +49,7 @@
 
             <TextBlock Grid.Row="1"
                        Grid.Column="3"
-                       Margin="0 0 0 5"
+                       VerticalAlignment="Top"
                        Style="{StaticResource Styles.MessageDialogTextBlock}"
                        Text="{Binding Description}"/>
         </Grid>
@@ -82,4 +86,4 @@
                     Style="{StaticResource Styles.MessageDialogButton}"/>
         </Grid>
     </Grid>
-</Window>
+</mah:MetroWindow>

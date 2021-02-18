@@ -11,23 +11,31 @@
              mc:Ignorable="d"
              Height="600"
              Width="850">
-    <Grid Background="#6eb6ff">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="30" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <materialDesign:TransitioningContent
+        OpeningEffectsOffset="{materialDesign:IndexedItemOffsetMultiplier 0:0:1.00}">
+        <materialDesign:TransitioningContent.OpeningEffects>
+            <materialDesign:TransitionEffect Kind="SlideInFromLeft" />
+        </materialDesign:TransitioningContent.OpeningEffects>
+        <Grid Background="#2283c9">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Grid Visibility="{Binding ShouldShowShopInformation, Converter={cv:BoolToVisibilityConverter}}"
+            <Grid Visibility="{Binding ShouldShowShopInformation, Converter={cv:BoolToVisibilityConverter}}"
               Margin="30 0 0 0">
-            <controls:ShopListingView/>
-        </Grid>
+                <controls:ShopListingView/>
+            </Grid>
 
-        <Grid Grid.Column="2"
+            <Grid Grid.Column="2"
               Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}">
-            <controls:ItemListingView
+                <controls:ItemListingView
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"/>
+            </Grid>
         </Grid>
-    </Grid>
+
+    </materialDesign:TransitioningContent>
+    
 </UserControl>

@@ -19,7 +19,8 @@
                   Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
                   ItemsSource="{Binding ItemsList}"
                   SelectedItem="{Binding SelectedItem}"
-                  Style="{StaticResource Styles.ListViewForItems}" Grid.ColumnSpan="2">
+                  Style="{StaticResource Styles.ListViewForItems}"
+                  Grid.ColumnSpan="2">
 
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -27,8 +28,8 @@
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonUp">
                                 <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                           CommandParameter="{Binding ElementName=ItemsListView,
-                                           Path=SelectedItem}"/>
+                                                       CommandParameter="{Binding ElementName=ItemsListView,
+                                                       Path=SelectedItem}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <TextBlock Text="{Binding Title}" />

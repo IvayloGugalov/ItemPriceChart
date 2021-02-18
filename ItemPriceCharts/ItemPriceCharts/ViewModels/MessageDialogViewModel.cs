@@ -33,7 +33,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.Title = title;
             this.Description = description;
-            this.IconType = PackIconKind.Exclamation;
 
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 
@@ -42,12 +41,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 case ButtonType.Close:
                     this.NegativeButtonText = CLOSE_TEXT;
                     this.IsSingleButtonShown = true;
-                    this.IconColor = Brushes.IndianRed;
+                    this.IconColor = Brushes.Crimson;
+                    this.IconType = PackIconKind.Exclamation;
                     break;
                 case ButtonType.OkCancel:
                     this.PositiveButtonText = ACCEPT_TEXT;
                     this.NegativeButtonText = CANCEL_TEXT;
-                    this.IconColor = Brushes.Aqua;
+                    this.IconColor = Brushes.MediumSeaGreen;
+                    this.IconType = PackIconKind.QuestionMarkCircle;
                     break;
                 default:
                     break;

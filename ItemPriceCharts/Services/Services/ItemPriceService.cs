@@ -38,6 +38,7 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Error when saving item price for itemId: {itemPrice.ItemId}.\t{e}");
+                throw;
             }
         }
 

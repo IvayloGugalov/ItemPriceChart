@@ -6,9 +6,8 @@ namespace ItemPriceCharts.UI.WPF.Helpers
     {
         public static bool IsValidAddress(string address)
         {
-            return Uri.TryCreate(address, UriKind.Absolute, out var uriAddress) && 
-                (uriAddress.Scheme == Uri.UriSchemeHttp ||
-                uriAddress.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(address, UriKind.Absolute, out var uriAddress) &&
+                uriAddress.Scheme.IsAny(Uri.UriSchemeHttp, Uri.UriSchemeHttps);
         }
     }
 }

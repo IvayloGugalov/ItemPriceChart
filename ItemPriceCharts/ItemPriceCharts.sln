@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.UI.WPF", "I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Services", "Services\ItemPriceCharts.Services.csproj", "{D90B2203-BE61-45C0-AF25-849EB86C4C76}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Client", "01. Client", "{7526B487-A84A-46FB-BCAC-971636545452}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{90E87BCD-9AF5-4EDC-B688-9D36F9C799C2} = {7526B487-A84A-46FB-BCAC-971636545452}
+		{D90B2203-BE61-45C0-AF25-849EB86C4C76} = {7526B487-A84A-46FB-BCAC-971636545452}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EB15BF18-8258-43D6-991E-4034EC9DCC0B}

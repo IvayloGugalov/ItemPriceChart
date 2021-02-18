@@ -65,21 +65,6 @@
                             </MenuItem.Header>
                         </MenuItem>
 
-                        <MenuItem Command="{Binding Path=DataContext.ShowDeleteShopCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
-                            <MenuItem.Icon>
-                                <materialDesign:PackIcon Kind="Remove"
-                                                         Foreground="#ff2626"
-                                                         VerticalAlignment="Center"
-                                                         Width="20" 
-                                                         Height="20" />
-                            </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <TextBlock>
-                                    <Run Text="Delete shop"/>
-                                    <Run Text="{Binding Title, Mode=OneWay}"/>
-                                </TextBlock>
-                            </MenuItem.Header>
-                        </MenuItem>
                     </ContextMenu>
                 </ListView.Resources>
 

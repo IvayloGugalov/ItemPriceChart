@@ -11,6 +11,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     public class BaseListingViewModel : BindableViewModel
     {
         private ObservableCollection<Item> itemsList;
+        private OnlineShop selectedShop;
         private Item selectedItem;
         private bool areItemsShown;
         private bool shouldShowShopInformation;
@@ -21,6 +22,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             get => this.itemsList;
             set => this.SetValue(ref this.itemsList, value);
+        }
+
+        public OnlineShop SelectedShop
+        {
+            get => this.selectedShop;
+            set => SetValue(ref this.selectedShop, value);
         }
 
         public Item SelectedItem
@@ -55,18 +62,24 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             UIEvents.ItemDeleted.Subscribe(this.RemoveItemFromItemsListHandler);
         }
 
-        private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioViewModel.Publish(this.SelectedItem);
-        private void DeleteItemAction() => this.ItemService.DeleteItem(this.SelectedItem);
+        private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioView.Publish(this.SelectedItem);
+        private void DeleteItemAction() => UIEvents.ShowDeleteItemView.Publish(this.SelectedItem);
 
         private void AddItemToItemsListHandler(object sender, Item e)
         {
-            this.ItemsList.Add(e);
-            this.AreItemsShown = true;
+            if (this.ItemsList is not null)
+            {
+                this.ItemsList.Add(e);
+                this.AreItemsShown = true;
+            }
         }
 
         private void RemoveItemFromItemsListHandler(object sender, Item e)
         {
-            this.ItemsList.Remove(e);
+            if (this.ItemsList is not null)
+            {
+                this.ItemsList.Remove(e);
+            }
         }
     }
 }

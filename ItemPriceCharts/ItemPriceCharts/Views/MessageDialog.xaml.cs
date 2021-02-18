@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Windows;
+
+using ControlzEx.Theming;
+using MahApps.Metro.Controls;
 
 using ItemPriceCharts.UI.WPF.ViewModels;
 
@@ -8,7 +10,7 @@ namespace ItemPriceCharts.UI.WPF.Views
     /// <summary>
     /// Interaction logic for MessageDialog.xaml
     /// </summary>
-    public partial class MessageDialog : Window
+    public partial class MessageDialog : MetroWindow
     {
         public MessageDialog(MessageDialogViewModel viewModel)
         {
@@ -26,6 +28,8 @@ namespace ItemPriceCharts.UI.WPF.Views
                 this.DialogResult = true;
                 this.Close();
             };
+
+            ThemeManager.Current.ChangeTheme(this, "Light.Crimson");
         }
     }
 }

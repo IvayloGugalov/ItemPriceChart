@@ -52,6 +52,7 @@ namespace ItemPriceCharts.Services.Services
             catch (Exception e)
             {
                 logger.Error($"Can't create shop: {e}");
+                throw;
             }
         }
 
