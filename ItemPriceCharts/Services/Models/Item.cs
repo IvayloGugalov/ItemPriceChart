@@ -16,7 +16,13 @@ namespace ItemPriceCharts.Services.Models
         {
         }
 
-        public Item(string url, string title, string description, double price, OnlineShop onlineShop, ItemType type)
+        public Item(
+            string url,
+            string title,
+            string description,
+            double price,
+            OnlineShop onlineShop,
+            ItemType type)
         {
             this.URL = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
@@ -67,6 +73,11 @@ namespace ItemPriceCharts.Services.Models
             return $"Id: {this.Id}, Title:{this.Title}, Price: {this.CurrentPrice}, Type: {this.Type}, Shop id: {this.OnlineShop.Id}";
         }
 
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
+
         public static bool operator ==(Item a, Item b)
         {
             if (a is null && b is null)
@@ -85,6 +96,47 @@ namespace ItemPriceCharts.Services.Models
         public static bool operator !=(Item a, Item b)
         {
             return !(a == b);
+        }
+
+        protected Item(
+            int id,
+            string url,
+            string title,
+            string description,
+            double price,
+            OnlineShop onlineShop,
+            ItemType type)
+        {
+            this.Id = id;
+            this.URL = url;
+            this.Title = title;
+            this.Description = description;
+            this.CurrentPrice = price;
+            this.OnlineShop = onlineShop;
+            this.Type = type;
+        }
+
+        /// <summary>
+        /// Used for testing purposes
+        /// </summary>
+        /// <returns>New item</returns>
+        public static Item Construct(
+            int id,
+            string url,
+            string title,
+            string description,
+            double price,
+            OnlineShop onlineShop,
+            ItemType type)
+        {
+            return new Item(
+                id,
+                url,
+                title,
+                description,
+                price,
+                onlineShop,
+                type);
         }
     }
 }
