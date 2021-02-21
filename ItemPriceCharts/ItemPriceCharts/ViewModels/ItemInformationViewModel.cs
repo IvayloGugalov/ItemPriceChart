@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -34,35 +33,39 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public bool IsInProgress
         {
             get => this.isInProgress;
-            set => this.SetValue(ref this.isInProgress, value);
+            private set => this.SetValue(ref this.isInProgress, value);
         }
 
         public List<string> Labels
         {
             get => this.labels;
-            set => this.SetValue(ref this.labels, value);
+            private set => this.SetValue(ref this.labels, value);
         }
 
         public SeriesCollection PriceCollection
         {
             get => this.priceCollection;
-            set => this.SetValue(ref this.priceCollection, value);
+            private set => this.SetValue(ref this.priceCollection, value);
         }
 
-        public ICommand UpdatePriceCommand { get; }
+        public LineSeries LineSeries
+        {
+            get => this.lineSeries;
+            private set => lineSeries = value;
+        }
 
-        public ItemInformationViewModel(ItemPriceService itemPriceService, ItemService itemService, Item item)
+        public IAsyncCommand UpdatePriceCommand { get; }
+
+        public ItemInformationViewModel(IItemPriceService itemPriceService, IItemService itemService, Item item)
         {
             this.itemPriceService = itemPriceService;
             this.itemService = itemService;
             this.Item = item;
 
-            this.LoadItemPriceInformation();
-
-            this.UpdatePriceCommand = new RelayCommand<object>(this.UpdatePriceAction, this.UpdatePricePredicate);
+            this.UpdatePriceCommand = new RelayAsyncCommand(this.UpdatePriceAction, this.UpdatePricePredicate);
         }
 
-        private async void LoadItemPriceInformation()
+        public async Task LoadItemPriceInformation()
         {
             try
             {
@@ -76,7 +79,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
                 this.Labels = dateOfPrices.ToList();
 
-                this.lineSeries = new LineSeries
+                this.LineSeries = new LineSeries
                 {
                     Title = "Price",
                     Stroke = System.Windows.Media.Brushes.White,
@@ -85,7 +88,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
                 this.PriceCollection = new SeriesCollection
                 {
-                    this.lineSeries
+                    this.LineSeries
                 };
 
                 this.YFormatter = value => value.ToString("C");
@@ -100,17 +103,17 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private async void UpdatePriceAction(object obj)
+        private async Task UpdatePriceAction()
         {
             try
             {
                 this.IsInProgress = true;
 
-                ItemPrice updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
+                var updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
 
                 if (updatedItemPrice != null)
                 {
-                    this.lineSeries.Values.Add(updatedItemPrice.Price);
+                    this.LineSeries.Values.Add(updatedItemPrice.Price);
                     this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
                 }
                 else

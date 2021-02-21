@@ -51,7 +51,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowItemInformationDialogCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public BaseListingViewModel(ItemService itemService)
+        public BaseListingViewModel(IItemService itemService)
         {
             this.ItemService = itemService;
 
@@ -63,6 +63,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
 
         private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioView.Publish(this.SelectedItem);
+
         private void DeleteItemAction() => UIEvents.ShowDeleteItemView.Publish(this.SelectedItem);
 
         private void AddItemToItemsListHandler(object sender, Item e)

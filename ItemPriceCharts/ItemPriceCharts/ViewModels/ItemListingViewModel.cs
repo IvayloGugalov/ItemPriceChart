@@ -10,7 +10,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ItemListingViewModel : BaseListingViewModel
     {
-        public ItemListingViewModel(ItemService itemService)
+        public ItemListingViewModel(IItemService itemService)
             : base (itemService)
         {
             this.ShouldShowShopInformation = false;

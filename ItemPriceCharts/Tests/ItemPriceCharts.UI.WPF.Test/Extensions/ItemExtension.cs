@@ -1,6 +1,6 @@
 ﻿using ItemPriceCharts.Services.Models;
 
-namespace ItemPriceCharts.UI.WPF.Test.ItemExtension
+namespace ItemPriceCharts.UI.WPF.Test.Extensions
 {
     public static class ItemExtension
     {

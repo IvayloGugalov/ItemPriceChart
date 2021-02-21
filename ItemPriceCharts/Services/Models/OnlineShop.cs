@@ -35,5 +35,31 @@ namespace ItemPriceCharts.Services.Models
         {
             return $"Id: {this.Id}, Url: {this.URL}, Title: {this.Title}";
         }
+
+
+        private OnlineShop(
+            int id,
+            string url,
+            string title)
+        {
+            this.Id = id;
+            this.URL = url;
+            this.Title = title;
+        }
+
+        /// <summary>
+        /// Creating a mock shop for testing
+        /// </summary>
+        /// <returns>New shop</returns>
+        public static OnlineShop Construct(
+            int id,
+            string url,
+            string title)
+        {
+            return new OnlineShop(
+                id,
+                url,
+                title);
+        }
     }
 }

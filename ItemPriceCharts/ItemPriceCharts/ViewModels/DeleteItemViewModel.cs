@@ -28,7 +28,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand DeleteItemCommand { get; }
 
-        public DeleteItemViewModel(ItemService itemService, Item item)
+        public DeleteItemViewModel(IItemService itemService, Item item)
         {
             this.itemService = itemService;
             this.ItemToDelete = item;

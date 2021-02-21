@@ -6,7 +6,12 @@ using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
-    public class RelayAsyncCommand : ICommand
+    public interface IAsyncCommand : ICommand
+    {
+        Task ExecuteAsync();
+    }
+
+    public class RelayAsyncCommand : IAsyncCommand
     {
         private readonly Func<Task> execute;
         private readonly Func<bool> canExecute;

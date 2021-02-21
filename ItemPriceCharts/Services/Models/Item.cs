@@ -98,7 +98,7 @@ namespace ItemPriceCharts.Services.Models
             return !(a == b);
         }
 
-        protected Item(
+        private Item(
             int id,
             string url,
             string title,
@@ -117,7 +117,7 @@ namespace ItemPriceCharts.Services.Models
         }
 
         /// <summary>
-        /// Used for testing purposes
+        /// Creating a mock item for testing
         /// </summary>
         /// <returns>New item</returns>
         public static Item Construct(

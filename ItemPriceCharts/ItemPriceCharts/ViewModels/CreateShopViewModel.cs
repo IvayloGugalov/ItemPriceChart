@@ -32,7 +32,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand AddShopCommand { get; }
 
-        public CreateShopViewModel(OnlineShopService onlineShopService)
+        public CreateShopViewModel(IOnlineShopService onlineShopService)
         {
             this.onlineShopService = onlineShopService;
 

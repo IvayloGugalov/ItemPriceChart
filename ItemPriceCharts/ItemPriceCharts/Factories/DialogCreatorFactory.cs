@@ -36,20 +36,20 @@ namespace ItemPriceCharts.UI.WPF.Factories
         private void CreateDeleteItemView(object sender, Item e)
         {
             var parameters = new Parameter[] { new NamedParameter("item", e) };
-            var window = this.viewFactory.Resolve<DeleteItemViewModel>(parameters);
+            var window = this.viewFactory.Resolve<DeleteItemViewModel>(parameters, out _);
             window.ShowDialog();
         }
 
         private void CreateShopView(object sender, object e)
         {
-            var window = this.viewFactory.Resolve<CreateShopViewModel>(Array.Empty<Parameter>());
+            var window = this.viewFactory.Resolve<CreateShopViewModel>(Array.Empty<Parameter>(), out _);
             window.ShowDialog();
         }
 
         private void CreateItemView(object sender, OnlineShop e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
-            var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
+            var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters, out _);
             window.ShowDialog();
         }
 
@@ -58,7 +58,10 @@ namespace ItemPriceCharts.UI.WPF.Factories
             if (e != null)
             {
                 var parameters = new Parameter[] { new NamedParameter("item", e) };
-                var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
+                var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters, out var viewModel);
+
+                viewModel.LoadItemPriceInformation().FireAndForgetSafeAsync(false);
+
                 window.ShowDialog();
             }
         }

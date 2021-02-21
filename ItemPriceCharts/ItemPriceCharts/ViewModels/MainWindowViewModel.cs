@@ -49,7 +49,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public ICommand ShowItemsForShopCommand { get; }
 
-        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, OnlineShopService onlineShopService)
+        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, IOnlineShopService onlineShopService)
         {
             this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
             this.itemListingViewModel = itemListingViewModel;
