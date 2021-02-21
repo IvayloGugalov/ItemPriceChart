@@ -31,7 +31,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         }
 
         [Test]
-        public void AddItemAction_WillCreate_NewItem()
+        public async Task AddItemAction_WillCreate_NewItem()
         {
             var onlineShop = OnlineShopExtension.ConstructOnlineShop(
                 id: 1,
@@ -48,7 +48,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             this.itemServiceMock.Setup(_ => _.CreateItem(itemUrl, onlineShop, itemType));
 
-            this.createItemViewModel.AddItemCommand.Execute(null);
+            await this.createItemViewModel.AddItemCommand.ExecuteAsync();
         }
 
         [Test]
