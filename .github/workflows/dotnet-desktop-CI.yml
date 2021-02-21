@@ -53,7 +53,7 @@ jobs:
     env:
       Solution_Name: ItemPriceCharts/ItemPriceCharts.sln
       Project_Path: ItemPriceCharts/ItemPriceCharts/ItemPriceCharts.UI.WPF.csproj
-      Test_Project_Path: ItemPriceCharts/ItemPriceCharts/ItemPriceCharts.UI.WPF.Test
+      Test_Project_Path: ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/ItemPriceCharts.UI.WPF.Test.csproj
 
     steps:
     - name: Checkout
