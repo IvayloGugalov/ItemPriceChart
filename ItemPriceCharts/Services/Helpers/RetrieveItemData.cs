@@ -66,7 +66,7 @@ namespace ItemPriceCharts.Services.Helpers
             catch (Exception e)
             {
                 logger.Error($"Can't get information for item: {e}");
-                throw e;
+                throw;
             }
         }
 
@@ -86,7 +86,7 @@ namespace ItemPriceCharts.Services.Helpers
             catch (Exception e)
             {
                 logger.Error($"Can't get information for item: {e}");
-                throw e;
+                throw;
             }
         }
 

@@ -16,16 +16,29 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         private readonly Func<Task> execute;
         private readonly Func<bool> canExecute;
         private readonly Action<Exception> errorHandler;
+        private event EventHandler InternalCanExecuteChanged;
 
         private bool isExecuting;
-
-        public event EventHandler CanExecuteChanged;
 
         public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, Action<Exception> errorHandler = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;
             this.errorHandler = errorHandler;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+                this.InternalCanExecuteChanged += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+                this.InternalCanExecuteChanged -= value;
+            }
         }
 
         public bool CanExecute()
@@ -51,9 +64,9 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
             this.RaiseCantExecuteChanged();
         }
 
-        public void RaiseCantExecuteChanged()
+        protected void RaiseCantExecuteChanged()
         {
-            this.CanExecuteChanged?.Invoke(this, new EventArgs());
+            this.InternalCanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #region Explicit implementations
