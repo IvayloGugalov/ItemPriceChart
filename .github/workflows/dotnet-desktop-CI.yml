@@ -53,7 +53,7 @@ jobs:
     env:
       Solution_Name: ItemPriceCharts/ItemPriceCharts.sln
       Project_Path: ItemPriceCharts/ItemPriceCharts/ItemPriceCharts.UI.WPF.csproj
-      # Test_Project_Path: Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Test_Project_Path: ItemPriceCharts/ItemPriceCharts/ItemPriceCharts.UI.WPF.Test
 
     steps:
     - name: Checkout
@@ -77,8 +77,8 @@ jobs:
       run: dotnet build ${{ env.Project_Path }} -c Release --no-restore
 
     # Execute all unit tests in the solution
-    #- name: Execute unit tests
-    #  run: dotnet test
+    - name: Execute unit tests
+      run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     #- name: Restore the application
