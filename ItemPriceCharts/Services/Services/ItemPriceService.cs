@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using NLog;
 
@@ -22,8 +23,8 @@ namespace ItemPriceCharts.Services.Services
             this.itemRepository = itemRepository;
         }
 
-        public IEnumerable<ItemPrice> GetPricesForItem(int itemId) =>
-           this.itemPriceRepository.GetAll(filter: i => i.ItemId == itemId).Result;
+        public Task<IEnumerable<ItemPrice>> GetPricesForItem(int itemId) =>
+           this.itemPriceRepository.GetAll(filter: i => i.ItemId == itemId);
 
         public void CreateItemPrice(ItemPrice itemPrice)
         {

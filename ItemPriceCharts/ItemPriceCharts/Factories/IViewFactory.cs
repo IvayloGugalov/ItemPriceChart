@@ -13,7 +13,7 @@ namespace ItemPriceCharts.UI.WPF.Factories
             where TViewModel : class, IViewModel
             where TView : Window;
 
-        Window Resolve<TViewModel>(Parameter[] parameters, out TViewModel viewModel)
+        Window Resolve<TViewModel>(Parameter[] parameters)
             where TViewModel : class, IViewModel;
 
         void RegisterUserControl<TViewModel, TView>()

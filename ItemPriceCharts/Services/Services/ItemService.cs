@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using HtmlAgilityPack;
 using NLog;
@@ -28,11 +29,11 @@ namespace ItemPriceCharts.Services.Services
         public Item FindItem(int id) =>
             this.itemRepository.FindAsync(id).Result ?? throw new Exception();
 
-        public IEnumerable<Item> GetAllItems() =>
-            this.itemRepository.GetAll(includeProperties: nameof(OnlineShop)).Result;
+        public async Task<IEnumerable<Item>> GetAllItems() =>
+            await this.itemRepository.GetAll(includeProperties: nameof(OnlineShop));
 
         public IEnumerable<Item> GetItemsForShop(OnlineShop onlineShop) =>
-            this.itemRepository.GetAll(filter: item => item.OnlineShop.Id == onlineShop.Id, includeProperties: nameof(OnlineShop)).Result;
+            this.itemRepository.GetAll(filter: item => item.OnlineShop.Id == onlineShop.Id, includeProperties: nameof(OnlineShop)).GetAwaiter().GetResult();
 
         public bool IsItemExisting(int id) =>
             this.itemRepository.IsExisting(id).Result;
@@ -40,7 +41,7 @@ namespace ItemPriceCharts.Services.Services
         internal bool IsItemExisting(string url) =>
             this.itemRepository.GetAll(filter: item => item.URL == url).Result.FirstOrDefault() != null;
 
-        public void CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
+        public Task CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
         {
             try
             {
@@ -66,6 +67,8 @@ namespace ItemPriceCharts.Services.Services
                 logger.Error($"Couldn't create an item: {e}");
                 throw;
             }
+
+            return Task.CompletedTask;
         }
 
         public void UpdateItem(Item item)
@@ -85,7 +88,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public void DeleteItem(Item item)
+        public Task<bool> DeleteItem(Item item)
         {
             try
             {
@@ -97,7 +100,11 @@ namespace ItemPriceCharts.Services.Services
                     logger.Debug($"Deleted item: '{item}'");
 
                     EventsLocator.ItemDeleted.Publish(item);
+
+                    return Task.FromResult(true);
                 }
+
+                return Task.FromResult(false);
             }
             catch (Exception e)
             {
@@ -106,7 +113,7 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public ItemPrice UpdateItemPrice(Item item)
+        public async Task<ItemPrice> UpdateItemPrice(Item item)
         {
             try
             {
@@ -119,12 +126,18 @@ namespace ItemPriceCharts.Services.Services
                         item.Description = updatedItem.Description;
                         item.CurrentPrice = updatedItem.CurrentPrice;
 
-                        this.itemRepository.Update(item);
+                        await this.itemRepository.Update(item).ConfigureAwait(false);
+
                         logger.Debug($"Updated item: {item.Title}:" +
                             $"\nFrom {item.CurrentPrice} to {updatedItem.Description}" +
                             $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
 
-                        return this.CreateNewItemPrice(item.CurrentPrice, item.Id);
+                        var newItemPrice = new ItemPrice(
+                                   currentPrice: updatedItem.CurrentPrice,
+                                   itemId: updatedItem.Id);
+                        this.itemPriceService.CreateItemPrice(newItemPrice);
+
+                        return newItemPrice;
                     }
                 }
                 return null;
@@ -142,16 +155,6 @@ namespace ItemPriceCharts.Services.Services
             var itemDocument = htmlService.Load(itemUrl);
 
             return RetrieveItemData.CreateItem(itemUrl, itemDocument, onlineShop, type);
-        }
-
-        private ItemPrice CreateNewItemPrice(double price, int itemId)
-        {
-            var newItemPrice = new ItemPrice(
-                                   currentPrice: price,
-                                   itemId: itemId);
-            this.itemPriceService.CreateItemPrice(newItemPrice);
-
-            return newItemPrice;
         }
     }
 }

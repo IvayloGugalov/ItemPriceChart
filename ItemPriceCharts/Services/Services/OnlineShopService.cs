@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using NLog;
 
@@ -24,8 +25,8 @@ namespace ItemPriceCharts.Services.Services
         public OnlineShop FindShop(int id) =>
             this.onlineShopRepository.FindAsync(id).Result ?? throw new Exception();
 
-        public IEnumerable<OnlineShop> GetAllShops() =>
-            this.onlineShopRepository.GetAll(includeProperties: "Items").Result;
+        public Task<IEnumerable<OnlineShop>> GetAllShops() =>
+            this.onlineShopRepository.GetAll(includeProperties: "Items");
 
         public bool IsShopExisting(int shopId) =>
             this.onlineShopRepository.IsExisting(shopId).Result;
@@ -33,7 +34,7 @@ namespace ItemPriceCharts.Services.Services
         internal bool IsShopExisting(string url) =>
             this.onlineShopRepository.GetAll(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
 
-        public void CreateShop(string shopURL, string shopTitle)
+        public Task CreateShop(string shopURL, string shopTitle)
         {
             try
             {
@@ -54,6 +55,8 @@ namespace ItemPriceCharts.Services.Services
                 logger.Error($"Can't create shop: {e}");
                 throw;
             }
+
+            return Task.CompletedTask;
         }
 
         public void UpdateShop(OnlineShop onlineShop)

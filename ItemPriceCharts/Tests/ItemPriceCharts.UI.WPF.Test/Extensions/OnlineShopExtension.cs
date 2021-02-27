@@ -14,5 +14,17 @@ namespace ItemPriceCharts.UI.WPF.Test.Extensions
                 url,
                 title);
         }
+
+        /// <summary>
+        /// Constructs a default online shop with specified parameters
+        /// </summary>
+        /// <returns></returns>
+        public static OnlineShop ConstructDefaultOnlineShop()
+        {
+            return OnlineShop.Construct(
+                id: 1,
+                url: "https://www.someShop.com",
+                title: "someShop");
+        }
     }
 }

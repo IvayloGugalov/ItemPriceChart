@@ -36,27 +36,21 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.onlineShopService = onlineShopService;
 
-            this.AddShopCommand = new RelayCommand(_ => this.AddShopAction());
+            this.AddShopCommand = new RelayAsyncCommand(this.AddShopAction, this.AddShopPredicate, errorHandler: e =>
+            {
+                logger.Error($"Failed to create new shop: {e}");
+                MessageDialogCreator.ShowErrorDialog(message: $"Failed to create new shop with url: {this.NewShopURL}");
+            });
         }
 
-        private async void AddShopAction()
+        private async Task AddShopAction()
         {
-            try
-            {
-                if (ValidateURL.IsValidAddress(this.NewShopURL))
-                {
-                    await Task.Run(() => this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle));
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Info($"Can't create shop {this.NewShopURL}.\t{e}");
-                UIEvents.ShowMessageDialog(
-                    new MessageDialogViewModel(
-                        title: "Error",
-                        description: e.Message,
-                        buttonType: ButtonType.Close));
-            }
+            await this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle);
+        }
+
+        private bool AddShopPredicate()
+        {
+            return ValidateURL.IsValidAddress(this.NewShopURL);
         }
     }
 }

@@ -89,7 +89,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         private void ConfigureApplication()
         {
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>(), out _);
+            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>());
             this.app.MainWindow = mainWindow;
             this.app.MainWindow.Show();
         }

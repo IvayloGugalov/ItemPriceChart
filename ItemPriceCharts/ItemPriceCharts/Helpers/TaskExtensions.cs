@@ -5,15 +5,20 @@ namespace ItemPriceCharts.UI.WPF.Helpers
 {
     public static class TaskExtensions
     {
-        public static async void FireAndForgetSafeAsync(this Task task, bool shouldAwait = true, Action<Exception> errorHandler = null)
+        public static async void FireAndForgetSafeAsync(this Task task, bool continueOnCapturedContext = true, Action<Exception> errorHandler = null)
         {
             try
             {
-                await task.ConfigureAwait(shouldAwait);
+                await task.ConfigureAwait(continueOnCapturedContext);
             }
-            catch (Exception ex) when (errorHandler != null)
+            catch (Exception ex)
             {
-                errorHandler(ex);
+                if (errorHandler is null)
+                {
+                    throw;
+                }
+
+                errorHandler?.Invoke(ex);
             }
         }
     }

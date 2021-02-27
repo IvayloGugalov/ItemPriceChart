@@ -48,3 +48,4 @@ Thumbs.db
 /.vs/ItemPriceChart/v16
 /.vs
 /ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/bin/Debug/net5.0-windows
+/ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/TestResults

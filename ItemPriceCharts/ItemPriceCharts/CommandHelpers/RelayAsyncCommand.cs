@@ -16,15 +16,18 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         private readonly Func<Task> execute;
         private readonly Func<bool> canExecute;
         private readonly Action<Exception> errorHandler;
+        private readonly bool continueOnCapturedContext;
+
         private event EventHandler InternalCanExecuteChanged;
 
         private bool isExecuting;
 
-        public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, Action<Exception> errorHandler = null)
+        public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, Action<Exception> errorHandler = null, bool continueOnCapturedContext = true)
         {
             this.execute = execute;
             this.canExecute = canExecute;
             this.errorHandler = errorHandler;
+            this.continueOnCapturedContext = continueOnCapturedContext;
         }
 
         public event EventHandler CanExecuteChanged
@@ -66,7 +69,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
 
         protected void RaiseCantExecuteChanged()
         {
-            this.InternalCanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.InternalCanExecuteChanged.Raise(this);
         }
 
         #region Explicit implementations
@@ -77,7 +80,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
 
         void ICommand.Execute(object parameter)
         {
-            this.ExecuteAsync().FireAndForgetSafeAsync(true, this.errorHandler);
+            this.ExecuteAsync().FireAndForgetSafeAsync(this.continueOnCapturedContext, this.errorHandler);
         }
         #endregion
     }

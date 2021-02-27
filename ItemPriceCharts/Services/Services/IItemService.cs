@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ItemPriceCharts.Services.Models;
 
@@ -8,11 +9,11 @@ namespace ItemPriceCharts.Services.Services
     {
         Item FindItem(int id);
         IEnumerable<Item> GetItemsForShop(OnlineShop onlineShop);
-        IEnumerable<Item> GetAllItems();
-        void CreateItem(string itemURL, OnlineShop onlineShop, ItemType type);
+        Task<IEnumerable<Item>> GetAllItems();
+        Task CreateItem(string itemURL, OnlineShop onlineShop, ItemType type);
         void UpdateItem(Item item);
-        ItemPrice UpdateItemPrice(Item item);
-        void DeleteItem(Item item);
+        Task<ItemPrice> UpdateItemPrice(Item item);
+        Task<bool> DeleteItem(Item item);
         bool IsItemExisting(int id);
     }
 }

@@ -41,7 +41,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.itemService = itemService;
             this.SelectedShop = selectedShop ?? throw new ArgumentNullException(nameof(selectedShop));
 
-            this.AddItemCommand = new RelayAsyncCommand(this.AddItemAction, this.AddItemPredicate);
+            this.AddItemCommand = new RelayAsyncCommand(this.AddItemAction, this.AddItemPredicate, errorHandler: e =>
+            {
+                logger.Error($"Failed to create new item: {e}");
+                MessageDialogCreator.ShowErrorDialog(message: $"Failed to create new item with url: {this.NewItemURL}");
+            });
         }
 
         private async Task AddItemAction()
@@ -49,27 +53,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsInProgress = true;
             this.OnPropertyChanged(nameof(this.IsInProgress));
 
-            await Task.Run(() =>
-            {
-                try
-                {
-                    this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType);
-                }
-                catch (Exception e)
-                {
-                    logger.Info($"Failed to create {this.NewItemURL} due to: {e}");
-                    UIEvents.ShowMessageDialog(
-                            new MessageDialogViewModel(
-                                title: "Error",
-                                description: e.Message,
-                                buttonType: ButtonType.Close));
-                }
-            })
-            .ContinueWith(_ =>
-            {
-                this.IsInProgress = false;
-                this.OnPropertyChanged(nameof(this.IsInProgress));
-            });
+            await this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType);
+
+            this.IsInProgress = false;
+            this.OnPropertyChanged(nameof(this.IsInProgress));
         }
 
         private bool AddItemPredicate()

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using NLog;
 
@@ -16,41 +15,26 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private static readonly Logger logger = LogManager.GetLogger(nameof(DeleteItemViewModel));
 
         private readonly IItemService itemService;
-        private string operationResult;
 
         public Item ItemToDelete { get; }
 
-        public string OperationResult
-        {
-            get => this.operationResult;
-            set => this.SetValue(ref this.operationResult, value);
-        }
-
-        public ICommand DeleteItemCommand { get; }
+        public IAsyncCommand DeleteItemCommand { get; }
 
         public DeleteItemViewModel(IItemService itemService, Item item)
         {
             this.itemService = itemService;
             this.ItemToDelete = item;
 
-            this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
+            this.DeleteItemCommand = new RelayAsyncCommand(this.DeleteItemAction, errorHandler: e =>
+            {
+                logger.Error($"Can't delete item {this.ItemToDelete}.\t{e}");
+                MessageDialogCreator.ShowErrorDialog(message: $"Couldn't delete item {this.ItemToDelete.Title}");
+            });
         }
 
-        private void DeleteItemAction()
+        private async Task DeleteItemAction()
         {
-            try
-            {
-                Task.Run(() => this.itemService.DeleteItem(this.ItemToDelete));
-            }
-            catch (Exception e)
-            {
-                logger.Info($"Can't delete item {this.ItemToDelete}.\t{e}");
-                UIEvents.ShowMessageDialog(
-                    new MessageDialogViewModel(
-                        title: "Error",
-                        description: e.Message,
-                        buttonType: ButtonType.Close));
-            }
+            await this.itemService.DeleteItem(this.ItemToDelete);
         }
     }
 }

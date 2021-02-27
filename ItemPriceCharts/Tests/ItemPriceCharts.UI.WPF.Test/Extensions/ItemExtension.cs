@@ -1,4 +1,5 @@
 ﻿using ItemPriceCharts.Services.Models;
+using System;
 
 namespace ItemPriceCharts.UI.WPF.Test.Extensions
 {
@@ -21,6 +22,22 @@ namespace ItemPriceCharts.UI.WPF.Test.Extensions
                 price,
                 onlineShop,
                 type);
+        }
+
+        /// <summary>
+        /// Constructs a default item with specified parameters
+        /// </summary>
+        /// <returns></returns>
+        public static Item ConstructDefaultItem(OnlineShop onlineShop)
+        {
+            return Item.Construct(
+                id: new Random(10000).Next(),
+                url: string.Concat(onlineShop.URL, "//", new Random(10000).Next().ToString()),
+                title: "firstItem",
+                description: "item description",
+                price: new Random(10000).NextDouble(),
+                onlineShop: onlineShop,
+                type: ItemType.ComputerItem);
         }
     }
 }
