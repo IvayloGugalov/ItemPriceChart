@@ -32,9 +32,6 @@ namespace ItemPriceCharts.Services.Services
         public async Task<IEnumerable<Item>> GetAllItems() =>
             await this.itemRepository.GetAll(includeProperties: nameof(OnlineShop));
 
-        public IEnumerable<Item> GetItemsForShop(OnlineShop onlineShop) =>
-            this.itemRepository.GetAll(filter: item => item.OnlineShop.Id == onlineShop.Id, includeProperties: nameof(OnlineShop)).GetAwaiter().GetResult();
-
         public bool IsItemExisting(int id) =>
             this.itemRepository.IsExisting(id).Result;
 

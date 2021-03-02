@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 using Moq;
 using NUnit.Framework;
@@ -19,7 +18,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [SetUp]
         public void SetUp()
         {
-            this.itemServiceMock = new Mock<IItemService>();
+            this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
         }
 
         [TearDown]

@@ -8,7 +8,6 @@ using NUnit.Framework;
 
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
@@ -23,7 +22,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [SetUp]
         public void SetUp()
         {
-            this.itemServiceMock = new Mock<IItemService>();
+            this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
 
             this.defaultOnlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
         }

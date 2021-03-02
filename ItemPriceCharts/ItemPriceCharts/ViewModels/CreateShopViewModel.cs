@@ -30,7 +30,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.newShopURL, value);
         }
 
-        public ICommand AddShopCommand { get; }
+        public IAsyncCommand AddShopCommand { get; }
 
         public CreateShopViewModel(IOnlineShopService onlineShopService)
         {

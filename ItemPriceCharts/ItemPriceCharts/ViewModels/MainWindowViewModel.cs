@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 using NLog;
 
@@ -8,7 +9,6 @@ using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
-using System.Threading.Tasks;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -77,7 +77,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void ErrorHandler(Exception exception, string errorMessage)
         {
-            logger.Info($"Failed to retrieve entities.\t{exception.Message}");
+            logger.Info($"Failed to retrieve entities.\n{exception}");
             MessageDialogCreator.ShowErrorDialog(message: errorMessage);
         }
 

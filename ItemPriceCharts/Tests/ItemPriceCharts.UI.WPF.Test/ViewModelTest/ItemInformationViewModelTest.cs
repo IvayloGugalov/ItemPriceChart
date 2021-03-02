@@ -27,8 +27,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [SetUp]
         public void SetUp()
         {
-            this.itemPriceServiceMock = new Mock<IItemPriceService>();
-            this.itemServiceMock = new Mock<IItemService>();
+            this.itemPriceServiceMock = new Mock<IItemPriceService>(MockBehavior.Strict);
+            this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
 
             var onlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
 

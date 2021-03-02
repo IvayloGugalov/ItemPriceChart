@@ -45,7 +45,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
             UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
 
-            this.AddShopsToViewModelAsync().FireAndForgetSafeAsync(errorHandler: e => logger.Error($"Can't load shops: {e.Message}"));
+            this.AddShopsToViewModelAsync().FireAndForgetSafeAsync(errorHandler: e => logger.Error($"Can't load shops:\n{e}"));
         }
 
         private void ShowCreateShopAction() => UIEvents.ShowCreateShopView.Publish(null);
@@ -71,7 +71,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (System.Exception e)
             {
-                logger.Info($"Can't load items for {this.SelectedShop}: {e}");
+                logger.Info($"Can't load items for {this.SelectedShop}:\n{e}");
                 UIEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         "Error",

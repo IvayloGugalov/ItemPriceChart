@@ -71,12 +71,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.LoadItemPriceInformationAsync()
                 .FireAndForgetSafeAsync(errorHandler: e =>
                 {
-                    logger.Error($"Could not load price information for {this.Item}.\t{e.Message}");
+                    logger.Error($"Could not load price information for {this.Item}.\n{e}");
                     MessageDialogCreator.ShowErrorDialog(message: $"Could not load price information for {this.Item.Title}");
                 });
         }
 
-        internal async Task LoadItemPriceInformationAsync()
+        private async Task LoadItemPriceInformationAsync()
         {
             var priceInformation = await this.itemPriceService.GetPricesForItem(this.Item.Id);
 

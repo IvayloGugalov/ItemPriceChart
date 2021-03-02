@@ -27,7 +27,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.DeleteItemCommand = new RelayAsyncCommand(this.DeleteItemAction, errorHandler: e =>
             {
-                logger.Error($"Can't delete item {this.ItemToDelete}.\t{e}");
+                logger.Error($"Can't delete item {this.ItemToDelete}.\n{e}");
                 MessageDialogCreator.ShowErrorDialog(message: $"Couldn't delete item {this.ItemToDelete.Title}");
             });
         }

@@ -1,5 +1,6 @@
-﻿using ItemPriceCharts.Services.Models;
-using System;
+﻿using System;
+
+using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.UI.WPF.Test.Extensions
 {

@@ -18,10 +18,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShouldShowShopInformation = false;
         }
 
-        /// <summary>
-        /// Called from outside the class
-        /// </summary>
-        /// <returns></returns>
+        //Called from outside the class
         public async Task SetItemsListAsync()
         {
             if (this.SelectedShop != null)
