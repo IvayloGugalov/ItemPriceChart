@@ -2,12 +2,11 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/ItemPriceCharts/.vs/ItemPriceCharts
-/ItemPriceCharts/ItemPriceCharts/bin
-/ItemPriceCharts/ItemPriceCharts/obj
-/ItemPriceCharts/Services/bin
-/ItemPriceCharts/Services/obj
-/ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/obj
+bin/
+obj/
+.vs/
+
+/ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/TestResults
 
 # Compiled source #
 ###################
@@ -45,7 +44,3 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-/.vs/ItemPriceChart/v16
-/.vs
-/ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/bin/Debug/net5.0-windows
-/ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/TestResults
