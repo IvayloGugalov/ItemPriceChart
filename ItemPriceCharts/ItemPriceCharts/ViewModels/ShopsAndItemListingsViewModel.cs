@@ -45,7 +45,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
             UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
 
-            this.AddShopsToViewModelAsync().FireAndForgetSafeAsync();
+            this.AddShopsToViewModelAsync().FireAndForgetSafeAsync(errorHandler: e => logger.Error($"Can't load shops: {e.Message}"));
         }
 
         private void ShowCreateShopAction() => UIEvents.ShowCreateShopView.Publish(null);

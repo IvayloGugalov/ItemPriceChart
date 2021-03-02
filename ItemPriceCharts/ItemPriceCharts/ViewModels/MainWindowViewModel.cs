@@ -57,10 +57,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.currentView = this;
 
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
-            this.ShowItemListingCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: e =>
-            this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve items."));
-            this.ShowItemsForShopCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: e =>
-            this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve items."));
+            this.ShowItemListingCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: e => this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve items."));
+            this.ShowItemsForShopCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: e => this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve items."));
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 

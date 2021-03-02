@@ -29,14 +29,13 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.onlineShopServiceMock = new Mock<IOnlineShopService>(MockBehavior.Strict);
             this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
 
-            onlineShopWithItems = OnlineShopExtension.ConstructDefaultOnlineShop();
-            onlineShopWithItems.AddItem(ItemExtension.ConstructDefaultItem(onlineShopWithItems));
+            this.onlineShopWithItems = OnlineShopExtension.ConstructDefaultOnlineShop();
+            this.onlineShopWithItems.AddItem(ItemExtension.ConstructDefaultItem(this.onlineShopWithItems));
 
-            onlineShopWithoutItems = OnlineShopExtension.ConstructOnlineShop(
+            this.onlineShopWithoutItems = OnlineShopExtension.ConstructOnlineShop(
                 id: 2,
                 url: "https://shop123.com",
                 title: "shop123");
-
         }
 
         [TearDown]
@@ -87,5 +86,41 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             Assert.AreEqual(this.onlineShopWithItems.Items.First(), shopsAndItemListingViewModel.ItemsList.First());
             Assert.IsTrue(shopsAndItemListingViewModel.AreItemsShown);
         }
+
+        [Test]
+        public void ShowItemsCommand_WhenExceptionThrown_WillShowMessageDialog()
+        {
+            MessageDialogViewModel messageDialogViewModel = null;
+            UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+
+            var listOfShops = new List<OnlineShop>() { this.onlineShopWithItems };
+
+            this.onlineShopServiceMock.Setup(_ => _.GetAllShops())
+                .ReturnsAsync(listOfShops);
+
+            var shopsAndItemListingViewModel = new ShopsAndItemListingsViewModel(this.itemServiceMock.Object, this.onlineShopServiceMock.Object)
+            {
+                SelectedShop = null
+            };
+
+            shopsAndItemListingViewModel.ShowItemsCommand.Execute(null);
+
+            var expectedErrorMessage = "Object reference not set to an instance of an object.";
+            Assert.IsNotNull(messageDialogViewModel);
+            Assert.AreEqual(expectedErrorMessage, messageDialogViewModel.Description);
+            Assert.IsNull(shopsAndItemListingViewModel.ItemsList);
+        }
+
+        [Test]
+        public void ShowItemsCommand_WithNoOnlineShops_WillBeDisabled()
+        {
+            this.onlineShopServiceMock.Setup(_ => _.GetAllShops())
+                .ReturnsAsync(new List<OnlineShop>());
+
+            var shopsAndItemListingViewModel = new ShopsAndItemListingsViewModel(this.itemServiceMock.Object, this.onlineShopServiceMock.Object);
+
+            Assert.IsFalse(shopsAndItemListingViewModel.ShowItemsCommand.CanExecute(null));
+        }
+
     }
 }
