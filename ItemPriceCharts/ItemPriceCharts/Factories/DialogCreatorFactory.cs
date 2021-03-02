@@ -59,6 +59,7 @@ namespace ItemPriceCharts.UI.WPF.Factories
             {
                 var parameters = new Parameter[] { new NamedParameter("item", e) };
                 var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
+
                 window.ShowDialog();
             }
         }

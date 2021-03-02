@@ -6,21 +6,42 @@ using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.CommandHelpers
 {
-    public class RelayAsyncCommand : ICommand
+    public interface IAsyncCommand : ICommand
+    {
+        Task ExecuteAsync();
+    }
+
+    public class RelayAsyncCommand : IAsyncCommand
     {
         private readonly Func<Task> execute;
         private readonly Func<bool> canExecute;
         private readonly Action<Exception> errorHandler;
+        private readonly bool continueOnCapturedContext;
+
+        private event EventHandler InternalCanExecuteChanged;
 
         private bool isExecuting;
 
-        public event EventHandler CanExecuteChanged;
-
-        public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, Action<Exception> errorHandler = null)
+        public RelayAsyncCommand(Func<Task> execute, Func<bool> canExecute = null, Action<Exception> errorHandler = null, bool continueOnCapturedContext = true)
         {
             this.execute = execute;
             this.canExecute = canExecute;
             this.errorHandler = errorHandler;
+            this.continueOnCapturedContext = continueOnCapturedContext;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+                this.InternalCanExecuteChanged += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+                this.InternalCanExecuteChanged -= value;
+            }
         }
 
         public bool CanExecute()
@@ -46,9 +67,9 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
             this.RaiseCantExecuteChanged();
         }
 
-        public void RaiseCantExecuteChanged()
+        protected void RaiseCantExecuteChanged()
         {
-            this.CanExecuteChanged?.Invoke(this, new EventArgs());
+            this.InternalCanExecuteChanged.Raise(this);
         }
 
         #region Explicit implementations
@@ -59,7 +80,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
 
         void ICommand.Execute(object parameter)
         {
-            this.ExecuteAsync().FireAndForgetSafeAsync(true, this.errorHandler);
+            this.ExecuteAsync().FireAndForgetSafeAsync(this.continueOnCapturedContext, this.errorHandler);
         }
         #endregion
     }

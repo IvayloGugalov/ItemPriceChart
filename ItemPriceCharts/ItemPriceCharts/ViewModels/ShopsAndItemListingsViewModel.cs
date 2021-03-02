@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 using NLog;
 
@@ -30,7 +31,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowCreateShopCommand { get; }
         public ICommand ShowAddItemCommand { get; }
 
-        public ShopsAndItemListingsViewModel(ItemService itemService, OnlineShopService onlineShopService)
+        public ShopsAndItemListingsViewModel(IItemService itemService, IOnlineShopService onlineShopService)
             : base (itemService)
         {
             this.onlineShopService = onlineShopService;
@@ -44,7 +45,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
             UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
 
-            this.AddShopsToViewModel();
+            this.AddShopsToViewModelAsync().FireAndForgetSafeAsync(errorHandler: e => logger.Error($"Can't load shops:\n{e}"));
         }
 
         private void ShowCreateShopAction() => UIEvents.ShowCreateShopView.Publish(null);
@@ -61,8 +62,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                     return;
                 }
 
-                this.ItemsList = ToObservableCollectionExtensions.ToObservableCollection(
-                    this.SelectedShop.Items);
+                this.ItemsList = this.SelectedShop.Items.ToObservableCollection();
 
                 if (this.ItemsList.Any())
                 {
@@ -71,7 +71,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (System.Exception e)
             {
-                logger.Info($"Can't load items for {this.SelectedShop}: {e}");
+                logger.Info($"Can't load items for {this.SelectedShop}:\n{e}");
                 UIEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         "Error",
@@ -92,19 +92,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.OnPropertyChanged(() => this.IsListOfShopsShown);
         }
 
-        private void AddShopsToViewModel()
+        private async Task AddShopsToViewModelAsync()
         {
-            try
-            {
-                this.OnlineShops = ToObservableCollectionExtensions.ToObservableCollection(
-                    this.onlineShopService.GetAllShops());
+            var retrievedShops = await this.onlineShopService.GetAllShops();
 
-                this.IsListOfShopsShown = this.OnlineShops.Any();
-            }
-            catch (System.Exception e)
-            {
-                logger.Info($"Can't load shops: {e}");
-            }
+            this.OnlineShops = retrievedShops.ToObservableCollection();
+
+            this.IsListOfShopsShown = this.OnlineShops.Any();
         }
 
         private bool ShowItemsPredicate()

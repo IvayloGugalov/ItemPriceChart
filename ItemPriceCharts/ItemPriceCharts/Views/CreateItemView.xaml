@@ -56,7 +56,7 @@
         <indicator:LoadingIndicator Grid.Row="5"
                                     Style="{StaticResource LoadingIndicatorRingStyleKey}"
                                     Foreground="NavajoWhite"
-                                    IsActive="{Binding IsAddingItemFinished}"
+                                    IsActive="{Binding IsInProgress}"
                                     SpeedRatio="1.2"/>
 
         <Button Grid.Row="6"

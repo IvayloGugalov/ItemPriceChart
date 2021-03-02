@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using NLog;
 
@@ -31,43 +30,33 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.selectedItemType, value);
         }
 
-        public bool IsAddingItemFinished { get; private set; }
+        public bool IsInProgress { get; private set; }
 
         public OnlineShop SelectedShop { get; }
 
-        public ICommand AddItemCommand { get; }
+        public IAsyncCommand AddItemCommand { get; }
 
-        public CreateItemViewModel(ItemService itemService, OnlineShop selectedShop)
+        public CreateItemViewModel(IItemService itemService, OnlineShop selectedShop)
         {
             this.itemService = itemService;
             this.SelectedShop = selectedShop ?? throw new ArgumentNullException(nameof(selectedShop));
 
-            this.AddItemCommand = new RelayCommand<object>(this.AddItemAction, this.AddItemPredicate);
+            this.AddItemCommand = new RelayAsyncCommand(this.AddItemAction, this.AddItemPredicate, errorHandler: e =>
+            {
+                logger.Error($"Failed to create new item: {e}");
+                MessageDialogCreator.ShowErrorDialog(message: $"Failed to create new item with url: {this.NewItemURL}");
+            });
         }
 
-        private void AddItemAction(object param)
+        private async Task AddItemAction()
         {
-            try
-            {
-                this.IsAddingItemFinished = true;
-                this.OnPropertyChanged(nameof(this.IsAddingItemFinished));
+            this.IsInProgress = true;
+            this.OnPropertyChanged(nameof(this.IsInProgress));
 
-                Task.Run(() => this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType))
-                    .ContinueWith((_) =>
-                    {
-                        this.IsAddingItemFinished = false;
-                        this.OnPropertyChanged(nameof(this.IsAddingItemFinished));
-                    });
-            }
-            catch (Exception e)
-            {
-                logger.Info($"Failed to create {this.NewItemURL} due to: {e}");
-                UIEvents.ShowMessageDialog(
-                        new MessageDialogViewModel(
-                            title: "Error",
-                            description: e.Message,
-                            buttonType: ButtonType.Close));
-            }
+            await this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType);
+
+            this.IsInProgress = false;
+            this.OnPropertyChanged(nameof(this.IsInProgress));
         }
 
         private bool AddItemPredicate()

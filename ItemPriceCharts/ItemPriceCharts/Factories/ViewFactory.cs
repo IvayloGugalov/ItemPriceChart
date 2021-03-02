@@ -30,7 +30,7 @@ namespace ItemPriceCharts.UI.WPF.Factories
         public Window Resolve<TViewModel>(Parameter[] parameters)
             where TViewModel : class, IViewModel
         {
-            TViewModel viewModel = this.lifetimeScope.Resolve<TViewModel>(parameters);
+            var viewModel = this.lifetimeScope.Resolve<TViewModel>(parameters);
 
             var viewType = this.map[typeof(TViewModel)];
             var view = this.lifetimeScope.Resolve(viewType) as Window;

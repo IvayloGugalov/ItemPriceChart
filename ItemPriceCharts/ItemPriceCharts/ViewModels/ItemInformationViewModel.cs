@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -34,101 +33,93 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public bool IsInProgress
         {
             get => this.isInProgress;
-            set => this.SetValue(ref this.isInProgress, value);
+            private set => this.SetValue(ref this.isInProgress, value);
         }
 
         public List<string> Labels
         {
             get => this.labels;
-            set => this.SetValue(ref this.labels, value);
+            private set => this.SetValue(ref this.labels, value);
         }
 
         public SeriesCollection PriceCollection
         {
             get => this.priceCollection;
-            set => this.SetValue(ref this.priceCollection, value);
+            private set => this.SetValue(ref this.priceCollection, value);
         }
 
-        public ICommand UpdatePriceCommand { get; }
+        public LineSeries LineSeries
+        {
+            get => this.lineSeries;
+            private set => lineSeries = value;
+        }
 
-        public ItemInformationViewModel(ItemPriceService itemPriceService, ItemService itemService, Item item)
+        public IAsyncCommand UpdatePriceCommand { get; }
+
+        public ItemInformationViewModel(IItemPriceService itemPriceService, IItemService itemService, Item item)
         {
             this.itemPriceService = itemPriceService;
             this.itemService = itemService;
             this.Item = item;
 
-            this.LoadItemPriceInformation();
+            this.UpdatePriceCommand = new RelayAsyncCommand(this.UpdatePriceAction, this.UpdatePricePredicate, errorHandler: e =>
+            {
+                logger.Error($"Couldn't update item price: {e}");
+                MessageDialogCreator.ShowErrorDialog(message: $"Could not update price for {this.Item.Title}");
+            });
 
-            this.UpdatePriceCommand = new RelayCommand<object>(this.UpdatePriceAction, this.UpdatePricePredicate);
+            this.LoadItemPriceInformationAsync()
+                .FireAndForgetSafeAsync(errorHandler: e =>
+                {
+                    logger.Error($"Could not load price information for {this.Item}.\n{e}");
+                    MessageDialogCreator.ShowErrorDialog(message: $"Could not load price information for {this.Item.Title}");
+                });
         }
 
-        private async void LoadItemPriceInformation()
+        private async Task LoadItemPriceInformationAsync()
         {
-            try
+            var priceInformation = await this.itemPriceService.GetPricesForItem(this.Item.Id);
+
+            var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
+            var oldPrices = priceInformation.Select(p => p.Price);
+
+            //Test Data
+            //this.CreateTestData(out var dateOfPrices, out var oldPrices);
+
+            this.Labels = dateOfPrices.ToList();
+
+            this.LineSeries = new LineSeries
             {
-                var priceInformation = await Task.Run(() => this.itemPriceService.GetPricesForItem(this.Item.Id));
+                Title = "Price",
+                Stroke = System.Windows.Media.Brushes.White,
+                Values = new ChartValues<double>(oldPrices)
+            };
 
-                var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
-                var oldPrices = priceInformation.Select(p => p.Price);
+            this.PriceCollection = new SeriesCollection
+            {
+                this.LineSeries
+            };
 
-                //Test Data
-                //this.CreateTestData(out var dateOfPrices, out var oldPrices);
+            this.YFormatter = value => value.ToString("C");
+        }
 
-                this.Labels = dateOfPrices.ToList();
+        private async Task UpdatePriceAction()
+        {
+            this.IsInProgress = true;
 
-                this.lineSeries = new LineSeries
-                {
-                    Title = "Price",
-                    Stroke = System.Windows.Media.Brushes.White,
-                    Values = new ChartValues<double>(oldPrices)
-                };
+            var updatedItemPrice = await this.itemService.UpdateItemPrice(this.Item);
 
-                this.PriceCollection = new SeriesCollection
-                {
-                    this.lineSeries
-                };
-
-                this.YFormatter = value => value.ToString("C");
+            if (updatedItemPrice != null)
+            {
+                this.LineSeries.Values.Add(updatedItemPrice.Price);
+                this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
             }
-            catch (Exception e)
+            else
             {
                 UIEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
-                        title: "Error",
-                        description: e.Message,
-                        buttonType: ButtonType.Close));
-            }
-        }
-
-        private async void UpdatePriceAction(object obj)
-        {
-            try
-            {
-                this.IsInProgress = true;
-
-                ItemPrice updatedItemPrice = await Task.Run(() => this.itemService.UpdateItemPrice(this.Item));
-
-                if (updatedItemPrice != null)
-                {
-                    this.lineSeries.Values.Add(updatedItemPrice.Price);
-                    this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
-                }
-                else
-                {
-                    UIEvents.ShowMessageDialog(
-                        new MessageDialogViewModel(
-                            title: "Item Price Chart",
-                            description: "The price of the item hasn't been changed.",
-                            buttonType: ButtonType.Close));
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Info($"Couldn't update item price: {e}");
-                UIEvents.ShowMessageDialog(
-                    new MessageDialogViewModel(
-                        title: "Error",
-                        description: e.Message,
+                        title: "Item Price Chart",
+                        description: "The price of the item hasn't been changed.",
                         buttonType: ButtonType.Close));
             }
         }
