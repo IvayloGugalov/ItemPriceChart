@@ -47,6 +47,9 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.MigrateDatabase();
             this.RegisterViews();
             this.ConfigureApplication();
+
+            var login = this.viewFactory.Resolve<LoginViewModel>(System.Array.Empty<Parameter>());
+            login.Show();
         }
 
         private void MigrateDatabase()
@@ -85,6 +88,8 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.viewFactory.Register<CreateItemViewModel, CreateItemView>();
             this.viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
             this.viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
+
+            this.viewFactory.Register<LoginViewModel, LoginView>();
         }
 
         private void ConfigureApplication()

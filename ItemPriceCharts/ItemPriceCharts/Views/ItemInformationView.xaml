@@ -18,7 +18,7 @@
             <GradientStop Color="#00a6ff" Offset="0.7"/>
         </LinearGradientBrush>
     </Window.Background>
-    <Grid Margin="20 20">
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
