@@ -37,7 +37,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.itemServiceMock.Object, this.onlineShopServiceMock.Object);
 
             this.onlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
-
         }
 
         [TearDown]

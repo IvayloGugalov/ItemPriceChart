@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using HtmlAgilityPack;
 using NLog;
@@ -14,7 +15,7 @@ namespace ItemPriceCharts.Services.Helpers
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(RetrieveItemData));
 
-        public static Item CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
+        public static Task<Item> CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
         {
             switch (onlineShop.Title)
             {
@@ -22,25 +23,27 @@ namespace ItemPriceCharts.Services.Helpers
                 {
                     var data = VarioRetrieveData(itemDocument);
 
-                    return new Item(
-                        url: itemURL,
-                        title: data.Item1,
-                        description: data.Item2,
-                        price: data.Item3,
-                        onlineShop: onlineShop,
-                        type: type);
+                    return Task.FromResult(
+                        new Item(
+                            url: itemURL,
+                            title: data.Item1,
+                            description: data.Item2,
+                            price: data.Item3,
+                            onlineShop: onlineShop,
+                            type: type));
                 }
                 case "Plesio":
                 {
                     var data = PlesioRetrieveData(itemDocument);
 
-                    return new Item(
-                        url: itemURL,
-                        title: data.Item1,
-                        description: data.Item2,
-                        price: data.Item3,
-                        onlineShop: onlineShop,
-                        type: type);
+                    return Task.FromResult(
+                        new Item(
+                            url: itemURL,
+                            title: data.Item1,
+                            description: data.Item2,
+                            price: data.Item3,
+                            onlineShop: onlineShop,
+                            type: type));
                 }
                 default:
                     return null;

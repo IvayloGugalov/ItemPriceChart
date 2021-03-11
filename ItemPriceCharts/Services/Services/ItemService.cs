@@ -27,45 +27,38 @@ namespace ItemPriceCharts.Services.Services
         }
 
         public Item FindItem(int id) =>
-            this.itemRepository.FindAsync(id).Result ?? throw new Exception();
+            this.itemRepository.FindAsync(id).GetAwaiter().GetResult() ?? throw new Exception();
 
-        public async Task<IEnumerable<Item>> GetAllItems() =>
-            await this.itemRepository.GetAll(includeProperties: nameof(OnlineShop));
+        public Task<IEnumerable<Item>> GetAllItems() =>
+            this.itemRepository.GetAll(includeProperties: nameof(OnlineShop));
 
         public bool IsItemExisting(int id) =>
-            this.itemRepository.IsExisting(id).Result;
+            this.itemRepository.IsExisting(id).ConfigureAwait(false).GetAwaiter().GetResult();
 
-        internal bool IsItemExisting(string url) =>
-            this.itemRepository.GetAll(filter: item => item.URL == url).Result.FirstOrDefault() != null;
+        private bool IsItemExisting(string url) =>
+            this.itemRepository.GetAll(filter: item => item.URL == url).GetAwaiter().GetResult().FirstOrDefault() != null;
 
-        public Task CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
+        public async Task CreateItem(string itemURL, OnlineShop onlineShop, ItemType type)
         {
             try
             {
                 if (!this.IsItemExisting(itemURL))
                 {
-                    var item = this.LoadItemFromWeb(itemURL, onlineShop, type);
-
-                    this.itemRepository.Add(item);
+                    var loadedItem = await ItemService.LoadItemFromWeb(itemURL, onlineShop, type).ConfigureAwait(false);
+                    var item = await this.itemRepository.Add(loadedItem).ConfigureAwait(false);
                     onlineShop.AddItem(item);
 
-                    logger.Debug($"Saved item: '{item}' to database");
+                    await this.itemPriceService.CreateItemPrice(item.CurrentPrice, item.Id).ConfigureAwait(false);
 
-                    this.itemPriceService.CreateItemPrice(new ItemPrice(
-                        currentPrice: item.CurrentPrice,
-                        itemId: item.Id));
-                    logger.Debug($"Saved item price for itemId: {item.Id} to database");
-
+                    logger.Debug($"Saved item: '{item}' to database.");
                     EventsLocator.ItemAdded.Publish(item);
                 }
             }
             catch (Exception e)
             {
-                logger.Error($"Couldn't create an item: {e}");
+                logger.Error(e, "Couldn't create an item.");
                 throw;
             }
-
-            return Task.CompletedTask;
         }
 
         public void UpdateItem(Item item)
@@ -74,38 +67,37 @@ namespace ItemPriceCharts.Services.Services
             {
                 if (this.IsItemExisting(item.Id))
                 {
-                    this.itemRepository.Update(item);
-                    logger.Debug($"Updated item: '{item}'");
+                    this.itemRepository.Update(item).ConfigureAwait(false);
+                    logger.Debug($"Updated item: '{item}'.");
                 }
             }
             catch (Exception e)
             {
-                logger.Error($"Couldn't update an item: {e}");
+                logger.Error(e, "Couldn't update an item.");
                 throw;
             }
         }
 
-        public Task<bool> DeleteItem(Item item)
+        public async Task<bool> DeleteItem(Item item)
         {
             try
             {
+                bool itemDeleted = false;
                 if (this.IsItemExisting(item.Id))
                 {
-                    this.itemRepository.Delete(item);
+                    itemDeleted = await this.itemRepository.Delete(item).ConfigureAwait(false);
                     item.OnlineShop.DeleteItem(item);
 
-                    logger.Debug($"Deleted item: '{item}'");
+                    logger.Debug($"Deleted item: '{item}'.");
 
                     EventsLocator.ItemDeleted.Publish(item);
-
-                    return Task.FromResult(true);
                 }
 
-                return Task.FromResult(false);
+                return itemDeleted;
             }
             catch (Exception e)
             {
-                logger.Error($"Couldn't delete item: '{item}'.\t{e}");
+                logger.Error(e, $"Couldn't delete item: '{item}'.");
                 throw;
             }
         }
@@ -114,9 +106,10 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
+                ItemPrice newItemPrice = null;
                 if (this.IsItemExisting(item.Id))
                 {
-                    var updatedItem = this.LoadItemFromWeb(item.URL, item.OnlineShop, item.Type);
+                    var updatedItem = await ItemService.LoadItemFromWeb(item.URL, item.OnlineShop, item.Type).ConfigureAwait(false);
 
                     if (updatedItem != item)
                     {
@@ -125,28 +118,22 @@ namespace ItemPriceCharts.Services.Services
 
                         await this.itemRepository.Update(item).ConfigureAwait(false);
 
-                        logger.Debug($"Updated item: {item.Title}:" +
-                            $"\nFrom {item.CurrentPrice} to {updatedItem.Description}" +
-                            $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
+                        item.OnlineShop.UpdateItem(updatedItem);
 
-                        var newItemPrice = new ItemPrice(
-                                   currentPrice: updatedItem.CurrentPrice,
-                                   itemId: updatedItem.Id);
-                        this.itemPriceService.CreateItemPrice(newItemPrice);
-
-                        return newItemPrice;
+                        newItemPrice = await this.itemPriceService.CreateItemPrice(updatedItem.CurrentPrice, updatedItem.Id).ConfigureAwait(false);
                     }
                 }
-                return null;
+
+                return newItemPrice;
             }
             catch (Exception e)
             {
-                logger.Error($"Couldn't update item price for '{item}'.\t{e}");
-                return null;
+                logger.Error(e, $"Couldn't update item price for '{item}'.");
+                throw;
             }
         }
 
-        private Item LoadItemFromWeb(string itemUrl, OnlineShop onlineShop, ItemType type)
+        private static Task<Item> LoadItemFromWeb(string itemUrl, OnlineShop onlineShop, ItemType type)
         {
             var htmlService = new HtmlWeb();
             var itemDocument = htmlService.Load(itemUrl);

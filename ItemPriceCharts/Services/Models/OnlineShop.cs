@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using NLog;
+
 namespace ItemPriceCharts.Services.Models
 {
     public sealed class OnlineShop : EntityModel
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(OnlineShop));
+
         public string URL { get; }
         public string Title { get; }
 
-        private List<Item> items = new List<Item>();
+        private readonly List<Item> items = new List<Item>();
         public IReadOnlyCollection<Item> Items => this.items.AsReadOnly();
 
         private OnlineShop()
@@ -31,11 +35,24 @@ namespace ItemPriceCharts.Services.Models
             this.items.Remove(item);
         }
 
+        public void UpdateItem(Item updatedItem)
+        {
+            var item = this.items.Find(i => i.Id == updatedItem.Id);
+
+            if (item != null)
+            {
+                this.items[this.items.FindIndex(i => i.Id == updatedItem.Id)] = updatedItem;
+
+                logger.Info($"Updated item: {item.Title}:" +
+                             $"\nFrom {item.Description} to {updatedItem.Description}" +
+                             $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
+            }
+        }
+
         public override string ToString()
         {
             return $"Id: {this.Id}, Url: {this.URL}, Title: {this.Title}";
         }
-
 
         private OnlineShop(
             int id,

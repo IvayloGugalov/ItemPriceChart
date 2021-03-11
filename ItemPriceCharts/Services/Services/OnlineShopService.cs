@@ -23,18 +23,18 @@ namespace ItemPriceCharts.Services.Services
         }
 
         public OnlineShop FindShop(int id) =>
-            this.onlineShopRepository.FindAsync(id).Result ?? throw new Exception();
+            this.onlineShopRepository.FindAsync(id).GetAwaiter().GetResult() ?? throw new Exception();
 
         public Task<IEnumerable<OnlineShop>> GetAllShops() =>
             this.onlineShopRepository.GetAll(includeProperties: "Items");
 
         public bool IsShopExisting(int shopId) =>
-            this.onlineShopRepository.IsExisting(shopId).Result;
+            this.onlineShopRepository.IsExisting(shopId).GetAwaiter().GetResult();
 
-        internal bool IsShopExisting(string url) =>
-            this.onlineShopRepository.GetAll(filter: shop => shop.URL == url).Result.FirstOrDefault() != null;
+        private bool IsShopExisting(string url) =>
+            this.onlineShopRepository.GetAll(filter: shop => shop.URL == url).GetAwaiter().GetResult().FirstOrDefault() != null;
 
-        public Task CreateShop(string shopURL, string shopTitle)
+        public async Task CreateShop(string shopURL, string shopTitle)
         {
             try
             {
@@ -44,19 +44,17 @@ namespace ItemPriceCharts.Services.Services
                         url: shopURL,
                         title: shopTitle);
 
-                    this.onlineShopRepository.Add(newShop);
-                    logger.Debug($"Created shop: '{newShop}'");
+                    var onlineShop = await this.onlineShopRepository.Add(newShop);
+                    logger.Debug($"Created shop: '{onlineShop}'.");
 
-                    EventsLocator.ShopAdded.Publish(newShop);
+                    EventsLocator.ShopAdded.Publish(onlineShop);
                 }
             }
             catch (Exception e)
             {
-                logger.Error($"Can't create shop: {e}");
+                logger.Error(e, "Can't create shop.");
                 throw;
             }
-
-            return Task.CompletedTask;
         }
 
         public void UpdateShop(OnlineShop onlineShop)
@@ -66,12 +64,12 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsShopExisting(onlineShop.Id))
                 {
                     this.onlineShopRepository.Update(onlineShop);
-                    logger.Debug($"Updated shop: '{onlineShop}'");
+                    logger.Debug($"Updated shop: '{onlineShop}'.");
                 }
             }
             catch (Exception e)
             {
-                logger.Error($"Can't update shop: {e}");
+                logger.Error(e, "Can't update shop.");
             }
         }
 
@@ -82,14 +80,14 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsShopExisting(onlineShop.Id))
                 {
                     this.onlineShopRepository.Delete(onlineShop);
-                    logger.Debug($"Deleted shop: '{onlineShop}'");
+                    logger.Debug($"Deleted shop: '{onlineShop}'.");
 
                     EventsLocator.ShopDeleted.Publish(onlineShop);
                 }
             }
             catch (Exception e)
             {
-                logger.Error($"Can't delete shop: '{onlineShop}': {e}");
+                logger.Error(e, $"Can't delete shop: '{onlineShop}'.");
             }
         }
     }

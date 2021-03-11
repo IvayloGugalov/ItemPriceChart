@@ -22,7 +22,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         private Mock<IItemService> itemServiceMock;
 
         private Item item;
-        private Exception exceptionThrown;
 
         [SetUp]
         public void SetUp()
@@ -40,8 +39,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 price: 20.5,
                 onlineShop: onlineShop,
                 type: ItemType.ComputerItem);
-
-            this.exceptionThrown = new Exception();
 
             //var a = Mock.Of<Func<MessageDialogViewModel, bool?>>();
             //var command = (RelayCommand<object>)this.itemInformationViewModel.UpdatePriceCommand;
@@ -75,12 +72,11 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void LoadItemPriceInformation_WhenExceptionThrown_WillShowMessageDialog()
         {
-
             MessageDialogViewModel messageDialogViewModel = null;
             UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
             this.itemPriceServiceMock.Setup(_ => _.GetPricesForItem(this.item.Id))
-                .Throws(this.exceptionThrown);
+                .Throws(new Exception());
 
             this.itemInformationViewModel = new ItemInformationViewModel(this.itemPriceServiceMock.Object, this.itemServiceMock.Object, this.item);
 
@@ -95,11 +91,12 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             this.itemPriceServiceMock.Setup(_ => _.GetPricesForItem(this.item.Id))
                 .ReturnsAsync(new List<ItemPrice>());
+
             this.itemServiceMock.Setup(_ => _.UpdateItemPrice(this.item))
                 .ReturnsAsync(updatedItemPrice);
 
-
             this.itemInformationViewModel = new ItemInformationViewModel(this.itemPriceServiceMock.Object, this.itemServiceMock.Object, this.item);
+
             this.itemInformationViewModel.UpdatePriceCommand.Execute(null);
 
             Assert.AreEqual(1, this.itemInformationViewModel.Labels.Count);
@@ -108,15 +105,18 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         }
 
         [Test]
-        public void UpdatePriceAction_WithNoNewPrice_WillShowMessageDialog()
+        public void UpdatePriceAction_WithNoNewPrice_WillShowMessageDialogAsync()
         {
             MessageDialogViewModel messageDialogViewModel = null;
             UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
-            this.itemInformationViewModel = new ItemInformationViewModel(this.itemPriceServiceMock.Object, this.itemServiceMock.Object, this.item);
+            this.itemPriceServiceMock.Setup(_ => _.GetPricesForItem(this.item.Id))
+                .ReturnsAsync(new List<ItemPrice>());
 
             this.itemServiceMock.Setup(_ => _.UpdateItemPrice(this.item))
                 .ReturnsAsync(It.IsAny<ItemPrice>());
+
+            this.itemInformationViewModel = new ItemInformationViewModel(this.itemPriceServiceMock.Object, this.itemServiceMock.Object, this.item);
 
             this.itemInformationViewModel.UpdatePriceCommand.Execute(null);
 
@@ -132,10 +132,13 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
             var expectedOnExceptionDialogMessage = $"Could not update price for {this.item.Title}";
 
-            this.itemInformationViewModel = new ItemInformationViewModel(this.itemPriceServiceMock.Object, this.itemServiceMock.Object, this.item);
+            this.itemPriceServiceMock.Setup(_ => _.GetPricesForItem(this.item.Id))
+                .ReturnsAsync(new List<ItemPrice>());
 
             this.itemServiceMock.Setup(_ => _.UpdateItemPrice(this.item))
-                .Throws(this.exceptionThrown);
+                .Throws(new Exception());
+
+            this.itemInformationViewModel = new ItemInformationViewModel(this.itemPriceServiceMock.Object, this.itemServiceMock.Object, this.item);
 
             this.itemInformationViewModel.UpdatePriceCommand.Execute(null);
 
