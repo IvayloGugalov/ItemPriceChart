@@ -48,7 +48,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.RegisterViews();
             this.ConfigureApplication();
 
-            var login = this.viewFactory.Resolve<LoginViewModel>(System.Array.Empty<Parameter>());
+            var login = this.viewFactory.Resolve<ViewModels.LoginAndRegistration.StartUpViewModel>(System.Array.Empty<Parameter>());
             login.Show();
         }
 
@@ -89,7 +89,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
             this.viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
 
-            this.viewFactory.Register<LoginViewModel, LoginView>();
+            this.viewFactory.Register<ViewModels.LoginAndRegistration.StartUpViewModel, LoginRegisterView>();
         }
 
         private void ConfigureApplication()

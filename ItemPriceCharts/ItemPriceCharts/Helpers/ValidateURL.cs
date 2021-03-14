@@ -1,5 +1,7 @@
 ﻿using System;
 
+using ItemPriceCharts.Services.Helpers;
+
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
     public static class ValidateURL

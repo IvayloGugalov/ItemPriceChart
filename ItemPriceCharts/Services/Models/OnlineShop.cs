@@ -44,8 +44,8 @@ namespace ItemPriceCharts.Services.Models
                 this.items[this.items.FindIndex(i => i.Id == updatedItem.Id)] = updatedItem;
 
                 logger.Info($"Updated item: {item.Title}:" +
-                             $"\nFrom {item.Description} to {updatedItem.Description}" +
-                             $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
+                            $"\nFrom {item.Description} to {updatedItem.Description}" +
+                            $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
             }
         }
 

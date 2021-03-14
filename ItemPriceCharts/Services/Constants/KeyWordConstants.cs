@@ -1,4 +1,6 @@
-﻿namespace ItemPriceCharts.Services.Constants
+﻿using System;
+
+namespace ItemPriceCharts.Services.Constants
 {
     public static class PlesioKeyWordConstants
     {
@@ -20,5 +22,10 @@
     {
         public const string DATABASE_LOG_PATH = @"\ItemPriceCharts\database.log";
         public const string CONNECTION_STRING = "Data Source=ItemPriceChartsDB.db";
+    }
+
+    public static class Paths
+    {
+        public static readonly string XML_FILE_PATH = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"\ItemPriceCharts\myXmlFile.xml");
     }
 }

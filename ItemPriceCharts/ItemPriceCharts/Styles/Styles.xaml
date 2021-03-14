@@ -329,7 +329,7 @@
         <Setter Property="TextDecorations" Value="{x:Null}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="TextBlock.Foreground" Value="Crimson"/>
+                <Setter Property="TextBlock.Foreground" Value="DodgerBlue"/>
             </Trigger>
         </Style.Triggers>
     </Style>

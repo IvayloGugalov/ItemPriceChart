@@ -24,7 +24,7 @@
     <Compile Update="Views\ItemInformationView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\LoginView.xaml.cs">
+    <Compile Update="Views\LoginRegisterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\UserControls\ItemListingView.xaml.cs">
@@ -36,10 +36,19 @@
     <Compile Update="Views\MessageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\LoginView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\RegisterView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\ShopListingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\UserControls\ShopsAndItemListingsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\StartUpView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -62,7 +71,7 @@
     <Page Update="Views\ItemInformationView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\LoginView.xaml">
+    <Page Update="Views\LoginRegisterView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UserControls\ItemListingView.xaml">
@@ -74,6 +83,12 @@
     <Page Update="Views\MessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\UserControls\LoginView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\RegisterView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\UserControls\ShopListingView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -81,6 +96,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\StartUpView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
