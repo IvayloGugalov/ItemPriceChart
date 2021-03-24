@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ItemPriceCharts.Services.Migrations
 {
     [DbContext(typeof(ModelsContext))]
-    [Migration("20210313175548_AddUserEntity")]
-    partial class AddUserEntity
+    [Migration("20210324140942_CreateUserAccountEntity")]
+    partial class CreateUserAccountEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,6 +48,9 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.HasIndex("OnlineShopId");
 
                     b.ToTable("Item");
@@ -71,6 +74,9 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.ToTable("ItemPrice");
                 });
 
@@ -91,10 +97,13 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.ToTable("OnlineShop");
                 });
 
-            modelBuilder.Entity("ItemPriceCharts.Services.Models.User", b =>
+            modelBuilder.Entity("ItemPriceCharts.Services.Models.UserAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +112,9 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasMaxLength(220)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -123,7 +134,28 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("Username", "Email")
+                        .IsUnique();
+
+                    b.ToTable("UserAccount");
+                });
+
+            modelBuilder.Entity("OnlineShopUserAccount", b =>
+                {
+                    b.Property<int>("OnlineShopsForAccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserAccountsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("OnlineShopsForAccountId", "UserAccountsId");
+
+                    b.HasIndex("UserAccountsId");
+
+                    b.ToTable("OnlineShopUserAccount");
                 });
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.Item", b =>
@@ -135,6 +167,21 @@ namespace ItemPriceCharts.Services.Migrations
                         .IsRequired();
 
                     b.Navigation("OnlineShop");
+                });
+
+            modelBuilder.Entity("OnlineShopUserAccount", b =>
+                {
+                    b.HasOne("ItemPriceCharts.Services.Models.OnlineShop", null)
+                        .WithMany()
+                        .HasForeignKey("OnlineShopsForAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ItemPriceCharts.Services.Models.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("UserAccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.OnlineShop", b =>

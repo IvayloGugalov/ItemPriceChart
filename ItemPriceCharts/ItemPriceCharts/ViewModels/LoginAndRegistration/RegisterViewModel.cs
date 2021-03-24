@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Input;
 
+using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -7,9 +9,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
     public class RegisterViewModel : UserCredentialForm
     {
-        private string repeatPassword;
-        private string firstName;
-        private string lastName;
+        private readonly IUserAccountService userAccountService;
+        private readonly LoginViewModel loginViewModel;
+
+        private string confirmPassword;
+        private string firstName = "Ivaylo";
+        private string lastName = "Gugalov";
 
         public string FirstName
         {
@@ -23,55 +28,95 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             set => this.SetValue(ref this.lastName, value);
         }
 
-        public string RepeatPassword
+        public string ConfirmPassword
         {
-            get => this.repeatPassword;
-            set => this.SetValue(ref this.repeatPassword, value);
+            get => this.confirmPassword;
+            set
+            {
+                this.ErrorMessage = string.Empty;
+                this.SetValue(ref this.confirmPassword, value);
+            }
         }
 
         public IAsyncCommand RegisterCommand { get; }
+        public ICommand MoveBackCommand { get; }
 
-        public RegisterViewModel()
+        public RegisterViewModel(IUserAccountService userAccountService, LoginViewModel loginViewModel)
         {
+            this.userAccountService = userAccountService;
+            this.loginViewModel = loginViewModel;
+
+            this.Password = "123123";
+            this.ConfirmPassword = "123123";
+            this.Email = "emai@abv.bg";
+            this.Username = "Maslotopz";
+
             this.RegisterCommand = new RelayAsyncCommand(this.RegisterCommandAction, this.RegisterCommandPredicate, errorHandler: e =>
             {
                 MessageDialogCreator.ShowErrorDialog(message: e.Message);
             });
+
+            this.MoveBackCommand = new RelayCommand(this.MoveBackCommandAction);
+        }
+
+        private void MoveBackCommandAction(object param)
+        {
+            this.loginViewModel.CurrentViewModel = this.loginViewModel;
         }
 
         private async Task RegisterCommandAction()
         {
-            await Task.Delay(0);
-
+            await this.CreateUserAccount();
         }
 
-        private bool RegisterCommandPredicate()
+        private async Task CreateUserAccount()
         {
-            return this.AreCredentialsFilled() &&
-                   this.ArePasswordsEqual();
+            var userAccountCreationResult = await this.userAccountService.CreateUserAccount(
+                firstName: this.FirstName,
+                lastName: this.LastName,
+                userName: this.Username,
+                email: this.Email,
+                password: this.Password);
+
+            if (userAccountCreationResult == UserAccountRegistrationResult.UserAccountCreated)
+            {
+                this.MoveBackCommandAction(null);
+                return;
+            }
+
+            this.ErrorMessage = RegisterViewModel.GetCredentialsErrorMessage(userAccountCreationResult);
         }
 
-        public override bool AreCredentialsFilled()
+        private static string GetCredentialsErrorMessage(UserAccountRegistrationResult errorType) => errorType switch
         {
-            return !string.IsNullOrWhiteSpace(this.FirstName) &&
-                   !string.IsNullOrWhiteSpace(this.LastName) &&
-                   !string.IsNullOrWhiteSpace(this.RepeatPassword);
-        }
+            UserAccountRegistrationResult.EmailAlreadyExists => "Email already exists.",
+            UserAccountRegistrationResult.InvalidPassword => "Invalid password.",
+            UserAccountRegistrationResult.UserNameAlreadyExists => "Username already exists.",
+            UserAccountRegistrationResult.CanNotCreateUserAccount => "Can't create account.",
+            UserAccountRegistrationResult.UserAccountCreated => string.Empty,
+            _ => "Unanticipated error"
+        };
+
+        private bool RegisterCommandPredicate() =>
+            this.AreCredentialsFilled() &&
+            this.ArePasswordsEqual() &&
+            base.IsEmailValid;
+
+        public override bool AreCredentialsFilled() =>
+            !string.IsNullOrWhiteSpace(this.FirstName) &&
+            !string.IsNullOrWhiteSpace(this.LastName) &&
+            !string.IsNullOrWhiteSpace(this.ConfirmPassword) &&
+            base.AreCredentialsFilled();
 
         private bool ArePasswordsEqual()
         {
-            var areEqual = this.Password == this.RepeatPassword;
-            if (!areEqual)
+            var areEqualPasswords = this.Password == this.ConfirmPassword;
+            if (!areEqualPasswords)
             {
-                this.ShowError();
+                this.ErrorMessage = "Passwords do not match";
             }
 
-            return areEqual;
-        }
-
-        private void ShowError()
-        {
-            
+            return areEqualPasswords;
         }
     }
 }

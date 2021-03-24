@@ -11,8 +11,6 @@ namespace ItemPriceCharts.UI.WPF.Modules
         {
             builder.RegisterType<MainWindowViewModel>().SingleInstance();
             builder.RegisterType<MainWindow>().SingleInstance();
-            builder.RegisterType<ViewModels.LoginAndRegistration.StartUpViewModel>().InstancePerLifetimeScope();
-            builder.RegisterType<LoginRegisterView>().InstancePerLifetimeScope();
         }
     }
 }

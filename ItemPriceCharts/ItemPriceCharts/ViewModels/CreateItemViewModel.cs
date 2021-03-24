@@ -61,7 +61,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private bool AddItemPredicate()
         {
-            return ValidateURL.IsValidAddress(this.NewItemURL) && 
+            return Validators.IsValidAddress(this.NewItemURL) && 
                 this.NewItemURL.ToLower().Contains(this.SelectedShop.Title.ToLower());
         }
     }

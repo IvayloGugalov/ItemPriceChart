@@ -43,9 +43,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="NLog" Version="4.7.8" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ItemPriceCharts.XmReaderWriter\ItemPriceCharts.XmReaderWriter.csproj" />
     <ProjectReference Include="..\Services\ItemPriceCharts.Services.csproj" />
   </ItemGroup>
 

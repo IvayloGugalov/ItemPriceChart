@@ -86,7 +86,7 @@ namespace ItemPriceCharts.Services.Services
                 if (this.IsItemExisting(item.Id))
                 {
                     itemDeleted = await this.itemRepository.Delete(item).ConfigureAwait(false);
-                    item.OnlineShop.DeleteItem(item);
+                    item.OnlineShop.RemoveItem(item);
 
                     logger.Debug($"Deleted item: '{item}'.");
 

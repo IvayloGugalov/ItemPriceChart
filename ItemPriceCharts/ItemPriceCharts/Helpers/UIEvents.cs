@@ -14,6 +14,8 @@ namespace ItemPriceCharts.UI.WPF.Helpers
 
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
 
+        public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
+
         //Directly called on the UI thread
         public static IChannel<object> ShowCreateShopView { get; set; } = new Channel<object>();
         public static IChannel<OnlineShop> ShowCreateItemView { get; set; } = new Channel<OnlineShop>();

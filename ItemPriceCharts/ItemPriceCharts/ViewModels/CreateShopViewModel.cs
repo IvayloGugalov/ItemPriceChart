@@ -50,7 +50,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private bool AddShopPredicate()
         {
-            return ValidateURL.IsValidAddress(this.NewShopURL);
+            return Validators.IsValidAddress(this.NewShopURL);
         }
     }
 }

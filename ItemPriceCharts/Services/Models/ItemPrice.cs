@@ -8,11 +8,9 @@ namespace ItemPriceCharts.Services.Models
         public double Price { get; }
         public int ItemId { get; }
 
-        private ItemPrice()
-        {
-        }
+        private ItemPrice() { }
 
-        public ItemPrice(double currentPrice, int itemId)
+        public ItemPrice(double currentPrice, int itemId) : this()
         {
             this.PriceDate = DateTime.Now;
             this.Price = currentPrice >= 0 ? currentPrice : throw new ArgumentNullException(nameof(currentPrice));

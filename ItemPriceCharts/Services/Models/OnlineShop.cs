@@ -15,11 +15,11 @@ namespace ItemPriceCharts.Services.Models
         private readonly List<Item> items = new List<Item>();
         public IReadOnlyCollection<Item> Items => this.items.AsReadOnly();
 
-        private OnlineShop()
-        {
-        }
+        public ICollection<UserAccount> UserAccounts { get; set; }
 
-        public OnlineShop(string url, string title)
+        private OnlineShop() { }
+
+        public OnlineShop(string url, string title) : this()
         {
             this.URL = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
@@ -30,7 +30,7 @@ namespace ItemPriceCharts.Services.Models
             this.items.Add(item);
         }
 
-        public void DeleteItem(Item item)
+        public void RemoveItem(Item item)
         {
             this.items.Remove(item);
         }

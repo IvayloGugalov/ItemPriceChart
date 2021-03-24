@@ -19,7 +19,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
         private readonly ItemListingViewModel itemListingViewModel;
         private readonly IOnlineShopService onlineShopService;
-        private object currentView;
+        private BindableViewModel currentView;
         private bool isNewViewDisplayed;
         private OnlineShop selectedShop;
 
@@ -29,7 +29,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isNewViewDisplayed, value);
         }
 
-        public object CurrentView
+        public BindableViewModel CurrentView
         {
             get => this.currentView;
             set => this.SetValue(ref this.currentView, value);
@@ -48,6 +48,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowLogFileCommand { get; }
         public IAsyncCommand ShowItemListingCommand { get; }
         public IAsyncCommand ShowItemsForShopCommand { get; }
+        public ICommand ClosedCommand => new RelayCommand(_ => UIEvents.CloseApplication());
 
         public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, IOnlineShopService onlineShopService)
         {

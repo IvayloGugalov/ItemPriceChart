@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
+using ItemPriceCharts.Services.Models;
+
 namespace ItemPriceCharts.Services.Data
 {
     public class Repository<TEntity> : IRepository<TEntity>
-        where TEntity : class
+        where TEntity : EntityModel
     {
         public async Task<IEnumerable<TEntity>> GetAll(
             Expression<Func<TEntity, bool>> filter = null,
@@ -49,6 +51,14 @@ namespace ItemPriceCharts.Services.Data
             using (ModelsContext dbContext = new ModelsContext())
             {
                 return await dbContext.Set<TEntity>().FindAsync(id);
+            }
+        }
+
+        public async Task<bool> IsEntityExistingByAttribute(Expression<Func<TEntity, bool>> filter)
+        {
+            using (ModelsContext dbContext = new ModelsContext())
+            {
+                return await dbContext.Set<TEntity>().FirstOrDefaultAsync(filter) != null;
             }
         }
 

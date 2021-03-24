@@ -1,80 +1,134 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using ItemPriceCharts.Services.Helpers;
+using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
     public class LoginViewModel : UserCredentialForm
     {
-        private bool rememberMeChecked;
+        private readonly IUserAccountService userAccountService;
 
-        public bool RememberMeChecked
+        private BindableViewModel currentViewModel;
+        private RegisterViewModel registerViewModel;
+        private bool rememberUser = true;
+        private bool loginHasExpired;
+
+        public bool CloseTrigger { get; set; }
+
+        public BindableViewModel CurrentViewModel
         {
-            get => this.rememberMeChecked;
-            set => this.SetValue(ref this.rememberMeChecked, value);
+            get => this.currentViewModel;
+            set => this.SetValue(ref this.currentViewModel, value);
         }
 
-        public bool ShowRegisterView { get; private set; }
+        public bool RememberUser
+        {
+            get => this.rememberUser;
+            set => this.SetValue(ref this.rememberUser, value);
+        }
+
+        public bool LoginHasExpired
+        {
+            get => this.loginHasExpired;
+            set => this.SetValue(ref this.loginHasExpired, value);
+        }
 
         public IAsyncCommand LoginCommand { get; }
-        public ICommand ChangeWindowViewCommand { get; }
+        public ICommand ShowRegisterViewCommand { get; }
+        public override ICommand ClosedCommand => new RelayCommand(_ => this.ClosedCommandAction());
 
-        public LoginViewModel()
+        public LoginViewModel(IUserAccountService userAccountService, string userName, string email)
         {
+            this.userAccountService = userAccountService ?? throw new ArgumentNullException(nameof(userAccountService));
+
+            this.Username = userName;
+            this.Email = email;
+
             this.LoginCommand = new RelayAsyncCommand(this.LoginCommandAction, this.LoginCommandPredicate, errorHandler: e =>
             {
                 MessageDialogCreator.ShowErrorDialog(message: e.Message);
             });
 
-            this.ChangeWindowViewCommand = new RelayCommand(this.ChangeWindowViewAction);
+            this.ShowRegisterViewCommand = new RelayCommand(this.ShowRegisterViewAction);
+            this.CurrentViewModel = this;
+        }
+
+        private void ShowRegisterViewAction(object param)
+        {
+            if (this.registerViewModel is null)
+            {
+                this.registerViewModel = new RegisterViewModel(this.userAccountService, this);
+            }
+
+            this.CurrentViewModel = this.registerViewModel;
         }
 
         private async Task LoginCommandAction()
         {
-            await Task.Delay(0);
-            //this.A(Services.Constants.Paths.XML_FILE_PATH);
-            this.B(Services.Constants.Paths.XML_FILE_PATH);
-        }
+            var (loginResult, _) = await this.userAccountService.TryGetUserAccount(this.Username, this.Email, this.Password);
 
-        // Add correct email checker
-        private bool LoginCommandPredicate()
-        {
-            return this.AreCredentialsFilled();
-        }
-
-        private void ChangeWindowViewAction(object param)
-        {
-            this.ShowRegisterView = true;
-            this.OnPropertyChanged(nameof(this.ShowRegisterView));
-        }
-
-        public void A(string filePath)
-        {
-            var writer = XmlHelper.CreateWriter(filePath);
-
-            using (writer.WriteElementBody(nameof(Services.Models.User)))
+            if (loginResult == UserAccountLoginResult.SuccessfullyLogin)
             {
-                writer.WriteTo(nameof(this.Username), this.Username);
-                writer.WriteTo(nameof(this.Email), this.Email);
+                if (this.RememberUser)
+                {
+                    await this.WriteUserCredentials();
+                }
+
+                this.CloseTrigger = true;
+                this.OnPropertyChanged(nameof(this.CloseTrigger));
+            }
+            else
+            {
+                this.ErrorMessage = LoginViewModel.GetLoginErrorMessage(loginResult);
             }
         }
 
-        public void B(string filePath)
+        private async Task WriteUserCredentials()
         {
-            var reader = XmlHelper.CreateReader(filePath);
-            reader.Read();
-
-            reader.Read(new Dictionary<string, Action>()
+            try
             {
-                { nameof(this.Username), () => this.Username = reader.ReadElementContentAsString()},
-                { nameof(this.Email), () => this.Email = reader.ReadElementContentAsString()}
-            });
+                await Task.Run(() =>
+                {
+                    UserCredentialsSettings.Username = this.Username;
+                    UserCredentialsSettings.Email = this.Email;
+                    UserCredentialsSettings.RememberAccount = this.RememberUser.ToString();
+                    UserCredentialsSettings.LoginExpiresDate = DateTime.Now.AddMinutes(30).ToString();
+                    UserCredentialsSettings.WriteToXmlFile();
+                });
+            }
+            catch (Exception e)
+            {
+                MessageDialogCreator.ShowErrorDialog(e.Message);
+            }
+        }
+
+        private static string GetLoginErrorMessage(UserAccountLoginResult loginResult) => loginResult switch
+        {
+            UserAccountLoginResult.SuccessfullyLogin => string.Empty,
+            UserAccountLoginResult.InvalidUsernameOrEmail => "Invalid username or email.",
+            UserAccountLoginResult.InvalidPassword => "Invalid password.",
+            _ => "Unanticipated error"
+        };
+
+        private bool LoginCommandPredicate() =>
+            base.AreCredentialsFilled() &&
+            base.IsEmailValid;
+
+        /// <summary>
+        /// Close the application only when the user requested it
+        /// </summary>
+        /// Closing when the registration control is used is handled here as well.
+        private void ClosedCommandAction()
+        {
+            if (!this.CloseTrigger)
+            {
+                UIEvents.CloseApplication();
+            }
         }
     }
 }

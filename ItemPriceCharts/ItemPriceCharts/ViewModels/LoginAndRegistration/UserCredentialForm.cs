@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Input;
+
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
@@ -11,6 +10,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private string username;
         private string email;
         private string password;
+        private string errorMessage;
 
         public string Username
         {
@@ -30,11 +30,21 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             set => this.SetValue(ref this.password, value);
         }
 
+        public string ErrorMessage
+        {
+            get => this.errorMessage;
+            set => this.SetValue(ref this.errorMessage, value);
+        }
+
+        public virtual ICommand ClosedCommand => new RelayCommand(_ => UIEvents.CloseApplication());
+
         public virtual bool AreCredentialsFilled()
         {
             return !string.IsNullOrWhiteSpace(this.Username) &&
                    !string.IsNullOrWhiteSpace(this.Email) &&
                    !string.IsNullOrWhiteSpace(this.Password);
         }
+
+        public bool IsEmailValid => Validators.IsValidEmail(this.Email);
     }
 }

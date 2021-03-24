@@ -3,18 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             mc:Ignorable="d" 
-             d:DesignHeight="300"
+             xmlns:components="clr-namespace:ItemPriceCharts.UI.WPF.Views.Components"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+             mc:Ignorable="d"
+             
+             d:DesignHeight="270"
              d:DesignWidth="400">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="225"/>
+            <RowDefinition Height="230"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0"
-              Margin="20 20">
+              Margin="20 20 20 5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="15"/>
@@ -25,10 +29,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0"
                        HorizontalAlignment="Center"
@@ -43,29 +46,19 @@
                                    Margin="15 0"
                                    HorizontalAlignment="Stretch"
                                    Watermark="Username"
-                                   Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                                   KeyboardNavigation.TabIndex="0"/>
+                                   Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <xctk:WatermarkPasswordBox Grid.Row="4"
-                                       x:Name="passwordTextBox"
-                                       Margin="15 0"
-                                       HorizontalAlignment="Stretch"
-                                       Watermark="Password"
-                                       Text="{Binding Password}"
-                                       KeyboardNavigation.TabIndex="1"/>
+            <components:BindablePasswordBox Grid.Row="4"
+                                            Margin="15 0"
+                                            HorizontalAlignment="Stretch"
+                                            Password="{Binding Password}"/>
 
             <xctk:WatermarkTextBox Grid.Row="6"
                                    Name="emailTextBox"
                                    Margin="15 0"
                                    HorizontalAlignment="Stretch"
                                    Watermark="Email"
-                                   Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                   KeyboardNavigation.TabIndex="2"/>
-
-            <!--<CheckBox Grid.Row="6"
-                  Margin="15 0"
-                  IsChecked="{Binding RememberMeChecked}"
-                  Content="Remember me"/>-->
+                                   Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Grid.Row="8"
                     Name="loginButton"
@@ -73,8 +66,24 @@
                     Command="{Binding LoginCommand}"
                     Content="Login"
                     Width="200"
-                    Height="25"
-                    KeyboardNavigation.TabIndex="3"/>
+                    Height="25"/>
+
+            <Grid Grid.Row="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Row="6"
+                          Margin="15 0"
+                          IsChecked="{Binding RememberUser}"
+                          HorizontalAlignment="Left">
+                    <mah:CheckBoxHelper.CheckCornerRadius>
+                        <CornerRadius>5</CornerRadius>
+                    </mah:CheckBoxHelper.CheckCornerRadius>
+                    <TextBlock Text="Remember me?"/>
+                </CheckBox>
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="1"
@@ -88,10 +97,9 @@
                            HorizontalAlignment="Right"/>
                 <TextBlock FontSize="12"
                            HorizontalAlignment="Right">
-                    <Hyperlink Command="{Binding ChangeWindowViewCommand}"
-                               Style="{StaticResource Styles.HyperLink}"
-                               KeyboardNavigation.TabIndex="4">
-                        <Run Text="Register here" />
+                    <Hyperlink Command="{Binding ShowRegisterViewCommand}"
+                               Style="{StaticResource Styles.HyperLink}">
+                        <Run Text="Signup here" />
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>
