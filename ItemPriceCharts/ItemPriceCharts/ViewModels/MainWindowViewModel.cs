@@ -23,6 +23,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private bool isNewViewDisplayed;
         private OnlineShop selectedShop;
 
+        public UserAccount UserAccount { get; }
+
         public bool IsNewViewDisplayed
         {
             get => this.isNewViewDisplayed;
@@ -50,11 +52,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public IAsyncCommand ShowItemsForShopCommand { get; }
         public ICommand ClosedCommand => new RelayCommand(_ => UIEvents.CloseApplication());
 
-        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, IOnlineShopService onlineShopService)
+        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, IOnlineShopService onlineShopService, UserAccount userAccount)
         {
             this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
             this.itemListingViewModel = itemListingViewModel;
             this.onlineShopService = onlineShopService;
+            this.UserAccount = userAccount;
             this.currentView = this;
 
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());

@@ -57,7 +57,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.onlineShopServiceMock.Setup(_ => _.GetAllShops())
                 .ReturnsAsync(It.IsAny<IEnumerable<OnlineShop>>());
 
-            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             Assert.AreEqual(expectedOnExceptionDialogMessage, messageDialogViewModel.Description);
         }
@@ -71,7 +71,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                     this.onlineShop
                 });
 
-            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             Assert.AreEqual(1, mainWindowViewModel.OnlineShops.Count);
             Assert.AreEqual(this.onlineShop, mainWindowViewModel.OnlineShops.First());
@@ -86,7 +86,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.itemServiceMock.Setup(_ => _.GetAllItems())
                 .ReturnsAsync(new List<Item> { ItemExtension.ConstructDefaultItem(this.onlineShop) });
 
-            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             mainWindowViewModel.ShowItemListingCommand.Execute(null);
 
@@ -108,7 +108,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.itemServiceMock.Setup(_ => _.GetAllItems())
                 .Throws(new Exception());
 
-            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             mainWindowViewModel.ShowItemListingCommand.Execute(null);
 
@@ -118,7 +118,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void ShowShopsAndItemListingsCommand_WillChangeCurrentView_Successfully()
         {
-            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             mainWindowViewModel.ShowShopsAndItemListingsCommand.Execute(null);
 
@@ -129,7 +129,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void ClearViewCommand_WillClearTheView_Successfully()
         {
-            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(this.shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             mainWindowViewModel.ClearViewCommand.Execute(null);
 
@@ -148,7 +148,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.onlineShopServiceMock.Setup(_ => _.GetAllShops())
                 .ReturnsAsync(Array.Empty<OnlineShop>());
 
-            var mainWindowViewModel = new MainWindowViewModel(shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             Assert.AreEqual(Array.Empty<OnlineShop>(), mainWindowViewModel.OnlineShops);
 
@@ -170,7 +170,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.onlineShopServiceMock.Setup(_ => _.GetAllShops())
                 .ReturnsAsync(listOfShops);
 
-            var mainWindowViewModel = new MainWindowViewModel(shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object);
+            var mainWindowViewModel = new MainWindowViewModel(shopsAndItemListingsViewModel, this.itemListingViewModel, this.onlineShopServiceMock.Object, null);
 
             Assert.AreEqual(listOfShops, mainWindowViewModel.OnlineShops);
 

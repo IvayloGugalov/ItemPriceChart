@@ -17,7 +17,7 @@
         Width="400">
 
     <i:Interaction.Behaviors>
-        <cv:CloseWindowBehavior CloseTrigger="{Binding CloseTrigger}" />
+        <cv:CloseWindowBehavior CloseTrigger="{Binding SuccessfulLogin}" />
     </i:Interaction.Behaviors>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">

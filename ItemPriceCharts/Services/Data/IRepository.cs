@@ -15,7 +15,6 @@ namespace ItemPriceCharts.Services.Data
             Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
-        Task<bool> IsEntityExistingByAttribute(Expression<Func<TEntity, bool>> filter);
         Task<TEntity> Add(TEntity entity);
         Task<TEntity> Update(TEntity entity);
         Task<bool> Delete(TEntity entity);

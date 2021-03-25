@@ -9,9 +9,17 @@ namespace ItemPriceCharts.Services.Models
 
         public Email(string value)
         {
-            _ = string.IsNullOrWhiteSpace(value) ? value : throw new ArgumentNullException(nameof(value));
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
-            this.Value = value.Length > 220 ? value : throw new ArgumentOutOfRangeException("Value is too long");
+            if (value.Length > 220)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), message: "Email value is longer than 220 characters");
+            }
+
+            this.Value = value;
         }
         protected override IEnumerable<object> GetEqualityComponents()
         {

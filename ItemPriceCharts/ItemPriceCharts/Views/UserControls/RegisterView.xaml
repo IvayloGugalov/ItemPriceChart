@@ -60,24 +60,32 @@
                        FontSize="15"/>
         </Grid>
 
-        <xctk:WatermarkTextBox Grid.Row="2"
-                               Name="userFirstNameTextBox"
-                               Margin="15 0"
-                               HorizontalAlignment="Stretch"
-                               Watermark="First name"
-                               Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
-        <xctk:WatermarkTextBox Grid.Row="4"
-                               Name="userLastNameTextBox"
-                               Margin="15 0"
-                               HorizontalAlignment="Stretch"
-                               Watermark="Last name"
-                               Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
-        <xctk:WatermarkTextBox Grid.Row="6"
-                               Name="usernameTextBox"
-                               Margin="15 0"
-                               HorizontalAlignment="Stretch"
-                               Watermark="Username"
-                               Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+        <Border Grid.Row="2"
+                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
+            <xctk:WatermarkTextBox Name="userFirstNameTextBox"
+                                   BorderThickness="0"
+                                   Margin="5 1"
+                                   Watermark="First name"
+                                   Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+        </Border>
+
+        <Border Grid.Row="4"
+                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
+            <xctk:WatermarkTextBox Name="userLastNameTextBox"
+                                   BorderThickness="0"
+                                   Margin="5 1"
+                                   Watermark="Last name"
+                                   Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
+        </Border>
+
+        <Border Grid.Row="6"
+                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
+            <xctk:WatermarkTextBox Name="usernameTextBox"
+                                   BorderThickness="0"
+                                   Margin="5 1"
+                                   Watermark="Username"
+                                   Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+        </Border>
 
         <components:BindablePasswordBox Grid.Row="8"
                                         x:Name="passwordTextBox"
@@ -91,19 +99,24 @@
                                         HorizontalAlignment="Stretch"
                                         Password="{Binding ConfirmPassword}"/>
 
-        <xctk:WatermarkTextBox Grid.Row="12"
-                            Name="emailTextBox"
-                            Margin="15 0"
-                            HorizontalAlignment="Stretch"
-                            Watermark="Email"
-                            Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
+        <Border Grid.Row="12"
+                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
+            <xctk:WatermarkTextBox Name="emailTextBox"
+                                   BorderThickness="0"
+                                   Margin="5 1"
+                                   Watermark="Email"
+                                   Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
+        </Border>
 
         <Button Grid.Row="14"
                 Name="registerButton"
-                Style="{StaticResource MahApps.Styles.Button.Dialogs.AccentHighlight}"
                 Command="{Binding RegisterCommand}"
                 Content="Register"
+                Style="{StaticResource MaterialDesignFlatLightBgButton}"
+                Background="DodgerBlue"
+                Foreground="White"
+                materialDesign:ButtonAssist.CornerRadius="10"
                 Width="200"
-                Height="25"/>
+                Height="27"/>
         </Grid>
 </UserControl>

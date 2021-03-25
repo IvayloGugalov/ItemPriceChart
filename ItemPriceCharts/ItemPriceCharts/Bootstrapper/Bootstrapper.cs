@@ -6,6 +6,7 @@ using Autofac;
 using Autofac.Diagnostics;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore;
+
 using NLog;
 
 using ItemPriceCharts.UI.WPF.Factories;
@@ -14,7 +15,9 @@ using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
 using ItemPriceCharts.UI.WPF.Views.UserControls;
 
-using ItemPriceCharts.XmReaderWriter;
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+
 using ItemPriceCharts.XmReaderWriter.XmlActions;
 using ItemPriceCharts.XmReaderWriter.User;
 
@@ -77,12 +80,17 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             try
             {
                 var (userName, email) = (string.Empty, string.Empty);
+                var accountService = this.container.Resolve<IUserAccountService>();
 
                 if (XmlCreateFile.EnsureXmlFileExists())
                 {
-                    if (UserCredentialsSettings.ShouldEnableAutoLogin(out _))
+                    UserCredentialsSettings.ReadSettings();
+
+                    if (UserCredentialsSettings.ShouldEnableAutoLogin)
                     {
-                        this.ConfigureMainWindow();
+                        var userAccount = accountService.GetUserAccount(UserCredentialsSettings.Username, UserCredentialsSettings.Email).GetAwaiter().GetResult();
+
+                        this.ConfigureMainWindow(userAccount);
 
                         return;
                     }
@@ -93,27 +101,24 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
                     }
                 }
 
-                var parameters = new Parameter[]
+                var loginViewModel = new ViewModels.LoginAndRegistration.LoginViewModel(accountService, userName, email);
+                Helpers.UIEvents.ShowLoginRegisterWindow(loginViewModel);
+
+                if (loginViewModel.SuccessfulLogin)
                 {
-                    new NamedParameter(nameof(userName), userName),
-                    new NamedParameter(nameof(email), email),
-                };
-
-                var loginWindow = this.viewFactory.Resolve<ViewModels.LoginAndRegistration.LoginViewModel>(parameters);
-
-                loginWindow.ShowDialog();
-
-                this.ConfigureMainWindow();
+                    this.ConfigureMainWindow(loginViewModel.UserAccount);
+                }
             }
             catch (Exception e)
             {
                 logger.Error(e, "Could not show window");
+                throw new Exception("We are having difficulties with the app, please send us the logs!");
             }
         }
 
-        private void ConfigureMainWindow()
+        private void ConfigureMainWindow(UserAccount userAccount)
         {
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>());
+            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(new Parameter[] { new NamedParameter(nameof(userAccount), userAccount) });
             this.app.MainWindow = mainWindow;
             this.app.MainWindow.Show();
         }
@@ -149,16 +154,11 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.viewFactory.RegisterUserControl<ItemListingViewModel, ItemListingView>();
             this.viewFactory.RegisterUserControl<ShopsAndItemListingsViewModel, ShopsAndItemListingsView>();
 
-            this.viewFactory.RegisterUserControl<ViewModels.LoginAndRegistration.LoginViewModel, LoginView>();
-            this.viewFactory.RegisterUserControl<ViewModels.LoginAndRegistration.RegisterViewModel, RegisterView>();
-
             this.viewFactory.Register<CreateShopViewModel, CreateShopView>();
 
             this.viewFactory.Register<CreateItemViewModel, CreateItemView>();
             this.viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
             this.viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
-
-            this.viewFactory.Register<ViewModels.LoginAndRegistration.LoginViewModel, LoginRegisterView>();
         }
     }
 }

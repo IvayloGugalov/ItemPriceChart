@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
@@ -18,7 +19,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private bool rememberUser = true;
         private bool loginHasExpired;
 
-        public bool CloseTrigger { get; set; }
+        public bool SuccessfulLogin { get; set; }
 
         public BindableViewModel CurrentViewModel
         {
@@ -37,6 +38,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             get => this.loginHasExpired;
             set => this.SetValue(ref this.loginHasExpired, value);
         }
+
+        public UserAccount UserAccount { get; private set; }
 
         public IAsyncCommand LoginCommand { get; }
         public ICommand ShowRegisterViewCommand { get; }
@@ -70,17 +73,18 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private async Task LoginCommandAction()
         {
-            var (loginResult, _) = await this.userAccountService.TryGetUserAccount(this.Username, this.Email, this.Password);
+            var (loginResult, userAccount) = await this.userAccountService.TryGetUserAccount(this.Username, this.Email, this.Password);
 
-            if (loginResult == UserAccountLoginResult.SuccessfullyLogin)
+            if (loginResult == UserAccountLoginResult.SuccessfulLogin)
             {
                 if (this.RememberUser)
                 {
                     await this.WriteUserCredentials();
                 }
 
-                this.CloseTrigger = true;
-                this.OnPropertyChanged(nameof(this.CloseTrigger));
+                this.SuccessfulLogin = true;
+                this.OnPropertyChanged(nameof(this.SuccessfulLogin));
+                this.UserAccount = userAccount;
             }
             else
             {
@@ -109,7 +113,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private static string GetLoginErrorMessage(UserAccountLoginResult loginResult) => loginResult switch
         {
-            UserAccountLoginResult.SuccessfullyLogin => string.Empty,
+            UserAccountLoginResult.SuccessfulLogin => string.Empty,
             UserAccountLoginResult.InvalidUsernameOrEmail => "Invalid username or email.",
             UserAccountLoginResult.InvalidPassword => "Invalid password.",
             _ => "Unanticipated error"
@@ -125,7 +129,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         /// Closing when the registration control is used is handled here as well.
         private void ClosedCommandAction()
         {
-            if (!this.CloseTrigger)
+            if (!this.SuccessfulLogin)
             {
                 UIEvents.CloseApplication();
             }

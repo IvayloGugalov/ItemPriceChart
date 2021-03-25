@@ -54,14 +54,6 @@ namespace ItemPriceCharts.Services.Data
             }
         }
 
-        public async Task<bool> IsEntityExistingByAttribute(Expression<Func<TEntity, bool>> filter)
-        {
-            using (ModelsContext dbContext = new ModelsContext())
-            {
-                return await dbContext.Set<TEntity>().FirstOrDefaultAsync(filter) != null;
-            }
-        }
-
         public async Task<bool> IsExisting(int id)
         {
             using (ModelsContext dbContext = new ModelsContext())

@@ -2,7 +2,6 @@
 
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
-using ItemPriceCharts.UI.WPF.Views.UserControls;
 
 namespace ItemPriceCharts.UI.WPF.Modules
 {
@@ -12,9 +11,6 @@ namespace ItemPriceCharts.UI.WPF.Modules
         {
             builder.RegisterType<ShopsAndItemListingsViewModel>();
             builder.RegisterType<ItemListingViewModel>();
-
-            builder.RegisterType<LoginRegisterView>();
-            builder.RegisterType<ViewModels.LoginAndRegistration.LoginViewModel>();
 
             builder.RegisterType<CreateShopViewModel>();
             builder.RegisterType<CreateShopView>();

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 using ItemPriceCharts.Services.Data;
@@ -21,48 +21,53 @@ namespace ItemPriceCharts.Services.Services
 
     public enum UserAccountLoginResult
     {
-        SuccessfullyLogin = 1,
+        SuccessfulLogin = 1,
         InvalidUsernameOrEmail = 2,
         InvalidPassword = 3
     }
 
+    //We ar using raw sql queries, as EF Core cannot resolve UserAccount.Email,
+    //because in C# Email is an object, while in the database it's a string
     public class UserAccountService : IUserAccountService
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(UserAccountService));
-
-        private readonly IRepository<UserAccount> userAccountRepository;
-
-        public UserAccountService(IRepository<UserAccount> userAccountRepository)
-        {
-            this.userAccountRepository = userAccountRepository;
-        }
 
         public async Task<UserAccountRegistrationResult> CreateUserAccount(string firstName, string lastName, string email, string userName, string password)
         {
             try
             {
-                if (this.IsDuplicate(userAccount => userAccount.Username == userName))
+                using (var context = new ModelsContext())
                 {
-                    return UserAccountRegistrationResult.UserNameAlreadyExists;
+                    var containsDuplicateUsername = context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}'").Any();
+
+                    if (containsDuplicateUsername)
+                    {
+                        return UserAccountRegistrationResult.UserNameAlreadyExists;
+                    }
+
+                    var containsDuplicateEmail = context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Email = '{email}'").Any();
+
+                    if (containsDuplicateEmail)
+                    {
+                        return UserAccountRegistrationResult.EmailAlreadyExists;
+                    }
+
+                    var userAccount = new UserAccount(
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: new Email(email),
+                        userName: userName,
+                        password: password);
+
+                    context.UserAccounts.Attach(userAccount);
+                    context.UserAccounts.Add(userAccount);
+
+                    await context.SaveChangesAsync();
+
+                    logger.Debug($"Created new account: '{userAccount}'");
+
+                    return UserAccountRegistrationResult.UserAccountCreated;
                 }
-
-                if (this.IsDuplicate(userAccount => userAccount.Email.Value == email))
-                {
-                    return UserAccountRegistrationResult.EmailAlreadyExists;
-                }
-
-                var userAccount = new UserAccount(
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: new Email(email),
-                    userName: userName,
-                    password: password);
-
-                await this.userAccountRepository.Add(userAccount).ConfigureAwait(false);
-
-                logger.Debug($"Created new account: '{userAccount}'");
-
-                return UserAccountRegistrationResult.UserAccountCreated;
             }
             catch (Exception e)
             {
@@ -76,15 +81,27 @@ namespace ItemPriceCharts.Services.Services
         {
             try
             {
-                bool userAccountDeleted = false;
-                if (this.IsUserAccountExisting(userAccount.Id))
+                using (var context = new ModelsContext())
                 {
-                    userAccountDeleted = await this.userAccountRepository.Delete(userAccount).ConfigureAwait(false);
+                    var isUserAccountExisting = await context.UserAccounts.FindAsync(userAccount.Id) != null;
 
-                    logger.Debug($"Deleted account: '{userAccount}'.");
+                    if (isUserAccountExisting)
+                    {
+                        if (context.Entry(userAccount).State == EntityState.Deleted)
+                        {
+                            context.UserAccounts.Attach(userAccount);
+                        }
+
+                        context.UserAccounts.Remove(userAccount);
+                        await context.SaveChangesAsync();
+
+                        logger.Debug($"Deleted account: '{userAccount}'.");
+
+                        return true;
+                    }
+
+                    return false;
                 }
-
-                return userAccountDeleted;
             }
             catch (Exception e)
             {
@@ -93,26 +110,17 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        public async Task<(UserAccountLoginResult loginResult, UserAccount userAccount)> TryGetUserAccount(string userName, string email, string password)
+        public async Task<UserAccount> GetUserAccount(string userName, string email)
         {
             try
             {
-                var retrievedUserAccounts = await this.userAccountRepository.GetAll(
-                    filter: a => a.Username == userName && a.Email.Value == email).ConfigureAwait(false);
-
-                var userAccount = retrievedUserAccounts.FirstOrDefault();
-
-                if (userAccount != null)
+                using (var context = new ModelsContext())
                 {
-                    if (userAccount.Password == password)
-                    {
-                        return (loginResult: UserAccountLoginResult.SuccessfullyLogin, userAccount: userAccount);
-                    }
-
-                    return (loginResult: UserAccountLoginResult.InvalidPassword, null);
+                    return await context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
+                        .Include("OnlineShopsForAccount")
+                        .FirstOrDefaultAsync()
+                        .ConfigureAwait(false);
                 }
-
-                return (loginResult: UserAccountLoginResult.InvalidUsernameOrEmail, userAccount: null);
             }
             catch (Exception e)
             {
@@ -121,11 +129,38 @@ namespace ItemPriceCharts.Services.Services
             }
         }
 
-        private bool IsDuplicate(Expression<Func<UserAccount, bool>> filter) =>
-            this.userAccountRepository.IsEntityExistingByAttribute(filter)
-                .GetAwaiter().GetResult();
+        public async Task<(UserAccountLoginResult loginResult, UserAccount userAccount)> TryGetUserAccount(string userName, string email, string password)
+        {
+            try
+            {
+                using (var context = new ModelsContext())
+                {
+                    var userAccount = await context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
+                        .Include("OnlineShopsForAccount")
+                        .FirstOrDefaultAsync()
+                        .ConfigureAwait(false);
 
-        private bool IsUserAccountExisting(int userAccountId) =>
-            this.userAccountRepository.IsExisting(userAccountId).GetAwaiter().GetResult();
+                    if (userAccount != null)
+                    {
+                        if (userAccount.Password == password)
+                        {
+                            logger.Info($"Logged in as username: {userName}");
+                            return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount: userAccount);
+                        }
+
+                        logger.Warn($"Invalid password for username: {userName}");
+                        return (loginResult: UserAccountLoginResult.InvalidPassword, null);
+                    }
+
+                    logger.Info($"No such user with username: {userName}");
+                    return (loginResult: UserAccountLoginResult.InvalidUsernameOrEmail, userAccount: null);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Couldn't retrieve user with email: '{email}'.");
+                throw;
+            }
+        }
     }
 }

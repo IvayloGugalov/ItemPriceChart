@@ -5,6 +5,7 @@ using System.Windows;
 using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
@@ -13,6 +14,7 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         private static List<Action> subscribers = null;
 
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
+        public static Func<LoginViewModel, bool?> ShowLoginRegisterWindow { get; set; }
 
         public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
 

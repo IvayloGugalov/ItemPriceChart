@@ -29,6 +29,11 @@ namespace ItemPriceCharts.UI.WPF.Factories
             {
                 return Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
             };
+            UIEvents.ShowLoginRegisterWindow = (vm) =>
+            {
+                return Application.Current.Dispatcher.Invoke(() => new LoginRegisterView(vm).ShowDialog());
+            };
+
 
             UIEvents.FinishSubscribing();
         }

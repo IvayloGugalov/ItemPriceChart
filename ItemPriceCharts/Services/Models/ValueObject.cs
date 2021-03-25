@@ -41,6 +41,7 @@ namespace ItemPriceCharts.Services.Models
             }
 
             var other = (ValueObject)obj;
+
             return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
         }
 
