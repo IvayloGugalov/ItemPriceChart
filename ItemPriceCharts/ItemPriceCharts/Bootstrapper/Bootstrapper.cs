@@ -97,7 +97,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
                     else
                     {
                         (userName, email) = UserCredentialsSettings.UsernameAndEmail;
-                        logger.Debug($"Found credentials\tUsername:{userName}\tEmal{email}.");
+                        logger.Debug($"Found credentials\tUsername:{userName}\tEmail:{email}.");
                     }
                 }
 

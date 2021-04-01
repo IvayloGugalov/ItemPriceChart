@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Xml;
 
+using NLog;
+
 namespace ItemPriceCharts.XmReaderWriter.XmlActions
 {
     public static class XmlReadData
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(XmlReadData));
+
         public static void GetXmlElementValues(ref Dictionary<string, string> elementAndOutputValuePairs)
         {
             var reassignedDictionary = elementAndOutputValuePairs;
@@ -32,32 +36,39 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
 
         public static void ReadXmlFile(this XmlReader reader, IDictionary<string, Action> tagReaders)
         {
-            var depth = reader.Depth;
-
-            if (reader.IsEmptyElement)
+            try
             {
-                reader.Read();
-                return;
-            }
+                var depth = reader.Depth;
 
-            while (reader.Depth >= depth)
-            {
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.IsEmptyElement)
                 {
-                    if (tagReaders.TryGetValue(reader.LocalName, out var tagReader))
+                    reader.Read();
+                    return;
+                }
+
+                while (reader.Depth >= depth)
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
                     {
-                        tagReader();
-                        continue;
+                        if (tagReaders.TryGetValue(reader.LocalName, out var tagReader))
+                        {
+                            tagReader();
+                            continue;
+                        }
+                        else if (!reader.Read())
+                        {
+                            break;
+                        }
                     }
                     else if (!reader.Read())
                     {
                         break;
                     }
                 }
-                else if (!reader.Read())
-                {
-                    break;
-                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e);
             }
         }
     }

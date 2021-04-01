@@ -30,15 +30,6 @@ namespace ItemPriceCharts.UI.WPF.Views.Components
                     isAnimationProhibited: false,
                     defaultUpdateSourceTrigger: UpdateSourceTrigger.PropertyChanged));
 
-        //public  CornerRadius BorderCornerRadius
-        //{
-        //    get { return (CornerRadius)GetValue(BorderCornerRadiusProperty); }
-        //    set { SetValue(BorderCornerRadiusProperty, value); }
-        //}
-
-        //public static DependencyProperty BorderCornerRadiusProperty =
-        //    DependencyProperty.Register(nameof(BorderCornerRadius), typeof(CornerRadius), typeof(BindablePasswordBox));
-
         public BindablePasswordBox()
         {
             InitializeComponent();

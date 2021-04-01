@@ -1,7 +1,4 @@
-﻿using System.Windows.Input;
-
-using ItemPriceCharts.UI.WPF.CommandHelpers;
-using ItemPriceCharts.UI.WPF.Helpers;
+﻿using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
@@ -35,8 +32,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             get => this.errorMessage;
             set => this.SetValue(ref this.errorMessage, value);
         }
-
-        public virtual ICommand ClosedCommand => new RelayCommand(_ => UIEvents.CloseApplication());
 
         public virtual bool AreCredentialsFilled()
         {

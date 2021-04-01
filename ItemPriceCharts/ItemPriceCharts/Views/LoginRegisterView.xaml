@@ -10,7 +10,6 @@
         mc:Ignorable="d"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
-        Title="Login"
         ResizeMode="CanMinimize"
         Topmost="True"
         SizeToContent="Height"
@@ -26,11 +25,7 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <ContentControl Grid.Row="0"
-                        Content="{Binding CurrentViewModel}">
+        <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
                     <controls:LoginView/>

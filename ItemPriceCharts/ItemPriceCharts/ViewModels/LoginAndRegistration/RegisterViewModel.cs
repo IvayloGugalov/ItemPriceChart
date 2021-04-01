@@ -20,8 +20,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private readonly LoginViewModel loginViewModel;
 
         private string confirmPassword;
-        private string firstName = "Ivaylo";
-        private string lastName = "Gugalov";
+        private string firstName;
+        private string lastName;
 
         public string FirstName
         {
@@ -53,11 +53,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             this.userAccountService = userAccountService;
             this.loginViewModel = loginViewModel;
 
-            this.Password = "123123";
-            this.ConfirmPassword = "123123";
-            this.Email = "emai@abv.bg";
-            this.Username = "Maslotopz";
-
             this.RegisterCommand = new RelayAsyncCommand(this.RegisterCommandAction, this.RegisterCommandPredicate, errorHandler: e =>
             {
                 MessageDialogCreator.ShowErrorDialog(message: e.Message);
@@ -72,11 +67,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         }
 
         private async Task RegisterCommandAction()
-        {
-            await this.CreateUserAccount();
-        }
-
-        private async Task CreateUserAccount()
         {
             var userAccountCreationResult = await this.userAccountService.CreateUserAccount(
                 firstName: this.FirstName,
@@ -122,6 +112,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             {
                 this.ErrorMessage = RegisterViewModel.NOT_MATCHING_PASSWORDS_MESSAGE;
             }
+            // Hide the error message if it's already shown
             else if (this.ErrorMessage == RegisterViewModel.NOT_MATCHING_PASSWORDS_MESSAGE)
             {
                 this.ErrorMessage = string.Empty;
@@ -129,6 +120,5 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
             return areEqualPasswords;
         }
-
     }
 }

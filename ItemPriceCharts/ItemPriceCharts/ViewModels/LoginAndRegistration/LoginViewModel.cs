@@ -13,7 +13,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
     public class LoginViewModel : UserCredentialForm
     {
         private const string USERNAME_NOT_EXISTING_MESSAGE = "Username does not exist.";
-        private const string EMAI_NOT_EXISTING_MESSAGE = "Email does not exist.";
+        private const string EMAIL_NOT_EXISTING_MESSAGE = "Email does not exist.";
         private const string INVALID_PASSWORD_MESSAGE = "Password is invalid.";
 
         private readonly IUserAccountService userAccountService;
@@ -47,7 +47,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         public IAsyncCommand LoginCommand { get; }
         public ICommand ShowRegisterViewCommand { get; }
-        public override ICommand ClosedCommand => new RelayCommand(_ => this.ClosedCommandAction());
+        public ICommand ClosedCommand => new RelayCommand(_ => this.ClosedCommandAction());
 
         public LoginViewModel(IUserAccountService userAccountService, string userName, string email)
         {
@@ -117,10 +117,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private static string GetLoginErrorMessage(UserAccountLoginResult loginResult) => loginResult switch
         {
-            UserAccountLoginResult.SuccessfulLogin => string.Empty,
             UserAccountLoginResult.InvalidUsername => USERNAME_NOT_EXISTING_MESSAGE,
-            UserAccountLoginResult.InvalidEmail => EMAI_NOT_EXISTING_MESSAGE,
+            UserAccountLoginResult.InvalidEmail => EMAIL_NOT_EXISTING_MESSAGE,
             UserAccountLoginResult.InvalidPassword => INVALID_PASSWORD_MESSAGE,
+            UserAccountLoginResult.SuccessfulLogin => string.Empty,
             _ => "Unanticipated error"
         };
 
