@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ItemPriceCharts\ItemPriceCharts.UI.WPF.csproj" />
+    <ProjectReference Include="..\..\ItemPriceCharts.UI.WPF\ItemPriceCharts.UI.WPF.csproj" />
   </ItemGroup>
 
 </Project>
