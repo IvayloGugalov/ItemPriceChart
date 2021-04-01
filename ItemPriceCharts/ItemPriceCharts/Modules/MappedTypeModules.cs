@@ -18,7 +18,7 @@ namespace ItemPriceCharts.UI.WPF.Modules
         {
             foreach (var item in this.mappedTypes)
             {
-                builder.RegisterType(item.Value).AsSelf().As(item.Key).SingleInstance();
+                builder.RegisterType(item.Value).AsSelf().As(item.Key).InstancePerLifetimeScope();
             }
         }
     }

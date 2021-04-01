@@ -47,6 +47,13 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 ItemExtension.ConstructDefaultItem(this.defaultOnlineShop)
             };
 
+            foreach (var item in items)
+            {
+                this.defaultOnlineShop.AddItem(item);
+            }
+
+            this.userAccount.AddOnlineShop(this.defaultOnlineShop);
+
             var itemListingViewModel = new ItemListingViewModel(this.userAccount)
             {
                 SelectedShop = null
