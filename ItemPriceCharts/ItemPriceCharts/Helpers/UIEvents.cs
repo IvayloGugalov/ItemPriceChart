@@ -19,7 +19,7 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
 
         //Directly called on the UI thread
-        public static IChannel<object> ShowCreateShopView { get; set; } = new Channel<object>();
+        public static IChannel<UserAccount> ShowCreateShopView { get; set; } = new Channel<UserAccount>();
         public static IChannel<OnlineShop> ShowCreateItemView { get; set; } = new Channel<OnlineShop>();
         public static IChannel<Item> ShowDeleteItemView { get; set; } = new Channel<Item>();
         public static IChannel<Item> ShowItemInformatioView { get; set; } = new Channel<Item>();

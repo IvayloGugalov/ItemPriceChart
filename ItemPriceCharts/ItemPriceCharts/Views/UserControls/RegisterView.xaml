@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:components="clr-namespace:ItemPriceCharts.UI.WPF.Views.Components"
+             xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="280"
              d:DesignWidth="400">
@@ -23,6 +23,8 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
@@ -60,32 +62,23 @@
                        FontSize="15"/>
         </Grid>
 
-        <Border Grid.Row="2"
-                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
-            <xctk:WatermarkTextBox Name="userFirstNameTextBox"
-                                   BorderThickness="0"
-                                   Margin="5 1"
-                                   Watermark="First name"
-                                   Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
+        <controls:MyWatermarkTextBox Grid.Row="2"
+                                     x:Name="userFirstNameTextBox"
+                                     Focusable="False"
+                                     WatermarkValue="First name"
+                                     TextBoxValue="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
-        <Border Grid.Row="4"
-                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
-            <xctk:WatermarkTextBox Name="userLastNameTextBox"
-                                   BorderThickness="0"
-                                   Margin="5 1"
-                                   Watermark="Last name"
-                                   Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
+        <controls:MyWatermarkTextBox Grid.Row="4"
+                                     x:Name="userLastNameTextBox"
+                                     Focusable="False"
+                                     WatermarkValue="Last name"
+                                     TextBoxValue="{Binding LastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
-        <Border Grid.Row="6"
-                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
-            <xctk:WatermarkTextBox Name="usernameTextBox"
-                                   BorderThickness="0"
-                                   Margin="5 1"
-                                   Watermark="Username"
-                                   Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
+        <controls:MyWatermarkTextBox Grid.Row="6"
+                                     x:Name="usernameTextBox"
+                                     Focusable="False"
+                                     WatermarkValue="Username"
+                                     TextBoxValue="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
         <components:BindablePasswordBox Grid.Row="8"
                                         x:Name="passwordTextBox"
@@ -99,14 +92,11 @@
                                         HorizontalAlignment="Stretch"
                                         Password="{Binding ConfirmPassword}"/>
 
-        <Border Grid.Row="12"
-                Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
-            <xctk:WatermarkTextBox Name="emailTextBox"
-                                   BorderThickness="0"
-                                   Margin="5 1"
-                                   Watermark="Email"
-                                   Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
+        <controls:MyWatermarkTextBox Grid.Row="12"
+                                     x:Name="emailTextBox"
+                                     Focusable="False"
+                                     WatermarkValue="Email"
+                                     TextBoxValue="{Binding Email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
         <Button Grid.Row="14"
                 Name="registerButton"
@@ -118,5 +108,17 @@
                 materialDesign:ButtonAssist.CornerRadius="10"
                 Width="200"
                 Height="27"/>
-        </Grid>
+
+        <TextBlock Grid.Row="16"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringIsEmptyVisibilityConverter}}"
+                   Background="Pink"
+                   Text="{Binding ErrorMessage}"
+                   Padding="5 8"
+                   Margin="-20 0"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Stretch"
+                   TextAlignment="Center"
+                   Foreground="Crimson"
+                   FontSize="13.5"/>
+    </Grid>
 </UserControl>

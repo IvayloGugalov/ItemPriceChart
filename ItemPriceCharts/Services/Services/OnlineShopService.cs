@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,19 +21,10 @@ namespace ItemPriceCharts.Services.Services
             this.onlineShopRepository = onlineShopRepository;
         }
 
-        public OnlineShop FindShop(int id) =>
-            this.onlineShopRepository.FindAsync(id).GetAwaiter().GetResult() ?? throw new Exception();
-
-        public Task<IEnumerable<OnlineShop>> GetAllShops() =>
-            this.onlineShopRepository.GetAll(includeProperties: "Items");
-
-        public bool IsShopExisting(int shopId) =>
-            this.onlineShopRepository.IsExisting(shopId).GetAwaiter().GetResult();
-
         private bool IsShopExisting(string url) =>
             this.onlineShopRepository.GetAll(filter: shop => shop.URL == url).GetAwaiter().GetResult().FirstOrDefault() != null;
 
-        public async Task CreateShop(string shopURL, string shopTitle)
+        public async Task CreateShop(string shopURL, string shopTitle, UserAccount userAccount)
         {
             try
             {
@@ -43,6 +33,7 @@ namespace ItemPriceCharts.Services.Services
                     var newShop = new OnlineShop(
                         url: shopURL,
                         title: shopTitle);
+                    newShop.AddUserAccount(userAccount);
 
                     var onlineShop = await this.onlineShopRepository.Add(newShop);
                     logger.Debug($"Created shop: '{onlineShop}'.");
@@ -54,40 +45,6 @@ namespace ItemPriceCharts.Services.Services
             {
                 logger.Error(e, "Can't create shop.");
                 throw;
-            }
-        }
-
-        public void UpdateShop(OnlineShop onlineShop)
-        {
-            try
-            {
-                if (this.IsShopExisting(onlineShop.Id))
-                {
-                    this.onlineShopRepository.Update(onlineShop);
-                    logger.Debug($"Updated shop: '{onlineShop}'.");
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e, "Can't update shop.");
-            }
-        }
-
-        public void DeleteShop(OnlineShop onlineShop)
-        {
-            try
-            {
-                if (this.IsShopExisting(onlineShop.Id))
-                {
-                    this.onlineShopRepository.Delete(onlineShop);
-                    logger.Debug($"Deleted shop: '{onlineShop}'.");
-
-                    EventsLocator.ShopDeleted.Publish(onlineShop);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e, $"Can't delete shop: '{onlineShop}'.");
             }
         }
     }

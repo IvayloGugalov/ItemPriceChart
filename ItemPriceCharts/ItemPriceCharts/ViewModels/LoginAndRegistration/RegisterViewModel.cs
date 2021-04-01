@@ -9,6 +9,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
     public class RegisterViewModel : UserCredentialForm
     {
+        private const string EMAIL_EXISTS_MESSAGE = "Email already exists.";
+        private const string INVALID_PASSWORD_MESSAGE = "Invalid password.";
+        private const string USERNAME_EXISTS_MESSAGE = "Username already exists.";
+        private const string CREATION_FAILED_MESSAGE = "Can't create account.";
+        private const string NOT_MATCHING_PASSWORDS_MESSAGE = "Passwords do not match";
+
+
         private readonly IUserAccountService userAccountService;
         private readonly LoginViewModel loginViewModel;
 
@@ -89,10 +96,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private static string GetCredentialsErrorMessage(UserAccountRegistrationResult errorType) => errorType switch
         {
-            UserAccountRegistrationResult.EmailAlreadyExists => "Email already exists.",
-            UserAccountRegistrationResult.InvalidPassword => "Invalid password.",
-            UserAccountRegistrationResult.UserNameAlreadyExists => "Username already exists.",
-            UserAccountRegistrationResult.CanNotCreateUserAccount => "Can't create account.",
+            UserAccountRegistrationResult.EmailAlreadyExists => EMAIL_EXISTS_MESSAGE,
+            UserAccountRegistrationResult.InvalidPassword => INVALID_PASSWORD_MESSAGE,
+            UserAccountRegistrationResult.UserNameAlreadyExists => USERNAME_EXISTS_MESSAGE,
+            UserAccountRegistrationResult.CanNotCreateUserAccount => CREATION_FAILED_MESSAGE,
             UserAccountRegistrationResult.UserAccountCreated => string.Empty,
             _ => "Unanticipated error"
         };
@@ -113,10 +120,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             var areEqualPasswords = this.Password == this.ConfirmPassword;
             if (!areEqualPasswords)
             {
-                this.ErrorMessage = "Passwords do not match";
+                this.ErrorMessage = RegisterViewModel.NOT_MATCHING_PASSWORDS_MESSAGE;
+            }
+            else if (this.ErrorMessage == RegisterViewModel.NOT_MATCHING_PASSWORDS_MESSAGE)
+            {
+                this.ErrorMessage = string.Empty;
             }
 
             return areEqualPasswords;
         }
+
     }
 }

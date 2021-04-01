@@ -15,7 +15,8 @@ namespace ItemPriceCharts.Services.Models
         private readonly List<Item> items = new List<Item>();
         public IReadOnlyCollection<Item> Items => this.items.AsReadOnly();
 
-        public ICollection<UserAccount> UserAccounts { get; set; }
+        public IReadOnlyCollection<UserAccount> UserAccounts => this.userAccounts.AsReadOnly();
+        private readonly List<UserAccount> userAccounts = new List<UserAccount>();
 
         private OnlineShop() { }
 
@@ -47,6 +48,16 @@ namespace ItemPriceCharts.Services.Models
                             $"\nFrom {item.Description} to {updatedItem.Description}" +
                             $"\nFrom {item.CurrentPrice} to {updatedItem.CurrentPrice}");
             }
+        }
+
+        public void AddUserAccount(UserAccount userAccount)
+        {
+            this.userAccounts.Add(userAccount);
+        }
+
+        public void RemoveUserAccount(UserAccount userAccount)
+        {
+            this.userAccounts.Remove(userAccount);
         }
 
         public override string ToString()

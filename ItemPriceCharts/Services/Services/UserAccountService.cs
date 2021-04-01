@@ -22,8 +22,9 @@ namespace ItemPriceCharts.Services.Services
     public enum UserAccountLoginResult
     {
         SuccessfulLogin = 1,
-        InvalidUsernameOrEmail = 2,
-        InvalidPassword = 3
+        InvalidUsername = 2,
+        InvalidEmail = 3,
+        InvalidPassword = 4
     }
 
     //We ar using raw sql queries, as EF Core cannot resolve UserAccount.Email,
@@ -116,10 +117,12 @@ namespace ItemPriceCharts.Services.Services
             {
                 using (var context = new ModelsContext())
                 {
-                    return await context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
-                        .Include("OnlineShopsForAccount")
+                    var userAccount = await context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
+                        .Include(u => u.OnlineShopsForAccount)
+                        .ThenInclude(s => s.Items)
                         .FirstOrDefaultAsync()
                         .ConfigureAwait(false);
+                    return userAccount;
                 }
             }
             catch (Exception e)
@@ -135,25 +138,36 @@ namespace ItemPriceCharts.Services.Services
             {
                 using (var context = new ModelsContext())
                 {
+                    var usernameFound = context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}'").Any();
+
+                    if (!usernameFound)
+                    {
+                        logger.Info($"No such user with username: {userName}");
+                        return (UserAccountLoginResult.InvalidUsername, null);
+                    }
+
+                    var emailFound = context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Email = '{email}'").Any();
+
+                    if (!emailFound)
+                    {
+                        logger.Info($"No such user with email: {email}");
+                        return (UserAccountLoginResult.InvalidEmail, null);
+                    }
+
                     var userAccount = await context.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
-                        .Include("OnlineShopsForAccount")
+                        .Include(u => u.OnlineShopsForAccount)
+                        .ThenInclude(s => s.Items)
                         .FirstOrDefaultAsync()
                         .ConfigureAwait(false);
 
-                    if (userAccount != null)
+                    if (userAccount.Password == password)
                     {
-                        if (userAccount.Password == password)
-                        {
-                            logger.Info($"Logged in as username: {userName}");
-                            return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount: userAccount);
-                        }
-
-                        logger.Warn($"Invalid password for username: {userName}");
-                        return (loginResult: UserAccountLoginResult.InvalidPassword, null);
+                        logger.Info($"Logged in as user: {userName}");
+                        return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount: userAccount);
                     }
 
-                    logger.Info($"No such user with username: {userName}");
-                    return (loginResult: UserAccountLoginResult.InvalidUsernameOrEmail, userAccount: null);
+                    logger.Warn($"Invalid password for user: {userName}");
+                    return (loginResult: UserAccountLoginResult.InvalidPassword, null);
                 }
             }
             catch (Exception e)

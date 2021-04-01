@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,14 +25,8 @@ namespace ItemPriceCharts.Services.Services
             this.itemRepository = itemRepository;
         }
 
-        public Item FindItem(int id) =>
-            this.itemRepository.FindAsync(id).GetAwaiter().GetResult() ?? throw new Exception();
-
-        public Task<IEnumerable<Item>> GetAllItems() =>
-            this.itemRepository.GetAll(includeProperties: nameof(OnlineShop));
-
-        public bool IsItemExisting(int id) =>
-            this.itemRepository.IsExisting(id).ConfigureAwait(false).GetAwaiter().GetResult();
+        private bool IsItemExisting(int id) =>
+            this.itemRepository.IsExisting(id).GetAwaiter().GetResult();
 
         private bool IsItemExisting(string url) =>
             this.itemRepository.GetAll(filter: item => item.URL == url).GetAwaiter().GetResult().FirstOrDefault() != null;
@@ -46,7 +39,6 @@ namespace ItemPriceCharts.Services.Services
                 {
                     var loadedItem = await ItemService.LoadItemFromWeb(itemURL, onlineShop, type).ConfigureAwait(false);
                     var item = await this.itemRepository.Add(loadedItem).ConfigureAwait(false);
-                    onlineShop.AddItem(item);
 
                     await this.itemPriceService.CreateItemPrice(item.CurrentPrice, item.Id).ConfigureAwait(false);
 

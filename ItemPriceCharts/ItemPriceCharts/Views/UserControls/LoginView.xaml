@@ -4,15 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:components="clr-namespace:ItemPriceCharts.UI.WPF.Views.Components"
+             xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
              mc:Ignorable="d"
              d:DesignHeight="270"
              d:DesignWidth="400">
+    <UserControl.Resources>
+        <cv:EmptyStringToVisibilityConverter x:Key="StringToVis"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="230"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
@@ -28,42 +32,36 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"
+            <Label Grid.Row="0"
                        HorizontalAlignment="Center"
-                       Text="Login in to your account"
+                       Content="Login in to your account"
                        Foreground="Black"
                        FontFamily="LilyUPC"
                        FontWeight="SemiBold"
                        FontSize="15"/>
 
-            <components:WatermarkTextBox Grid.Row="2" />
-            <Border Grid.Row="2"
-                    Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
-                <xctk:WatermarkTextBox Name="usernameTextBox"
-                                       BorderThickness="0"
-                                       Margin="5 1"
-                                       Watermark="Username"
-                                       Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
-            </Border>
-            
+            <controls:MyWatermarkTextBox Grid.Row="2"
+                                         x:Name="usernameTextBox"
+                                         Focusable="False"
+                                         WatermarkValue="Username"
+                                         TextBoxValue="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
             <components:BindablePasswordBox Grid.Row="4"
                                             Margin="15 0"
                                             HorizontalAlignment="Stretch"
                                             Password="{Binding Password}"/>
 
-            <Border Grid.Row="6"
-                    Style="{StaticResource Styles.Border.LoginRegister.OnTextBox}">
-                <xctk:WatermarkTextBox Name="emailTextBox"
-                                       BorderThickness="0"
-                                       Margin="5 1"
-                                       Watermark="Email"
-                                       Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
-            </Border>
+            <controls:MyWatermarkTextBox Grid.Row="6"
+                                         x:Name="emailTextBox"
+                                         Focusable="False"
+                                         WatermarkValue="Email"
+                                         TextBoxValue="{Binding Email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
             <Button Grid.Row="8"
                     Name="loginButton"
@@ -76,7 +74,19 @@
                     Width="200"
                     Height="27"/>
 
-            <Grid Grid.Row="10">
+            <TextBlock Grid.Row="10"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVis}}"
+                       Background="Pink"
+                       Text="{Binding ErrorMessage}"
+                       Padding="5 8"
+                       Margin="-20 0"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Stretch"
+                       TextAlignment="Center"
+                       Foreground="Crimson"
+                       FontSize="13.5"/>
+
+            <Grid Grid.Row="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -94,7 +104,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="2"
               Background="LightGray">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
