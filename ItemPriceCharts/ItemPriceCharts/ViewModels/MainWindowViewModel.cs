@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Threading.Tasks;
 
 using NLog;
 
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -18,10 +16,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
         private readonly ItemListingViewModel itemListingViewModel;
-        private readonly IOnlineShopService onlineShopService;
-        private object currentView;
+
+        private BindableViewModel currentView;
         private bool isNewViewDisplayed;
         private OnlineShop selectedShop;
+
+        public UserAccount UserAccount { get; }
 
         public bool IsNewViewDisplayed
         {
@@ -29,7 +29,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isNewViewDisplayed, value);
         }
 
-        public object CurrentView
+        public BindableViewModel CurrentView
         {
             get => this.currentView;
             set => this.SetValue(ref this.currentView, value);
@@ -46,39 +46,28 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowShopsAndItemListingsCommand { get; }
         public ICommand ClearViewCommand { get; }
         public ICommand ShowLogFileCommand { get; }
-        public IAsyncCommand ShowItemListingCommand { get; }
-        public IAsyncCommand ShowItemsForShopCommand { get; }
+        public ICommand ShowItemListingCommand { get; }
+        public ICommand ShowItemsForShopCommand { get; }
+        public ICommand ClosedCommand => new RelayCommand(_ => UIEvents.CloseApplication());
 
-        public MainWindowViewModel(ShopsAndItemListingsViewModel shopsAndItemListingsViewModel, ItemListingViewModel itemListingViewModel, IOnlineShopService onlineShopService)
+        public MainWindowViewModel(UserAccount userAccount)
         {
-            this.shopsAndItemListingsViewModel = shopsAndItemListingsViewModel;
-            this.itemListingViewModel = itemListingViewModel;
-            this.onlineShopService = onlineShopService;
+            this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(userAccount);
+            this.itemListingViewModel = new ItemListingViewModel(userAccount);
+            
+            this.UserAccount = userAccount;
             this.currentView = this;
 
+            this.OnlineShops = this.UserAccount.OnlineShopsForAccount.ToObservableCollection();
+
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
-            this.ShowItemListingCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: e => this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve items."));
-            this.ShowItemsForShopCommand = new RelayAsyncCommand(this.ShowItemListingAction, errorHandler: e => this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve items."));
+            this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
+            this.ShowItemsForShopCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 
             UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
             UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
-
-            this.SetOnlineShopsAsync().FireAndForgetSafeAsync(errorHandler: e => this.ErrorHandler(exception: e, errorMessage: "Couldn't retrieve shops."));
-        }
-
-        private async Task SetOnlineShopsAsync()
-        {
-            var retrievedOnlineShops = await this.onlineShopService.GetAllShops();
-
-            this.OnlineShops = retrievedOnlineShops.ToObservableCollection();
-        }
-
-        private void ErrorHandler(Exception exception, string errorMessage)
-        {
-            logger.Info($"Failed to retrieve entities.\n{exception}");
-            MessageDialogCreator.ShowErrorDialog(message: errorMessage);
         }
 
         private void OnAddedShop(object sender, OnlineShop e)
@@ -105,11 +94,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsNewViewDisplayed = true;
         }
 
-        private async Task ShowItemListingAction()
+        private void ShowItemListingAction()
         {
             this.itemListingViewModel.SelectedShop = this.SelectedShop;
 
-            await this.itemListingViewModel.SetItemsListAsync();
+            this.itemListingViewModel.SetItemsList();
 
             this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;

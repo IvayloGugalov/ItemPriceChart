@@ -7,8 +7,8 @@ namespace ItemPriceCharts.Services.Services
 {
     public interface IItemPriceService
     {
-        void CreateItemPrice(ItemPrice itemPrice);
+        Task<ItemPrice> CreateItemPrice(double price, int itemId);
         Task<IEnumerable<ItemPrice>> GetPricesForItem(int itemId);
-        double GetLatestItemPrice(int itemId);
+        Task<double> GetLatestItemPrice(int itemId);
     }
 }

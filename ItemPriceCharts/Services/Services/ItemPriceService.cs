@@ -26,41 +26,47 @@ namespace ItemPriceCharts.Services.Services
         public Task<IEnumerable<ItemPrice>> GetPricesForItem(int itemId) =>
            this.itemPriceRepository.GetAll(filter: i => i.ItemId == itemId);
 
-        public void CreateItemPrice(ItemPrice itemPrice)
+        public async Task<ItemPrice> CreateItemPrice(double price, int itemId)
         {
             try
             {
-                if (this.IsItemExisting(itemPrice.ItemId))
+                if (this.IsItemExisting(itemId))
                 {
-                    this.itemPriceRepository.Add(itemPrice);
-                    logger.Debug($"Saved '{itemPrice}' for itemId: {itemPrice.ItemId} in database");
+                    var itemPrice = new ItemPrice(price, itemId);
+
+                    var createdItemPrice = await this.itemPriceRepository.Add(itemPrice).ConfigureAwait(false);
+
+                    logger.Debug($"Saved '{itemPrice}' for itemId: {itemId} in database.");
+
+                    return createdItemPrice;
                 }
+                return null;
             }
             catch (Exception e)
             {
-                logger.Error($"Error when saving item price for itemId: {itemPrice.ItemId}.\t{e}");
+                logger.Error(e, $"Error when saving item price for itemId: {itemId}.");
                 throw;
             }
         }
 
-        public double GetLatestItemPrice(int itemId)
+        public async Task<double> GetLatestItemPrice(int itemId)
         {
             try
             {
-                return this.itemPriceRepository.GetAll(
+                var pricesForItem = await this.itemPriceRepository.GetAll(
                     filter: price => price.ItemId == itemId,
-                    orderBy: prices => prices.OrderByDescending(price => price.PriceDate))
-                .Result.First()
-                .Price;
+                    orderBy: prices => prices.OrderByDescending(price => price.PriceDate));
+
+                return pricesForItem.Any() ? pricesForItem.First().Price : 0;
             }
             catch (Exception e)
             {
-                logger.Error($"Error when retrieving item price for itemId: {itemId}.\t{e}");
-                return 0;
+                logger.Error(e, $"Error when retrieving item price for itemId: {itemId}.");
+                throw;
             }
         }
 
         private bool IsItemExisting(int id) =>
-           this.itemRepository.IsExisting(id).Result;
+           this.itemRepository.IsExisting(id).GetAwaiter().GetResult();
     }
 }

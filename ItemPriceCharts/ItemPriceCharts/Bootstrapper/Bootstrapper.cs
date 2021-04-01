@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Autofac;
+using Autofac.Diagnostics;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore;
+
+using NLog;
 
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
@@ -12,14 +15,24 @@ using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
 using ItemPriceCharts.UI.WPF.Views.UserControls;
 
+using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Services.Services;
+
+using ItemPriceCharts.XmReaderWriter.XmlActions;
+using ItemPriceCharts.XmReaderWriter.User;
+
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
     public class Bootstrapper
     {
+        private static readonly Logger logger = LogManager.GetLogger(nameof(Bootstrapper));
+
         private readonly App app;
         private readonly Dictionary<Type, Type> mappedTypes;
-        private IViewFactory viewFactory;
+
+        private IContainer container;
         private ILifetimeScope lifetimeScope;
+        private IViewFactory viewFactory;
 
         public Bootstrapper(App app, Dictionary<Type, Type> mappedTypes)
         {
@@ -35,18 +48,79 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         public void Stop()
         {
             this.lifetimeScope.Dispose();
+            this.container.Dispose();
         }
 
         private void Start(ContainerBuilder builder)
         {
+            this.container = builder.Build();
+
+#if DEBUG
+            var tracer = new DefaultDiagnosticTracer();
+            tracer.OperationCompleted += (sender, args) =>
+            {
+                logger.Info(args.TraceContent);
+            };
+
+            // Subscribe to the diagnostics with your tracer.
+            this.container.SubscribeToDiagnostics(tracer);
+#endif
+
             //LifetimeScope must be init, after all dependencies are registered.
-            this.lifetimeScope = builder.Build();
+            this.lifetimeScope = this.container.BeginLifetimeScope();
             this.viewFactory = this.lifetimeScope.Resolve<IViewFactory>(new Parameter[] { new NamedParameter("lifetimeScope", this.lifetimeScope) });
             _ = new DialogCreatorFactory(this.viewFactory);
 
             this.MigrateDatabase();
             this.RegisterViews();
-            this.ConfigureApplication();
+        }
+
+        public void ShowStartUpWindow()
+        {
+            try
+            {
+                var (userName, email) = (string.Empty, string.Empty);
+                var accountService = this.container.Resolve<IUserAccountService>();
+
+                if (XmlCreateFile.EnsureXmlFileExists())
+                {
+                    UserCredentialsSettings.ReadSettings();
+
+                    if (UserCredentialsSettings.ShouldEnableAutoLogin)
+                    {
+                        var userAccount = accountService.GetUserAccount(UserCredentialsSettings.Username, UserCredentialsSettings.Email).GetAwaiter().GetResult();
+
+                        this.ConfigureMainWindow(userAccount);
+
+                        return;
+                    }
+                    else
+                    {
+                        (userName, email) = UserCredentialsSettings.UsernameAndEmail;
+                        logger.Debug($"Found credentials\tUsername:{userName}\tEmail:{email}.");
+                    }
+                }
+
+                var loginViewModel = new ViewModels.LoginAndRegistration.LoginViewModel(accountService, userName, email);
+                Helpers.UIEvents.ShowLoginRegisterWindow(loginViewModel);
+
+                if (loginViewModel.SuccessfulLogin)
+                {
+                    this.ConfigureMainWindow(loginViewModel.UserAccount);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Could not show window");
+                throw new Exception("We are having difficulties with the app, please send us the logs!");
+            }
+        }
+
+        private void ConfigureMainWindow(UserAccount userAccount)
+        {
+            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(new Parameter[] { new NamedParameter(nameof(userAccount), userAccount) });
+            this.app.MainWindow = mainWindow;
+            this.app.MainWindow.Show();
         }
 
         private void MigrateDatabase()
@@ -85,13 +159,6 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             this.viewFactory.Register<CreateItemViewModel, CreateItemView>();
             this.viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
             this.viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
-        }
-
-        private void ConfigureApplication()
-        {
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(System.Array.Empty<Parameter>());
-            this.app.MainWindow = mainWindow;
-            this.app.MainWindow.Show();
         }
     }
 }

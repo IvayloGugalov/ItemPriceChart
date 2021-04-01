@@ -38,19 +38,18 @@ namespace ItemPriceCharts.UI.WPF
             this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
             this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
             this.mappedTypes.Add(typeof(IItemPriceService), typeof(ItemPriceService));
+            this.mappedTypes.Add(typeof(IUserAccountService), typeof(UserAccountService));
 
             var bootstrapper = new Bootstrapper.Bootstrapper(this, this.mappedTypes);
-
-            MainWindow.Closed += (s, a) =>
-            {
-                bootstrapper.Stop();
-            };
 
             Application.Current.Exit += (s, e) =>
             {
                 logger.Info("Exiting application");
+                bootstrapper.Stop();
                 NLog.LogManager.Shutdown();
             };
+
+            bootstrapper.ShowStartUpWindow();
 
             logger.Info("Application started");
         }

@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -16,7 +16,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private bool areItemsShown;
         private bool shouldShowShopInformation;
 
-        public IItemService ItemService { get; }
+        public UserAccount UserAccount { get; }
 
         public ObservableCollection<Item> ItemsList
         {
@@ -51,9 +51,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowItemInformationDialogCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public BaseListingViewModel(IItemService itemService)
+        public BaseListingViewModel(UserAccount userAccount)
         {
-            this.ItemService = itemService;
+            this.UserAccount = userAccount ?? throw new ArgumentNullException(nameof(userAccount));
 
             this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());

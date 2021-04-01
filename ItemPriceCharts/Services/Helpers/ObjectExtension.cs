@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ItemPriceCharts.UI.WPF.Helpers
+namespace ItemPriceCharts.Services.Helpers
 {
     public static class ObjectExtension
     {

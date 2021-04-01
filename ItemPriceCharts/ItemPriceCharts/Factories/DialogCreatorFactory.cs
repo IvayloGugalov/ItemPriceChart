@@ -29,6 +29,11 @@ namespace ItemPriceCharts.UI.WPF.Factories
             {
                 return Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
             };
+            UIEvents.ShowLoginRegisterWindow = (vm) =>
+            {
+                return Application.Current.Dispatcher.Invoke(() => new LoginRegisterView(vm).ShowDialog());
+            };
+
 
             UIEvents.FinishSubscribing();
         }
@@ -40,9 +45,10 @@ namespace ItemPriceCharts.UI.WPF.Factories
             window.ShowDialog();
         }
 
-        private void CreateShopView(object sender, object e)
+        private void CreateShopView(object sender, UserAccount e)
         {
-            var window = this.viewFactory.Resolve<CreateShopViewModel>(Array.Empty<Parameter>());
+            var parameters = new Parameter[] { new NamedParameter("userAccount", e) };
+            var window = this.viewFactory.Resolve<CreateShopViewModel>(parameters);
             window.ShowDialog();
         }
 

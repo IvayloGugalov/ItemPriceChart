@@ -7,6 +7,7 @@ using NLog;
 using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -15,6 +16,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private static readonly Logger logger = LogManager.GetLogger(nameof(CreateShopViewModel));
 
         private readonly IOnlineShopService onlineShopService;
+        private readonly UserAccount userAccount;
+
         private string newShopURL;
         private string newShopTitle;
 
@@ -32,10 +35,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public IAsyncCommand AddShopCommand { get; }
 
-        public CreateShopViewModel(IOnlineShopService onlineShopService)
+        public CreateShopViewModel(IOnlineShopService onlineShopService, UserAccount userAccount)
         {
             this.onlineShopService = onlineShopService;
-
+            this.userAccount = userAccount;
             this.AddShopCommand = new RelayAsyncCommand(this.AddShopAction, this.AddShopPredicate, errorHandler: e =>
             {
                 logger.Error($"Failed to create new shop: {e}");
@@ -45,12 +48,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private async Task AddShopAction()
         {
-            await this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle);
+            await this.onlineShopService.CreateShop(this.NewShopURL, this.NewShopTitle, this.userAccount);
         }
 
         private bool AddShopPredicate()
         {
-            return ValidateURL.IsValidAddress(this.NewShopURL);
+            return Validators.IsValidAddress(this.NewShopURL);
         }
     }
 }

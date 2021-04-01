@@ -12,9 +12,7 @@ namespace ItemPriceCharts.Services.Models
 
         public OnlineShop OnlineShop { get; }
 
-        private Item()
-        {
-        }
+        private Item() { }
 
         public Item(
             string url,
@@ -22,7 +20,8 @@ namespace ItemPriceCharts.Services.Models
             string description,
             double price,
             OnlineShop onlineShop,
-            ItemType type)
+            ItemType type) 
+            : this()
         {
             this.URL = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));

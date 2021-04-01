@@ -5,6 +5,7 @@ using System.Windows;
 using ItemPriceCharts.Services.Events;
 using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
@@ -13,9 +14,12 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         private static List<Action> subscribers = null;
 
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
+        public static Func<LoginViewModel, bool?> ShowLoginRegisterWindow { get; set; }
+
+        public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
 
         //Directly called on the UI thread
-        public static IChannel<object> ShowCreateShopView { get; set; } = new Channel<object>();
+        public static IChannel<UserAccount> ShowCreateShopView { get; set; } = new Channel<UserAccount>();
         public static IChannel<OnlineShop> ShowCreateItemView { get; set; } = new Channel<OnlineShop>();
         public static IChannel<Item> ShowDeleteItemView { get; set; } = new Channel<Item>();
         public static IChannel<Item> ShowItemInformatioView { get; set; } = new Channel<Item>();

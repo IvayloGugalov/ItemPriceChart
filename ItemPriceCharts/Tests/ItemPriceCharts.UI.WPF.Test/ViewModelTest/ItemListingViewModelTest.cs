@@ -16,49 +16,29 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
     [TestFixture]
     public class ItemListingViewModelTest
     {
-        private Mock<IItemService> itemServiceMock;
         private OnlineShop defaultOnlineShop;
+        private UserAccount userAccount;
 
         [SetUp]
         public void SetUp()
         {
-            this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
-
             this.defaultOnlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
+
+            this.userAccount = new UserAccount(
+                firstName: "Firstname",
+                lastName: "Lastname",
+                email: new Email("newEmail@email.bg"),
+                userName: "UserName",
+                password: "P@ssWorD");
         }
 
         [TearDown]
         public void TearDown()
         {
-            this.itemServiceMock.VerifyAll();
         }
 
         [Test]
-        public async Task GetItems_WithNoSelectedShop_WillCallService()
-        {
-            var items = new List<Item>()
-            {
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop)
-            };
-
-            this.itemServiceMock.Setup(_ => _.GetAllItems())
-                .ReturnsAsync(items);
-
-            var itemListingViewModel = new ItemListingViewModel(this.itemServiceMock.Object)
-            {
-                SelectedShop = null
-            };
-
-            await itemListingViewModel.SetItemsListAsync();
-
-            Assert.AreEqual(items.Count, itemListingViewModel.ItemsList.Count);
-            Assert.AreEqual(items.First(), itemListingViewModel.SelectedItem);
-        }
-
-        [Test]
-        public async Task GetItems_WithSelectedShop_WillRetrieveItems()
+        public void GetItems_WithNoSelectedShop_WillCallService()
         {
             var items = new List<Item>()
             {
@@ -72,12 +52,40 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 this.defaultOnlineShop.AddItem(item);
             }
 
-            var itemListingViewModel = new ItemListingViewModel(this.itemServiceMock.Object)
+            this.userAccount.AddOnlineShop(this.defaultOnlineShop);
+
+            var itemListingViewModel = new ItemListingViewModel(this.userAccount)
+            {
+                SelectedShop = null
+            };
+
+            itemListingViewModel.SetItemsList();
+
+            Assert.AreEqual(items.Count, itemListingViewModel.ItemsList.Count);
+            Assert.AreEqual(items.First(), itemListingViewModel.SelectedItem);
+        }
+
+        [Test]
+        public void GetItems_WithSelectedShop_WillRetrieveItems()
+        {
+            var items = new List<Item>()
+            {
+                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
+                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
+                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop)
+            };
+
+            foreach (var item in items)
+            {
+                this.defaultOnlineShop.AddItem(item);
+            }
+
+            var itemListingViewModel = new ItemListingViewModel(this.userAccount)
             {
                 SelectedShop = this.defaultOnlineShop
             };
 
-            await itemListingViewModel.SetItemsListAsync();
+            itemListingViewModel.SetItemsList();
 
             Assert.AreEqual(items.Count, itemListingViewModel.ItemsList.Count);
             Assert.AreEqual(items.First(), itemListingViewModel.SelectedItem);

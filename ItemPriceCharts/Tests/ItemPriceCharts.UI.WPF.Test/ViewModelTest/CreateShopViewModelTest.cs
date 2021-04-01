@@ -16,6 +16,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
     {
         private Mock<IOnlineShopService> onlineShopServiceMock;
         private OnlineShop onlineShop;
+        private UserAccount userAccount;
 
         [SetUp]
         public void SetUp()
@@ -26,6 +27,13 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 id: 1,
                 url: "https://www.someShop.com",
                 title: "someShop");
+
+            this.userAccount = new UserAccount(
+                firstName: "Firstname",
+                lastName: "Lastname",
+                email: new Email("newEmail@email.bg"),
+                userName: "UserName",
+                password: "P@ssWorD");
         }
 
         [TearDown]
@@ -37,9 +45,9 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void AddShopAction_WillCreateItem_Succeeds()
         {
-            this.onlineShopServiceMock.Setup(_ => _.CreateShop(this.onlineShop.URL, this.onlineShop.Title));
+            this.onlineShopServiceMock.Setup(_ => _.CreateShop(this.onlineShop.URL, this.onlineShop.Title, this.userAccount));
 
-            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object)
+            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object, this.userAccount)
             {
                 NewShopURL = this.onlineShop.URL,
                 NewShopTitle = this.onlineShop.Title
@@ -56,10 +64,10 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             var expectedOnExceptionDialogMessage = $"Failed to create new shop with url: {this.onlineShop.URL}";
 
-            this.onlineShopServiceMock.Setup(_ => _.CreateShop(this.onlineShop.URL, this.onlineShop.Title))
+            this.onlineShopServiceMock.Setup(_ => _.CreateShop(this.onlineShop.URL, this.onlineShop.Title, this.userAccount))
                 .Throws(new Exception());
 
-            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object)
+            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object, this.userAccount)
             {
                 NewShopURL = this.onlineShop.URL,
                 NewShopTitle = this.onlineShop.Title

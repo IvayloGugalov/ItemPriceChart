@@ -5,7 +5,8 @@
              xmlns:views="clr-namespace:ItemPriceCharts.UI.WPF.Views"
              xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
              xmlns:converters="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
-             xmlns:viewModels="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels">
+             xmlns:viewModels="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels"
+             ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

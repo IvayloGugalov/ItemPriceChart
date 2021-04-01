@@ -14,14 +14,14 @@ namespace ItemPriceCharts.Services.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3");
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
 
                     b.Property<double>("CurrentPrice")
                         .HasColumnType("REAL");
@@ -46,6 +46,9 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.HasIndex("OnlineShopId");
 
                     b.ToTable("Item");
@@ -55,8 +58,8 @@ namespace ItemPriceCharts.Services.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
@@ -69,6 +72,9 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.ToTable("ItemPrice");
                 });
 
@@ -76,8 +82,8 @@ namespace ItemPriceCharts.Services.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -89,7 +95,65 @@ namespace ItemPriceCharts.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.ToTable("OnlineShop");
+                });
+
+            modelBuilder.Entity("ItemPriceCharts.Services.Models.UserAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(220)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("Username", "Email")
+                        .IsUnique();
+
+                    b.ToTable("UserAccount");
+                });
+
+            modelBuilder.Entity("OnlineShopUserAccount", b =>
+                {
+                    b.Property<int>("OnlineShopsForAccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserAccountsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("OnlineShopsForAccountId", "UserAccountsId");
+
+                    b.HasIndex("UserAccountsId");
+
+                    b.ToTable("OnlineShopUserAccount");
                 });
 
             modelBuilder.Entity("ItemPriceCharts.Services.Models.Item", b =>
@@ -99,6 +163,28 @@ namespace ItemPriceCharts.Services.Migrations
                         .HasForeignKey("OnlineShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("OnlineShop");
+                });
+
+            modelBuilder.Entity("OnlineShopUserAccount", b =>
+                {
+                    b.HasOne("ItemPriceCharts.Services.Models.OnlineShop", null)
+                        .WithMany()
+                        .HasForeignKey("OnlineShopsForAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ItemPriceCharts.Services.Models.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("UserAccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ItemPriceCharts.Services.Models.OnlineShop", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

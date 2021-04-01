@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="ItemPriceCharts.UI.WPF.Views.UserControls.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:components="clr-namespace:ItemPriceCharts.UI.WPF.Views.Components"
+             xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="270"
+             d:DesignWidth="400">
+    <UserControl.Resources>
+        <cv:EmptyStringToVisibilityConverter x:Key="StringToVis"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"
+              Margin="20 20 20 5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"
+                       HorizontalAlignment="Center"
+                       Content="Login in to your account"
+                       Foreground="Black"
+                       FontFamily="LilyUPC"
+                       FontWeight="SemiBold"
+                       FontSize="15"/>
+
+            <controls:MyWatermarkTextBox Grid.Row="2"
+                                         x:Name="usernameTextBox"
+                                         Focusable="False"
+                                         WatermarkValue="Username"
+                                         TextBoxValue="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+
+            <components:BindablePasswordBox Grid.Row="4"
+                                            Margin="15 0"
+                                            HorizontalAlignment="Stretch"
+                                            Password="{Binding Password}"/>
+
+            <controls:MyWatermarkTextBox Grid.Row="6"
+                                         x:Name="emailTextBox"
+                                         Focusable="False"
+                                         WatermarkValue="Email"
+                                         TextBoxValue="{Binding Email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+
+            <Button Grid.Row="8"
+                    Name="loginButton"
+                    Command="{Binding LoginCommand}"
+                    Content="Login"
+                    Background="DodgerBlue"
+                    Style="{StaticResource MaterialDesignFlatLightBgButton}"
+                    materialDesign:ButtonAssist.CornerRadius="10"
+                    Foreground="White"
+                    Width="200"
+                    Height="27"/>
+
+            <TextBlock Grid.Row="10"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVis}}"
+                       Background="Pink"
+                       Text="{Binding ErrorMessage}"
+                       Padding="5 8"
+                       Margin="-20 0"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Stretch"
+                       TextAlignment="Center"
+                       Foreground="Crimson"
+                       FontSize="13.5"/>
+
+            <Grid Grid.Row="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Row="6"
+                          Margin="15 0"
+                          IsChecked="{Binding RememberUser}"
+                          HorizontalAlignment="Left">
+                    <mah:CheckBoxHelper.CheckCornerRadius>
+                        <CornerRadius>5</CornerRadius>
+                    </mah:CheckBoxHelper.CheckCornerRadius>
+                    <TextBlock Text="Remember me?"/>
+                </CheckBox>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2"
+              Background="LightGray">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0 0 10 0">
+                <TextBlock Text="Don't have an account?"
+                           Margin="0 0 5 0"
+                           HorizontalAlignment="Right"/>
+                <TextBlock FontSize="12"
+                           HorizontalAlignment="Right">
+                    <Hyperlink Command="{Binding ShowRegisterViewCommand}"
+                               Style="{StaticResource Styles.HyperLink}">
+                        <Run Text="Signup here" />
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

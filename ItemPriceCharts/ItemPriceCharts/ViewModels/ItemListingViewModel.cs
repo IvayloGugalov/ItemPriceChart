@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 
 using NLog;
 
 using ItemPriceCharts.UI.WPF.Helpers;
-using ItemPriceCharts.Services.Services;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -12,14 +10,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
-        public ItemListingViewModel(IItemService itemService)
-            : base (itemService)
+        public ItemListingViewModel(Services.Models.UserAccount userAccount)
+            : base (userAccount)
         {
             this.ShouldShowShopInformation = false;
         }
 
         //Called from outside the class
-        public async Task SetItemsListAsync()
+        public void SetItemsList()
         {
             if (this.SelectedShop != null)
             {
@@ -27,9 +25,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             else
             {
-                var retrievedItems = await this.ItemService.GetAllItems();
-
-                this.ItemsList = retrievedItems.ToObservableCollection();
+                this.ItemsList = this.UserAccount.OnlineShopsForAccount.SelectMany(shop => shop.Items).ToObservableCollection();
             }
 
             if (this.ItemsList is not null && this.ItemsList.Any())

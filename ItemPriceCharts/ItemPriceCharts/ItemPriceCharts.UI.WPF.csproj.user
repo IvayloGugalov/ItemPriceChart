@@ -12,6 +12,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Components\BindablePasswordBox.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\CreateItemView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -24,6 +27,9 @@
     <Compile Update="Views\ItemInformationView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\LoginRegisterView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\ItemListingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -31,6 +37,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\MessageDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\LoginView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\RegisterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\UserControls\ShopListingView.xaml.cs">
@@ -41,7 +53,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\MyWatermarkTextBoxStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Styles\Colors.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Components\BindablePasswordBox.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\CreateItemView.xaml">
@@ -59,6 +80,9 @@
     <Page Update="Views\ItemInformationView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\LoginRegisterView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\UserControls\ItemListingView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -66,6 +90,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MessageDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\LoginView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\RegisterView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UserControls\ShopListingView.xaml">

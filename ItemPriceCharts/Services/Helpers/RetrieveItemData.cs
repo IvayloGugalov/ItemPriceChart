@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using HtmlAgilityPack;
 using NLog;
@@ -14,40 +15,42 @@ namespace ItemPriceCharts.Services.Helpers
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(RetrieveItemData));
 
-        public static Item CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
+        public static Task<Item> CreateItem(string itemURL, HtmlDocument itemDocument, OnlineShop onlineShop, ItemType type)
         {
             switch (onlineShop.Title)
             {
                 case "Vario":
                 {
-                    var data = VarioRetrieveData(itemDocument);
+                    var (title, description, price) = VarioRetrieveData(itemDocument);
 
-                    return new Item(
-                        url: itemURL,
-                        title: data.Item1,
-                        description: data.Item2,
-                        price: data.Item3,
-                        onlineShop: onlineShop,
-                        type: type);
+                    return Task.FromResult(
+                        new Item(
+                            url: itemURL,
+                            title: title,
+                            description: description,
+                            price: price,
+                            onlineShop: onlineShop,
+                            type: type));
                 }
                 case "Plesio":
                 {
-                    var data = PlesioRetrieveData(itemDocument);
+                    var (title, description, price) = PlesioRetrieveData(itemDocument);
 
-                    return new Item(
-                        url: itemURL,
-                        title: data.Item1,
-                        description: data.Item2,
-                        price: data.Item3,
-                        onlineShop: onlineShop,
-                        type: type);
+                    return Task.FromResult(
+                        new Item(
+                            url: itemURL,
+                            title: title,
+                            description: description,
+                            price: price,
+                            onlineShop: onlineShop,
+                            type: type));
                 }
                 default:
                     return null;
             }
         }
 
-        private static Tuple<string, string, double> PlesioRetrieveData (HtmlDocument htmlDocument)
+        private static (string title, string description, double price) PlesioRetrieveData (HtmlDocument htmlDocument)
         {
             char[] toTrim = { '\n', ' ' };
             try
@@ -61,7 +64,7 @@ namespace ItemPriceCharts.Services.Helpers
                 var descriptionValues = htmlDocument.DocumentNode.SelectNodes(PlesioKeyWordConstants.DESCRIPTION_VALUES).Select(x => x.InnerText);
                 var description = GetDescription(descriptioLabels, descriptionValues);
 
-                return Tuple.Create(title, description, price);
+                return (title, description, price);
             }
             catch (Exception e)
             {
@@ -70,7 +73,7 @@ namespace ItemPriceCharts.Services.Helpers
             }
         }
 
-        private static Tuple<string, string, double> VarioRetrieveData(HtmlDocument htmlDocument)
+        private static (string title, string description, double price) VarioRetrieveData(HtmlDocument htmlDocument)
         {
             try
             {
@@ -81,7 +84,7 @@ namespace ItemPriceCharts.Services.Helpers
                 var descriptionValues = htmlDocument.DocumentNode.SelectNodes(VarioKeyWordConstants.DESCRIPTION_VALUES).Select(x => x.InnerText);
                 var description = GetDescription(descriptioLabels, descriptionValues);
 
-                return Tuple.Create(title, description, price);
+                return (title, description, price);
             }
             catch (Exception e)
             {
