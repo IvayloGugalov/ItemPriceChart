@@ -3,8 +3,7 @@ using System.Windows;
 
 using Autofac;
 using Autofac.Core;
-
-using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
@@ -47,7 +46,8 @@ namespace ItemPriceCharts.UI.WPF.Factories
 
         private void CreateShopView(object sender, UserAccount e)
         {
-            var parameters = new Parameter[] { new NamedParameter("userAccount", e) };
+            //var parameters = new Parameter[] { new NamedParameter("userAccount", e) };
+            var parameters = new Parameter[0];
             var window = this.viewFactory.Resolve<CreateShopViewModel>(parameters);
             window.ShowDialog();
         }

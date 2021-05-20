@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.XmReaderWriter.User;
@@ -105,7 +105,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
                     UserCredentialsSettings.Username = this.Username;
                     UserCredentialsSettings.Email = this.Email;
                     UserCredentialsSettings.RememberAccount = this.RememberUser.ToString();
-                    UserCredentialsSettings.LoginExpiresDate = DateTime.Now.AddMinutes(30).ToString();
+                    UserCredentialsSettings.LoginExpiresDate = DateTime.UtcNow.AddMinutes(30).ToString();
                     UserCredentialsSettings.WriteToXmlFile();
                 });
             }

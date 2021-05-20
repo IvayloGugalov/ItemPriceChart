@@ -32,23 +32,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.2" />
+    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.1.0" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="LoadingIndicators.WPF" Version="0.0.1" />
-    <PackageReference Include="MahApps.Metro" Version="2.4.4" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.5" />
     <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="NLog" Version="4.7.8" />
+    <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ItemPriceCharts.XmReaderWriter\ItemPriceCharts.XmReaderWriter.csproj" />
+    <ProjectReference Include="..\ItemPriceCharts.Infrastructure\ItemPriceCharts.Infrastructure.csproj" />
     <ProjectReference Include="..\ItemPriceCharts.Services\ItemPriceCharts.Services.csproj" />
+    <ProjectReference Include="..\ItemPriceCharts.XmReaderWriter\ItemPriceCharts.XmReaderWriter.csproj" />
   </ItemGroup>
 
 </Project>

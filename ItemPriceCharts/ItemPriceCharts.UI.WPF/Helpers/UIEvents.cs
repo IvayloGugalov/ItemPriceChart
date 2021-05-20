@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Windows;
 
+using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Services.Events;
-using ItemPriceCharts.Services.Models;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
@@ -34,13 +34,13 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         {
             subscribers = new List<Action>
             {
-                new UISubscription<Item>(EventsLocator.ItemAdded, UIEvents.ItemAdded).Replay,
+                //new UISubscription<Item>(EventsLocator.ItemAdded, UIEvents.ItemAdded).Replay,
 
-                new UISubscription<Item>(EventsLocator.ItemDeleted, UIEvents.ItemDeleted).Replay,
+                //new UISubscription<Item>(EventsLocator.ItemDeleted, UIEvents.ItemDeleted).Replay,
 
-                new UISubscription<OnlineShop>(EventsLocator.ShopAdded, UIEvents.ShopAdded).Replay,
+                //new UISubscription<OnlineShop>(EventsLocator.ShopAdded, UIEvents.ShopAdded).Replay,
 
-                new UISubscription<OnlineShop>(EventsLocator.ShopDeleted, UIEvents.ShopDeleted).Replay
+                //new UISubscription<OnlineShop>(EventsLocator.ShopDeleted, UIEvents.ShopDeleted).Replay
             };
         }
 

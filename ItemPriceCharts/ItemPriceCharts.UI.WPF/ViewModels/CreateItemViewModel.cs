@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 
 using NLog;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Domain.Enums;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -53,7 +54,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsInProgress = true;
             this.OnPropertyChanged(nameof(this.IsInProgress));
 
-            await this.itemService.CreateItem(this.NewItemURL, this.SelectedShop, this.SelectedItemType);
+            await this.itemService.AddItemToShop(this.NewItemURL, this.SelectedShop, this.SelectedItemType);
 
             this.IsInProgress = false;
             this.OnPropertyChanged(nameof(this.IsInProgress));

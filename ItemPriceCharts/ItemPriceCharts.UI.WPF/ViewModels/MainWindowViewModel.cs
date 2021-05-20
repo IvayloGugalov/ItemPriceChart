@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 using NLog;
 
-using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -58,7 +58,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.UserAccount = userAccount;
             this.currentView = this;
 
-            this.OnlineShops = this.UserAccount.OnlineShopsForAccount.ToObservableCollection();
+            //this.OnlineShops = this.UserAccount.OnlineShopsForUser.ToObservableCollection();
 
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
             this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());

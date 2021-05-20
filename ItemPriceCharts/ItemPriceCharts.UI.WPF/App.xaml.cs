@@ -6,8 +6,8 @@ using System.Windows.Threading;
 
 using NLog;
 
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Infrastructure.Services;
 
 namespace ItemPriceCharts.UI.WPF
 {
@@ -37,7 +37,6 @@ namespace ItemPriceCharts.UI.WPF
 
             this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
             this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
-            this.mappedTypes.Add(typeof(IItemPriceService), typeof(ItemPriceService));
             this.mappedTypes.Add(typeof(IUserAccountService), typeof(UserAccountService));
 
             var bootstrapper = new Bootstrapper.Bootstrapper(this, this.mappedTypes);
@@ -91,6 +90,8 @@ namespace ItemPriceCharts.UI.WPF
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
+
+            Application.Current.Shutdown();
         }
     }
 }

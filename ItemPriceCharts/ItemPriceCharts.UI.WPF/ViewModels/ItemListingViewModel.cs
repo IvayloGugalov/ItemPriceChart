@@ -3,6 +3,7 @@
 using NLog;
 
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Domain.Entities;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -10,7 +11,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
-        public ItemListingViewModel(Services.Models.UserAccount userAccount)
+        public ItemListingViewModel(UserAccount userAccount)
             : base (userAccount)
         {
             this.ShouldShowShopInformation = false;
@@ -25,7 +26,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             else
             {
-                this.ItemsList = this.UserAccount.OnlineShopsForAccount.SelectMany(shop => shop.Items).ToObservableCollection();
+                this.ItemsList = this.UserAccount.OnlineShopsForUser.Select(x => x.OnlineShop).SelectMany(shop => shop.Items).ToObservableCollection();
             }
 
             if (this.ItemsList is not null && this.ItemsList.Any())

@@ -9,15 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 using NLog;
 
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
 using ItemPriceCharts.UI.WPF.Views.UserControls;
-
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
-
 using ItemPriceCharts.XmReaderWriter.XmlActions;
 using ItemPriceCharts.XmReaderWriter.User;
 
@@ -125,7 +124,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         private void MigrateDatabase()
         {
-            using (Services.Data.ModelsContext dbContext = new Services.Data.ModelsContext())
+            using (ModelsContext dbContext = new ModelsContext())
             {
                 dbContext.Database.Migrate();
                 if (!dbContext.Database.CanConnect())

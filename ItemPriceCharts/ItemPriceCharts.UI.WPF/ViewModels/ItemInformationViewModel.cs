@@ -7,10 +7,10 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using NLog;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure.Services;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -18,7 +18,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger logger = LogManager.GetLogger(nameof(ItemInformationViewModel));
 
-        private readonly IItemPriceService itemPriceService;
         private readonly IItemService itemService;
 
         private SeriesCollection priceCollection;
@@ -56,9 +55,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public IAsyncCommand UpdatePriceCommand { get; }
 
-        public ItemInformationViewModel(IItemPriceService itemPriceService, IItemService itemService, Item item)
+        public ItemInformationViewModel(IItemService itemService, Item item)
         {
-            this.itemPriceService = itemPriceService;
             this.itemService = itemService;
             this.Item = item;
 
@@ -68,19 +66,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 MessageDialogCreator.ShowErrorDialog(message: $"Could not update price for {this.Item.Title}");
             });
 
-            this.LoadItemPriceInformationAsync()
-                .FireAndForgetSafeAsync(errorHandler: e =>
-                {
-                    logger.Error($"Could not load price information for {this.Item}.\n{e}");
-                    MessageDialogCreator.ShowErrorDialog(message: $"Could not load price information for {this.Item.Title}");
-                });
+            this.LoadItemPriceInformationAsync();
         }
 
-        private async Task LoadItemPriceInformationAsync()
+        private void LoadItemPriceInformationAsync()
         {
-            var priceInformation = await this.itemPriceService.GetPricesForItem(this.Item.Id);
-
-            var dateOfPrices = priceInformation.Select(p => p.PriceDate.ToShortDateString());
+            var priceInformation = this.Item.PricesForItem;
+            var dateOfPrices = priceInformation.Select(p => p.PriceDateRetrieved.ToShortDateString());
             var oldPrices = priceInformation.Select(p => p.Price);
 
             //Test Data
@@ -112,7 +104,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             if (updatedItemPrice != null)
             {
                 this.LineSeries.Values.Add(updatedItemPrice.Price);
-                this.Labels.Add(updatedItemPrice.PriceDate.ToShortDateString());
+                this.Labels.Add(updatedItemPrice.PriceDateRetrieved.ToShortDateString());
             }
             else
             {

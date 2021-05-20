@@ -49,7 +49,7 @@ namespace ItemPriceCharts.XmReaderWriter.User
             bool.TryParse(RememberAccount, out var shouldRememberAccount) &&
             shouldRememberAccount &&
             DateTime.TryParse(LoginExpiresDate, out var loginExpiresDate) &&
-            DateTime.Now <= loginExpiresDate;
+            DateTime.UtcNow <= loginExpiresDate;
 
         public static void WriteToXmlFile()
         {

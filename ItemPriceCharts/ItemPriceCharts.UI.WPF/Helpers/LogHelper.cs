@@ -67,7 +67,7 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         private static string GetLogFolder()
         {
             var fileTarget = (FileTarget)LogManager.Configuration.FindTargetByName(LogHelper.LOG_FILE_NAME);
-            var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now };
+            var logEventInfo = new LogEventInfo { TimeStamp = DateTime.UtcNow };
             var filePath = fileTarget.FileName.Render(logEventInfo);
 
             return System.IO.Path.GetDirectoryName(filePath);

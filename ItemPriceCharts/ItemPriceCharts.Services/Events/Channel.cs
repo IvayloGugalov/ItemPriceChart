@@ -40,14 +40,4 @@ namespace ItemPriceCharts.Services.Events
             this.channel.Unsubscribe(this.receiver);
         }
     }
-
-    //public class MessageArgument<T> : EventArgs
-    //{
-    //    public T Message { get; }
-
-    //    public MessageArgument(T message)
-    //    {
-    //        this.Message = message;
-    //    }
-    //}
 }

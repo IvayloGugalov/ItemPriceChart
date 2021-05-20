@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 using NLog;
 
-using ItemPriceCharts.Services.Models;
+using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 
@@ -76,21 +76,22 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void OnAddedShop(object sender, OnlineShop e)
         {
-            this.OnlineShops.Add(e);
-            this.UserAccount.AddOnlineShop(e);
-            this.IsListOfShopsShown = true;
+            // Dali trqbva tuk da se vika add/remove?
+            //this.OnlineShops.Add(e);
+            //this.UserAccount.AddOnlineShop(e);
+            //this.IsListOfShopsShown = true;
         }
 
         private void OnDeletedShop(object sender, OnlineShop e)
         {
-            this.OnlineShops.Remove(e);
-            this.UserAccount.RemoveOnlineShop(e);
-            this.OnPropertyChanged(() => this.IsListOfShopsShown);
+            //this.OnlineShops.Remove(e);
+            //this.UserAccount.RemoveOnlineShop(e);
+            //this.OnPropertyChanged(() => this.IsListOfShopsShown);
         }
 
         private void AddShopsToViewModel()
         {
-            this.OnlineShops = this.UserAccount.OnlineShopsForAccount.ToObservableCollection();
+            this.OnlineShops = this.UserAccount.OnlineShopsForUser.Select(x => x.OnlineShop).ToObservableCollection();
 
             this.IsListOfShopsShown = this.OnlineShops.Any();
         }
