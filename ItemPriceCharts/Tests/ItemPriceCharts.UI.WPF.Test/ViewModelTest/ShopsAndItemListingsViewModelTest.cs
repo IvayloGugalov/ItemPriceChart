@@ -6,8 +6,8 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -31,10 +31,10 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
 
             this.onlineShopWithItems = OnlineShopExtension.ConstructDefaultOnlineShop();
-            this.onlineShopWithItems.AddItem(ItemExtension.ConstructDefaultItem(this.onlineShopWithItems));
+            this.onlineShopWithItems.AddItem(ItemExtension.ConstructItem(this.onlineShopWithItems));
 
-            this.onlineShopWithoutItems = OnlineShopExtension.ConstructOnlineShop(
-                id: 2,
+            this.onlineShopWithoutItems = OnlineShopExtension.ConstructOnlineShopWithParameters(
+                id: new Guid(),
                 url: "https://shop123.com",
                 title: "shop123");
 
@@ -43,7 +43,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
-                password: "P@ssWorD");
+                password: "P@ssWorD",
+                onlineShops: new List<OnlineShop>());
         }
 
         [TearDown]
@@ -73,7 +74,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         }
 
         [Test]
-        public void ShowItemsCommand_WillRetrive_AndShowItems()
+        public void ShowItemsCommand_WillRetrieve_AndShowItems()
         {
             var listOfShops = new List<OnlineShop>() { this.onlineShopWithItems };
 
@@ -92,7 +93,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         public void ShowItemsCommand_WhenExceptionThrown_WillShowMessageDialog()
         {
             MessageDialogViewModel messageDialogViewModel = null;
-            UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
             var listOfShops = new List<OnlineShop>() { this.onlineShopWithItems };
 

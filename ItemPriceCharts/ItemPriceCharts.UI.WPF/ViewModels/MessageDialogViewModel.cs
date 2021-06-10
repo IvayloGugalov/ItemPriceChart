@@ -50,8 +50,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                     this.IconColor = Brushes.MediumSeaGreen;
                     this.IconType = PackIconKind.QuestionMarkCircle;
                     break;
-                default:
-                    break;
             }
         }
     }

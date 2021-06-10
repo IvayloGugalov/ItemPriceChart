@@ -8,29 +8,27 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
 {
     public static class XmlReadData
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(XmlReadData));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(XmlReadData));
 
         public static void GetXmlElementValues(ref Dictionary<string, string> elementAndOutputValuePairs)
         {
             var reassignedDictionary = elementAndOutputValuePairs;
 
-            using (var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH))
+            using var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH);
+            var xmlTagReaders = new Dictionary<string, Action>();
+            foreach (var item in elementAndOutputValuePairs)
             {
-                var xmlTagReaders = new Dictionary<string, Action>();
-                foreach (var item in elementAndOutputValuePairs)
-                {
-                    xmlTagReaders.Add(item.Key, () => reassignedDictionary[item.Key] = reader.ReadElementContentAsString());
-                }
+                xmlTagReaders.Add(item.Key, () => reassignedDictionary[item.Key] = reader.ReadElementContentAsString());
+            }
 
-                try
-                {
-                    reader.ReadXmlFile(xmlTagReaders);
-                }
-                finally
-                {
-                    reader.Close();
-                    reader.Dispose();
-                }
+            try
+            {
+                reader.ReadXmlFile(xmlTagReaders);
+            }
+            finally
+            {
+                reader.Close();
+                reader.Dispose();
             }
         }
 
@@ -53,7 +51,6 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
                         if (tagReaders.TryGetValue(reader.LocalName, out var tagReader))
                         {
                             tagReader();
-                            continue;
                         }
                         else if (!reader.Read())
                         {
@@ -68,7 +65,7 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                Logger.Error(e);
             }
         }
     }

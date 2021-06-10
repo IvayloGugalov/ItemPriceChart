@@ -1,49 +1,52 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Domain.Enums;
+using ItemPriceCharts.Infrastructure.Data;
 
 namespace ItemPriceCharts.Infrastructure.Services
 {
     public class ItemService : IItemService
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemService));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemService));
 
-        public async Task AddItemToShop(string itemURL, OnlineShop onlineShop, ItemType type)
+        public async Task AddItemToShop(string itemUrl, OnlineShop onlineShop, ItemType type)
         {
             try
             {
                 using ModelsContext dbContext = new();
 
-                var itemAlreadyExists = dbContext.Items.Where(item => item.URL == itemURL).SingleOrDefault() != null;
+                var itemAlreadyExists = await dbContext.Items.SingleOrDefaultAsync(item => item.Url == itemUrl) != null;
 
                 if (!itemAlreadyExists)
                 {
-                    var (title, description, price) = await ItemService.LoadItemFromWeb(itemURL, onlineShop.Title).ConfigureAwait(false);
+                    var (title, description, price) = await ItemService.LoadItemFromWeb(itemUrl, onlineShop.Title).ConfigureAwait(false);
 
                     dbContext.BeginTransaction();
 
-                    onlineShop.AddItem(new Item(
-                                           url: itemURL,
-                                           title: title,
-                                           description: description,
-                                           price: new ItemPrice(price),
-                                           onlineShop: onlineShop,
-                                           type: type),
-                                       dbContext);
+                    onlineShop.AddItem(
+                        new Item(
+                            url: itemUrl,
+                            title: title,
+                            description: description,
+                            price: new ItemPrice(price),
+                            onlineShop: onlineShop,
+                            type: type),
+                        dbContext);
 
                     dbContext.CommitToDatabase();
-                    logger.Debug($"Saved item: '{title}' to database.");
+
+                    Logger.Debug($"Saved item: '{title}' to database.");
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e, "Couldn't create an item.");
+                Logger.Error(e, "Couldn't create an item.");
                 throw;
             }
         }
@@ -63,12 +66,12 @@ namespace ItemPriceCharts.Infrastructure.Services
                     dbContext.Update(item);
 
                     dbContext.CommitToDatabase();
-                    logger.Debug($"Updated item: '{item}'.");
+                    Logger.Debug($"Updated item: '{item}'.");
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e, "Couldn't update an item.");
+                Logger.Error(e, "Couldn't update an item.");
                 throw;
             }
         }
@@ -86,7 +89,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                     dbContext.Remove(item);
                     item.OnlineShop.RemoveItem(item);
 
-                    logger.Debug($"Deleted item: '{item}'.");
+                    Logger.Debug($"Deleted item: '{item}'.");
 
                     return true;
                 }
@@ -95,7 +98,7 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
             catch (Exception e)
             {
-                logger.Error(e, $"Couldn't delete item: '{item}'.");
+                Logger.Error(e, $"Couldn't delete item: '{item}'.");
                 throw;
             }
         }
@@ -109,12 +112,12 @@ namespace ItemPriceCharts.Infrastructure.Services
                 var isItemExisting = await dbContext.Items.FindAsync(item.Id) != null;
                 if (isItemExisting)
                 {
-                    (_, _, double newPrice) = await ItemService.LoadItemFromWeb(item.URL, item.OnlineShop.Title).ConfigureAwait(false);
+                    var (_, _, newPrice) = await ItemService.LoadItemFromWeb(item.Url, item.OnlineShop.Title).ConfigureAwait(false);
 
                     if (newPrice != item.CurrentPrice.Price)
                     {
                         var itemPrice = new ItemPrice(newPrice);
-                        var updatedItem = item.UpdateItemPrice(itemPrice);
+                        var updatedItem = item.UpdateItemPrice(itemPrice, dbContext);
 
                         dbContext.BeginTransaction();
 
@@ -122,7 +125,7 @@ namespace ItemPriceCharts.Infrastructure.Services
 
                         dbContext.CommitToDatabase();
 
-                        logger.Debug($"Update the price of item {updatedItem}.");
+                        Logger.Debug($"Update the price of item {updatedItem}.");
 
                         return itemPrice;
                     }
@@ -132,7 +135,7 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
             catch (Exception e)
             {
-                logger.Error(e, $"Couldn't update item price for '{item}'.");
+                Logger.Error(e, $"Couldn't update item price for '{item}'.");
                 throw;
             }
         }

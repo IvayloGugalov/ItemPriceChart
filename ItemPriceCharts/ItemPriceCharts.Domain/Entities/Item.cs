@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using ItemPriceCharts.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace ItemPriceCharts.Domain.Entities
 {
@@ -10,8 +11,8 @@ namespace ItemPriceCharts.Domain.Entities
         public string Title { get; private set; }
         public string Description { get; private set; }
         public ItemPrice CurrentPrice { get; private set; }
-        public ItemPrice OriginalPrice { get; private set; }
-        public string URL { get; }
+        public ItemPrice OriginalPrice { get; }
+        public string Url { get; }
         public ItemType Type { get; }
         public OnlineShop OnlineShop { get; }
 
@@ -29,8 +30,8 @@ namespace ItemPriceCharts.Domain.Entities
             ItemType type)
             : this()
         {
-            this.Id = new Guid();
-            this.URL = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
+            this.Id = Guid.NewGuid();
+            this.Url = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
             this.Description = description;
             this.CurrentPrice = price.Price >= 0 ? price : throw new ArgumentNullException(nameof(price));
@@ -54,11 +55,22 @@ namespace ItemPriceCharts.Domain.Entities
             return this;
         }
 
-        public Item UpdateItemPrice(ItemPrice updatedPrice)
+        public Item UpdateItemPrice(ItemPrice updatedPrice, DbContext context = null)
         {
-            this.CurrentPrice = updatedPrice;
-            // Add the  new price for the item
-            this.pricesForItem.Add(updatedPrice);
+            if (this.pricesForItem != null)
+            {
+                this.pricesForItem.Add(updatedPrice);
+                this.CurrentPrice = updatedPrice;
+            }
+            else if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context), "No context provided when pricesForItem collection is invalid.");
+            }
+            else if (context.Entry(this).IsKeySet)
+            {
+                context.Add(updatedPrice);
+                this.CurrentPrice = updatedPrice;
+            }
 
             return this;
         }
@@ -79,24 +91,23 @@ namespace ItemPriceCharts.Domain.Entities
             {
                 return false;
             }
+
             if (this.CurrentPrice != other.CurrentPrice)
             {
                 return false;
             }
-            if (this.URL != other.URL)
-            {
-                return false;
-            }
-            if (this.Title != other.Title)
-            {
-                return false;
-            }
-            if (this.Type != other.Type)
+
+            if (this.Url != other.Url)
             {
                 return false;
             }
 
-            return true;
+            if (this.Title != other.Title)
+            {
+                return false;
+            }
+
+            return this.Type == other.Type;
         }
 
         public override string ToString()
@@ -139,7 +150,7 @@ namespace ItemPriceCharts.Domain.Entities
             ItemType type)
         {
             this.Id = id;
-            this.URL = url;
+            this.Url = url;
             this.Title = title;
             this.Description = description;
             this.CurrentPrice = price;
@@ -161,7 +172,7 @@ namespace ItemPriceCharts.Domain.Entities
             ItemType type)
         {
             return new Item(
-                id,
+                id, 
                 url,
                 title,
                 description,

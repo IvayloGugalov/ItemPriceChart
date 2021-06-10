@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.CommandHelpers

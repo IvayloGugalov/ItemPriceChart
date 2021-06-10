@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure.Data;
 
 namespace ItemPriceCharts.Infrastructure.Services
 {
@@ -31,7 +32,7 @@ namespace ItemPriceCharts.Infrastructure.Services
     // because in C# Email is an object, while in the database it's a string
     public class UserAccountService : IUserAccountService
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(UserAccountService));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(UserAccountService));
 
         public async Task<UserAccountRegistrationResult> CreateUserAccount(string firstName, string lastName, string email, string userName, string password)
         {
@@ -68,13 +69,13 @@ namespace ItemPriceCharts.Infrastructure.Services
 
                 dbContext.CommitToDatabase();
 
-                logger.Debug($"Created new account: '{userAccount}'");
+                Logger.Debug($"Created new account: '{userAccount}'");
 
                 return UserAccountRegistrationResult.UserAccountCreated;
             }
             catch (Exception e)
             {
-                logger.Error(e, "Couldn't create account.");
+                Logger.Error(e, "Couldn't create account.");
 
                 return UserAccountRegistrationResult.CanNotCreateUserAccount;
             }
@@ -98,7 +99,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                     dbContext.UserAccounts.Remove(userAccount);
                     dbContext.CommitToDatabase();
 
-                    logger.Debug($"Deleted account: '{userAccount}'.");
+                    Logger.Debug($"Deleted account: '{userAccount}'.");
 
                     return true;
                 }
@@ -107,7 +108,7 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
             catch (Exception e)
             {
-                logger.Error(e, $"Couldn't delete account: '{userAccount}'.");
+                Logger.Error(e, $"Couldn't delete account: '{userAccount}'.");
                 throw;
             }
         }
@@ -128,7 +129,7 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
             catch (Exception e)
             {
-                logger.Error(e, $"Couldn't retrieve user with email: '{email}'.");
+                Logger.Error(e, $"Couldn't retrieve user with email: '{email}'.");
                 throw;
             }
         }
@@ -143,7 +144,7 @@ namespace ItemPriceCharts.Infrastructure.Services
 
                 if (!usernameFound)
                 {
-                    logger.Info($"No such user with username: {userName}");
+                    Logger.Info($"No such user with username: {userName}");
                     return (UserAccountLoginResult.InvalidUsername, null);
                 }
 
@@ -151,7 +152,7 @@ namespace ItemPriceCharts.Infrastructure.Services
 
                 if (!emailFound)
                 {
-                    logger.Info($"No such user with email: {email}");
+                    Logger.Info($"No such user with email: {email}");
                     return (UserAccountLoginResult.InvalidEmail, null);
                 }
 
@@ -164,16 +165,16 @@ namespace ItemPriceCharts.Infrastructure.Services
 
                 if (userAccount.Password == password)
                 {
-                    logger.Info($"Logged in as user: {userName}");
-                    return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount: userAccount);
+                    Logger.Info($"Logged in as user: {userName}");
+                    return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount);
                 }
 
-                logger.Warn($"Invalid password for user: {userName}");
+                Logger.Warn($"Invalid password for user: {userName}");
                 return (loginResult: UserAccountLoginResult.InvalidPassword, null);
             }
             catch (Exception e)
             {
-                logger.Error(e, $"Couldn't retrieve user with email: '{email}'.");
+                Logger.Error(e, $"Couldn't retrieve user with email: '{email}'.");
                 throw;
             }
         }

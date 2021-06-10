@@ -5,14 +5,15 @@ using System.Windows.Input;
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Extensions;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ShopsAndItemListingsViewModel : BaseListingViewModel
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(ShopsAndItemListingsViewModel));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(ShopsAndItemListingsViewModel));
 
         private bool isListOfShopsShown;
 
@@ -38,19 +39,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.AddShopsToViewModel();
             this.ShouldShowShopInformation = true;
 
-            UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
-            UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
+            UiEvents.ShopAdded.Register(this.OnAddedShop);
+            UiEvents.ShopDeleted.Register(this.OnDeletedShop);
         }
 
-        private void ShowCreateShopAction() => UIEvents.ShowCreateShopView.Publish(this.UserAccount);
-        private void ShowAddItemAction() => UIEvents.ShowCreateItemView.Publish(this.SelectedShop);
+        private void ShowCreateShopAction() => UiEvents.ShowCreateShopView.Raise(this.UserAccount);
+        private void ShowAddItemAction() => UiEvents.ShowCreateItemView.Raise(this.SelectedShop);
 
         private void AddItemsForShopAction(object parameter)
         {
             try
             {
                 //Don't make call if the items for the shop are already shown
-                if (this.ItemsList != null && this.ItemsList.Count > 0 &&
+                if (this.ItemsList is {Count: > 0} &&
                     this.ItemsList.FirstOrDefault().OnlineShop.Equals(this.SelectedShop))
                 {
                     return;
@@ -65,8 +66,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             catch (System.Exception e)
             {
-                logger.Info($"Can't load items for {this.SelectedShop}:\n{e}");
-                UIEvents.ShowMessageDialog(
+                Logger.Info($"Can't load items for {this.SelectedShop}:\n{e}");
+                UiEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         "Error",
                         e.Message,
@@ -74,15 +75,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private void OnAddedShop(object sender, OnlineShop e)
+        private void OnAddedShop(OnlineShop e)
         {
             // Dali trqbva tuk da se vika add/remove?
             //this.OnlineShops.Add(e);
-            //this.UserAccount.AddOnlineShop(e);
-            //this.IsListOfShopsShown = true;
+            this.IsListOfShopsShown = true;
         }
 
-        private void OnDeletedShop(object sender, OnlineShop e)
+        private void OnDeletedShop(OnlineShop e)
         {
             //this.OnlineShops.Remove(e);
             //this.UserAccount.RemoveOnlineShop(e);

@@ -18,7 +18,7 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
             builder.Property(item => item.Title)
                 .IsRequired();
 
-            builder.Property(item => item.URL)
+            builder.Property(item => item.Url)
                 .IsRequired();
 
             builder.Property(item => item.Description)

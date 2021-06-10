@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-
+using System.Windows.Threading;
+using ControlzEx.Standard;
 using ItemPriceCharts.Domain.Entities;
-using ItemPriceCharts.Services.Events;
+using ItemPriceCharts.Domain.Events;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
-    public static class UIEvents
+    public static class UiEvents
     {
-        private static List<Action> subscribers = null;
 
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
         public static Func<LoginViewModel, bool?> ShowLoginRegisterWindow { get; set; }
@@ -19,60 +19,33 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
 
         //Directly called on the UI thread
-        public static IChannel<UserAccount> ShowCreateShopView { get; set; } = new Channel<UserAccount>();
-        public static IChannel<OnlineShop> ShowCreateItemView { get; set; } = new Channel<OnlineShop>();
-        public static IChannel<Item> ShowDeleteItemView { get; set; } = new Channel<Item>();
-        public static IChannel<Item> ShowItemInformatioView { get; set; } = new Channel<Item>();
+        public static DomainEvent<UserAccount> ShowCreateShopView { get; set; } = new();
+        public static DomainEvent<OnlineShop> ShowCreateItemView { get; set; } = new();
+        public static DomainEvent<Item> ShowDeleteItemView { get; set; } = new();
+        public static DomainEvent<Item> ShowItemInformationView { get; set; } = new();
 
         //Events from EventsLocator for the UI
-        public static IChannel<Item> ItemAdded { get; set; } = new Channel<Item>();
-        public static IChannel<Item> ItemDeleted { get; set; } = new Channel<Item>();
-        public static IChannel<OnlineShop> ShopAdded { get; set; } = new Channel<OnlineShop>();
-        public static IChannel<OnlineShop> ShopDeleted { get; set; } = new Channel<OnlineShop>();
-
-        public static void AddSubscribers()
-        {
-            subscribers = new List<Action>
-            {
-                //new UISubscription<Item>(EventsLocator.ItemAdded, UIEvents.ItemAdded).Replay,
-
-                //new UISubscription<Item>(EventsLocator.ItemDeleted, UIEvents.ItemDeleted).Replay,
-
-                //new UISubscription<OnlineShop>(EventsLocator.ShopAdded, UIEvents.ShopAdded).Replay,
-
-                //new UISubscription<OnlineShop>(EventsLocator.ShopDeleted, UIEvents.ShopDeleted).Replay
-            };
-        }
-
-        public static void FinishSubscribing()
-        {
-            if (null == subscribers)
-            {
-                throw new Exception();
-            }
-        }
-
-        private class UISubscription<TMessage>
-        {
-            private readonly Action<TMessage> handler;
-
-            public UISubscription(IChannel<TMessage> channel, Action<TMessage> handler)
-            {
-                this.handler = handler;
-                channel.Subscribe(this.PassMessage);
-            }
-
-            public UISubscription(IChannel<TMessage> channel, IChannel<TMessage> uiChannel)
-                : this(channel, message => uiChannel.Publish(message))
-            { }
-
-            public void Replay()
-            { }
-
-            private void PassMessage(object sender, TMessage message)
-            {
-                Application.Current.Dispatcher.InvokeAsync(() => this.handler(message));
-            }
-        }
+        public static IDomainEventWrapper<Item> ItemAdded { get; set; } = new DomainEventWrapper<Item>(DomainEvents.ItemAdded);
+        public static IDomainEventWrapper<Item> ItemDeleted { get; set; } = new DomainEventWrapper<Item>(DomainEvents.ItemDeleted);
+        public static IDomainEventWrapper<OnlineShop> ShopAdded { get; set; } = new DomainEventWrapper<OnlineShop>(DomainEvents.ShopAdded);
+        public static IDomainEventWrapper<OnlineShop> ShopDeleted { get; set; } = new DomainEventWrapper<OnlineShop>(DomainEvents.ShopDeleted);
     }
+
+    public class DomainEventWrapper<T> : IDomainEventWrapper<T>
+    {
+        private readonly IDomainEvent<T> domainEvent;
+
+        public DomainEventWrapper(IDomainEvent<T> domainEvent = null)
+        {
+            this.domainEvent = domainEvent ?? new DomainEvent<T>();
+        }
+
+        public void Register(Action<T> action) => this.domainEvent.Register(action);
+        
+        public void Raise(T param) => Application.Current.Dispatcher.InvokeAsync(() => this.domainEvent.Raise(param));
+
+        public void ClearHandlers() => this.domainEvent.ClearHandlers();
+    }
+
+    public interface IDomainEventWrapper<T> : IDomainEvent<T> {}
 }

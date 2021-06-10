@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
@@ -29,7 +27,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
-                password: "P@ssWorD");
+                password: "P@ssWorD",
+                onlineShops: new List<OnlineShop>());
         }
 
         [TearDown]
@@ -42,9 +41,9 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         {
             var items = new List<Item>()
             {
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop)
+                ItemExtension.ConstructItem(this.defaultOnlineShop),
+                ItemExtension.ConstructItem(this.defaultOnlineShop),
+                ItemExtension.ConstructItem(this.defaultOnlineShop)
             };
 
             foreach (var item in items)
@@ -70,9 +69,9 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         {
             var items = new List<Item>()
             {
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop),
-                ItemExtension.ConstructDefaultItem(this.defaultOnlineShop)
+                ItemExtension.ConstructItem(this.defaultOnlineShop),
+                ItemExtension.ConstructItem(this.defaultOnlineShop),
+                ItemExtension.ConstructItem(this.defaultOnlineShop)
             };
 
             foreach (var item in items)

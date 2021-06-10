@@ -58,15 +58,15 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowItemInformationDialogCommand = new RelayCommand(_ => this.ShowItemInformationDialogAction());
             this.DeleteItemCommand = new RelayCommand(_ => this.DeleteItemAction());
 
-            UIEvents.ItemAdded.Subscribe(this.AddItemToItemsListHandler);
-            UIEvents.ItemDeleted.Subscribe(this.RemoveItemFromItemsListHandler);
+            //UiEvents.ItemAdded.Subscribe(this.AddItemToItemsListHandler);
+            //UiEvents.ItemDeleted.Subscribe(this.RemoveItemFromItemsListHandler);
         }
 
-        private void ShowItemInformationDialogAction() => UIEvents.ShowItemInformatioView.Publish(this.SelectedItem);
+        private void ShowItemInformationDialogAction() => UiEvents.ShowItemInformationView.Raise(this.SelectedItem);
 
-        private void DeleteItemAction() => UIEvents.ShowDeleteItemView.Publish(this.SelectedItem);
+        private void DeleteItemAction() => UiEvents.ShowDeleteItemView.Raise(this.SelectedItem);
 
-        private void AddItemToItemsListHandler(object sender, Item e)
+        private void AddItemToItemsListHandler(object _, Item e)
         {
             if (this.ItemsList is not null)
             {
@@ -75,12 +75,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
         }
 
-        private void RemoveItemFromItemsListHandler(object sender, Item e)
+        private void RemoveItemFromItemsListHandler(object _, Item e)
         {
-            if (this.ItemsList is not null)
-            {
-                this.ItemsList.Remove(e);
-            }
+            this.ItemsList?.Remove(e);
         }
     }
 }

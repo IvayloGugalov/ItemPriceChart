@@ -5,7 +5,7 @@ using System.Linq;
 using NLog;
 using NLog.Targets;
 
-using ItemPriceCharts.Services.Helpers;
+using ItemPriceCharts.UI.WPF.Extensions;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
@@ -50,10 +50,8 @@ namespace ItemPriceCharts.UI.WPF.Helpers
 
             foreach (var rule in LogManager.Configuration.LoggingRules)
             {
-                var localRule = rule;
-
-                disableLevels.ForEach(localRule.DisableLoggingForLevel);
-                enableLevels.ForEach(localRule.EnableLoggingForLevel);
+                disableLevels.ForEach(rule.DisableLoggingForLevel);
+                enableLevels.ForEach(rule.EnableLoggingForLevel);
             }
 
             LogManager.ReconfigExistingLoggers();

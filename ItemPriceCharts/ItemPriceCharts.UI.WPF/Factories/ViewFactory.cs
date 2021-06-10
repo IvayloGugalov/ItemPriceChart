@@ -12,12 +12,13 @@ namespace ItemPriceCharts.UI.WPF.Factories
 {
     public class ViewFactory : IViewFactory
     {
-        private readonly Dictionary<Type, Type> map = new Dictionary<Type, Type>();
-        public ILifetimeScope lifetimeScope;
+        private readonly Dictionary<Type, Type> map = new();
+
+        public ILifetimeScope LifetimeScope { get; }
 
         public ViewFactory(ILifetimeScope lifetimeScope)
         {
-            this.lifetimeScope = lifetimeScope;
+            this.LifetimeScope = lifetimeScope;
         }
 
         public void Register<TViewModel, TView>()
@@ -27,13 +28,13 @@ namespace ItemPriceCharts.UI.WPF.Factories
             this.map[typeof(TViewModel)] = typeof(TView);
         }
 
-        public Window Resolve<TViewModel>(Parameter[] parameters)
+        public Window Resolve<TViewModel>(Parameter[] parameters = null)
             where TViewModel : class, IViewModel
         {
-            var viewModel = this.lifetimeScope.Resolve<TViewModel>(parameters);
+            var viewModel = this.LifetimeScope.Resolve<TViewModel>(parameters ?? Array.Empty<Parameter>());
 
             var viewType = this.map[typeof(TViewModel)];
-            var view = this.lifetimeScope.Resolve(viewType) as Window;
+            var view = this.LifetimeScope.Resolve(viewType) as Window;
 
             view.DataContext = viewModel;
 
@@ -50,9 +51,9 @@ namespace ItemPriceCharts.UI.WPF.Factories
         public UserControl ResolveUserControl<TViewModel>()
             where TViewModel : class, IViewModel
         {
-            TViewModel viewModel = this.lifetimeScope.Resolve<TViewModel>();
+            var viewModel = this.LifetimeScope.Resolve<TViewModel>();
             var viewType = this.map[typeof(TViewModel)];
-            var view = this.lifetimeScope.Resolve(viewType) as UserControl;
+            var view = this.LifetimeScope.Resolve(viewType) as UserControl;
 
             view.DataContext = viewModel;
 

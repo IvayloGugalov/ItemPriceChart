@@ -18,7 +18,7 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
             builder.Property(shop => shop.Title)
                 .IsRequired();
 
-            builder.Property(shop => shop.URL)
+            builder.Property(shop => shop.Url)
                 .IsRequired();
 
             builder.HasMany(shop => shop.Items)

@@ -6,8 +6,8 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -38,7 +38,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
-                password: "P@ssWorD");
+                password: "P@ssWorD",
+                onlineShops: new List<OnlineShop>());
 
             this.itemListingViewModel = new ItemListingViewModel(this.userAccount);
             this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.userAccount);
@@ -134,7 +135,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             Assert.AreEqual(Array.Empty<OnlineShop>(), mainWindowViewModel.OnlineShops);
 
-            UIEvents.ShopAdded.Publish(this.onlineShop);
+            UiEvents.ShopAdded.Raise(this.onlineShop);
 
             Assert.AreEqual(this.onlineShop, mainWindowViewModel.OnlineShops.First());
         }
@@ -153,7 +154,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             Assert.AreEqual(listOfShops, mainWindowViewModel.OnlineShops);
 
-            UIEvents.ShopDeleted.Publish(this.onlineShop);
+            UiEvents.ShopDeleted.Raise(this.onlineShop);
 
             Assert.AreEqual(Array.Empty<OnlineShop>(), mainWindowViewModel.OnlineShops);
         }
@@ -164,7 +165,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             get
             {
                 yield return new TestCaseData(Array.Empty<Item>());
-                yield return new TestCaseData(new List<Item>() { ItemExtension.ConstructDefaultItem(OnlineShopExtension.ConstructDefaultOnlineShop()) });
+                yield return new TestCaseData(new List<Item>() { ItemExtension.ConstructItem(OnlineShopExtension.ConstructDefaultOnlineShop()) });
             }
         }
     }

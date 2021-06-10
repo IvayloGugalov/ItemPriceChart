@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.UI.WPF", "ItemPriceCharts.UI.WPF\ItemPriceCharts.UI.WPF.csproj", "{90E87BCD-9AF5-4EDC-B688-9D36F9C799C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Services", "ItemPriceCharts.Services\ItemPriceCharts.Services.csproj", "{D90B2203-BE61-45C0-AF25-849EB86C4C76}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Client", "01. Client", "{7526B487-A84A-46FB-BCAC-971636545452}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Test", "02. Test", "{B3C0A68E-657E-4360-9EF2-786C38C76959}"
@@ -15,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.UI.WPF.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.XmReaderWriter", "ItemPriceCharts.XmReaderWriter\ItemPriceCharts.XmReaderWriter.csproj", "{1C464088-853A-4126-A8D4-09FA6D640FD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemPriceCharts.Domain", "ItemPriceCharts.Domain\ItemPriceCharts.Domain.csproj", "{EB5D7762-D9A1-42EB-A515-41706DDCD105}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Domain", "ItemPriceCharts.Domain\ItemPriceCharts.Domain.csproj", "{EB5D7762-D9A1-42EB-A515-41706DDCD105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemPriceCharts.Infrastructure", "ItemPriceCharts.Infrastructure\ItemPriceCharts.Infrastructure.csproj", "{1852704A-EC81-4CCB-B6D5-3580A00B4442}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Infrastructure", "ItemPriceCharts.Infrastructure\ItemPriceCharts.Infrastructure.csproj", "{1852704A-EC81-4CCB-B6D5-3580A00B4442}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,14 +33,6 @@ Global
 		{90E87BCD-9AF5-4EDC-B688-9D36F9C799C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90E87BCD-9AF5-4EDC-B688-9D36F9C799C2}.Release|x64.ActiveCfg = Release|Any CPU
 		{90E87BCD-9AF5-4EDC-B688-9D36F9C799C2}.Release|x64.Build.0 = Release|Any CPU
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Debug|Any CPU.Build.0 = Debug|x64
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Debug|x64.Build.0 = Debug|Any CPU
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Release|x64.ActiveCfg = Release|x64
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76}.Release|x64.Build.0 = Release|x64
 		{24D6BFA9-64F1-4C5E-A882-42990DDA94A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24D6BFA9-64F1-4C5E-A882-42990DDA94A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24D6BFA9-64F1-4C5E-A882-42990DDA94A1}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -81,7 +71,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{90E87BCD-9AF5-4EDC-B688-9D36F9C799C2} = {7526B487-A84A-46FB-BCAC-971636545452}
-		{D90B2203-BE61-45C0-AF25-849EB86C4C76} = {7526B487-A84A-46FB-BCAC-971636545452}
 		{24D6BFA9-64F1-4C5E-A882-42990DDA94A1} = {B3C0A68E-657E-4360-9EF2-786C38C76959}
 		{1C464088-853A-4126-A8D4-09FA6D640FD6} = {7526B487-A84A-46FB-BCAC-971636545452}
 		{EB5D7762-D9A1-42EB-A515-41706DDCD105} = {7526B487-A84A-46FB-BCAC-971636545452}

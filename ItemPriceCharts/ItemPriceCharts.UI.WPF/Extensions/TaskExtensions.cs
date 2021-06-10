@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ItemPriceCharts.UI.WPF.Helpers
+namespace ItemPriceCharts.UI.WPF.Extensions
 {
     public static class TaskExtensions
     {
@@ -18,7 +18,7 @@ namespace ItemPriceCharts.UI.WPF.Helpers
                     throw;
                 }
 
-                errorHandler?.Invoke(ex);
+                errorHandler(ex);
             }
         }
     }

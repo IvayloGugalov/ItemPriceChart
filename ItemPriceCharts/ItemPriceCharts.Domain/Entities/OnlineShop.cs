@@ -7,11 +7,11 @@ namespace ItemPriceCharts.Domain.Entities
 {
     public sealed class OnlineShop : EntityModel
     {
-        public string URL { get; }
+        public string Url { get; }
         public string Title { get; }
 
         public IReadOnlyCollection<Item> Items => this.items?.AsReadOnly();
-        private readonly List<Item> items;
+        private readonly List<Item> items = new();
 
         public ICollection<UserAccountOnlineShops> UserAccounts { get; set; }
 
@@ -20,11 +20,9 @@ namespace ItemPriceCharts.Domain.Entities
         public OnlineShop(string url, string title)
             : this()
         {
-            this.Id = new Guid();
-            this.URL = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
+            this.Id = Guid.NewGuid();
+            this.Url = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
-
-            this.items = new();
         }
 
         public void AddItem(Item item, DbContext context = null)
@@ -59,7 +57,7 @@ namespace ItemPriceCharts.Domain.Entities
 
         public override string ToString()
         {
-            return $"Id: {this.Id}, Url: {this.URL}, Title: {this.Title}";
+            return $"Id: {this.Id}, Url: {this.Url}, Title: {this.Title}";
         }
 
         private OnlineShop(
@@ -68,7 +66,7 @@ namespace ItemPriceCharts.Domain.Entities
             string title)
         {
             this.Id = id;
-            this.URL = url;
+            this.Url = url;
             this.Title = title;
         }
 

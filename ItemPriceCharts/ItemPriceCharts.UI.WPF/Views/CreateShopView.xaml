@@ -46,12 +46,12 @@
                     BorderBrush="DodgerBlue"
                     Height="35"
                     Width="400">
-                <TextBox Name="URL"
+                <TextBox Name="Url"
                          Style="{StaticResource Styles.TextBox.Common}"
                          Foreground="Black"
                          Padding="10 8 0 10"
                          TextAlignment="Center"
-                         Text="{Binding NewShopURL}"/>
+                         Text="{Binding NewShopUrl}"/>
             </Border>
 
             <Button Style="{DynamicResource MaterialDesignFlatLightBgButton}"

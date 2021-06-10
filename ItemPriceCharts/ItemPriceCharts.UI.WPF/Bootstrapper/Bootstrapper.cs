@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
-using ItemPriceCharts.Infrastructure;
+using ItemPriceCharts.Infrastructure.Data;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
@@ -24,7 +24,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
     public class Bootstrapper
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(Bootstrapper));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(Bootstrapper));
 
         private readonly App app;
         private readonly Dictionary<Type, Type> mappedTypes;
@@ -56,9 +56,9 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
 #if DEBUG
             var tracer = new DefaultDiagnosticTracer();
-            tracer.OperationCompleted += (sender, args) =>
+            tracer.OperationCompleted += (_, args) =>
             {
-                logger.Info(args.TraceContent);
+                Logger.Info(args.TraceContent);
             };
 
             // Subscribe to the diagnostics with your tracer.
@@ -93,15 +93,13 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
                         return;
                     }
-                    else
-                    {
-                        (userName, email) = UserCredentialsSettings.UsernameAndEmail;
-                        logger.Debug($"Found credentials\tUsername:{userName}\tEmail:{email}.");
-                    }
+
+                    (userName, email) = UserCredentialsSettings.UsernameAndEmail;
+                    Logger.Debug($"Found credentials\tUsername:{userName}\tEmail:{email}.");
                 }
 
                 var loginViewModel = new ViewModels.LoginAndRegistration.LoginViewModel(accountService, userName, email);
-                Helpers.UIEvents.ShowLoginRegisterWindow(loginViewModel);
+                Helpers.UiEvents.ShowLoginRegisterWindow(loginViewModel);
 
                 if (loginViewModel.SuccessfulLogin)
                 {
@@ -110,7 +108,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             }
             catch (Exception e)
             {
-                logger.Error(e, "Could not show window");
+                Logger.Error(e, "Could not show window");
                 throw new Exception("We are having difficulties with the app, please send us the logs!");
             }
         }
@@ -119,18 +117,16 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         {
             var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(new Parameter[] { new NamedParameter(nameof(userAccount), userAccount) });
             this.app.MainWindow = mainWindow;
-            this.app.MainWindow.Show();
+            this.app.MainWindow?.Show();
         }
 
         private void MigrateDatabase()
         {
-            using (ModelsContext dbContext = new ModelsContext())
+            using ModelsContext dbContext = new ModelsContext();
+            dbContext.Database.Migrate();
+            if (!dbContext.Database.CanConnect())
             {
-                dbContext.Database.Migrate();
-                if (!dbContext.Database.CanConnect())
-                {
-                    throw new Exception("Can't connect to database.");
-                }
+                throw new Exception("Can't connect to database.");
             }
         }
 

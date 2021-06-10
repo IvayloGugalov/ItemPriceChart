@@ -13,16 +13,16 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class CreateItemViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(CreateItemViewModel));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(CreateItemViewModel));
 
         private readonly IItemService itemService;
         private ItemType selectedItemType;
-        private string newItemURL;
+        private string newItemUrl;
 
-        public string NewItemURL
+        public string NewItemUrl
         {
-            get => this.newItemURL;
-            set => this.SetValue(ref this.newItemURL, value);
+            get => this.newItemUrl;
+            set => this.SetValue(ref this.newItemUrl, value);
         }
 
         public ItemType SelectedItemType
@@ -44,8 +44,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.AddItemCommand = new RelayAsyncCommand(this.AddItemAction, this.AddItemPredicate, errorHandler: e =>
             {
-                logger.Error($"Failed to create new item: {e}");
-                MessageDialogCreator.ShowErrorDialog(message: $"Failed to create new item with url: {this.NewItemURL}");
+                Logger.Error($"Failed to create new item: {e}");
+                MessageDialogCreator.ShowErrorDialog(message: $"Failed to create new item with url: {this.NewItemUrl}");
             });
         }
 
@@ -54,16 +54,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsInProgress = true;
             this.OnPropertyChanged(nameof(this.IsInProgress));
 
-            await this.itemService.AddItemToShop(this.NewItemURL, this.SelectedShop, this.SelectedItemType);
+            await this.itemService.AddItemToShop(this.NewItemUrl, this.SelectedShop, this.SelectedItemType);
 
             this.IsInProgress = false;
             this.OnPropertyChanged(nameof(this.IsInProgress));
         }
 
-        private bool AddItemPredicate()
-        {
-            return Validators.IsValidAddress(this.NewItemURL) && 
-                this.NewItemURL.ToLower().Contains(this.SelectedShop.Title.ToLower());
-        }
+        private bool AddItemPredicate() =>
+            Validators.IsValidAddress(this.NewItemUrl) && 
+            this.NewItemUrl.ToLower().Contains(this.SelectedShop.Title.ToLower());
     }
 }

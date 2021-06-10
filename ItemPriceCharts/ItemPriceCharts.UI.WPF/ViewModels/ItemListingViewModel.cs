@@ -2,14 +2,14 @@
 
 using NLog;
 
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.UI.WPF.Extensions;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ItemListingViewModel : BaseListingViewModel
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemListingViewModel));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
         public ItemListingViewModel(UserAccount userAccount)
             : base (userAccount)
@@ -20,14 +20,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         //Called from outside the class
         public void SetItemsList()
         {
-            if (this.SelectedShop != null)
-            {
-                this.ItemsList = this.SelectedShop.Items.ToObservableCollection();
-            }
-            else
-            {
-                this.ItemsList = this.UserAccount.OnlineShopsForUser.Select(x => x.OnlineShop).SelectMany(shop => shop.Items).ToObservableCollection();
-            }
+            this.ItemsList = this.SelectedShop != null ?
+                this.SelectedShop.Items.ToObservableCollection() :
+                this.UserAccount.OnlineShopsForUser.Select(x => x.OnlineShop).SelectMany(shop => shop.Items).ToObservableCollection();
 
             if (this.ItemsList is not null && this.ItemsList.Any())
             {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.InfraStructure.Constants;
 
-namespace ItemPriceCharts.Infrastructure
+namespace ItemPriceCharts.Infrastructure.Data
 {
     public class ModelsContext : DbContext
     {
@@ -21,6 +21,7 @@ namespace ItemPriceCharts.Infrastructure
         public DbSet<OnlineShop> OnlineShops { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
+        public DbSet<UserAccountOnlineShops> UserAccountOnlineShops { get; set; }
 
         public void BeginTransaction()
         {
@@ -52,7 +53,7 @@ namespace ItemPriceCharts.Infrastructure
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
                 .LogTo(this.logStream.WriteLine,
-                       Microsoft.Extensions.Logging.LogLevel.Error,
+                       Microsoft.Extensions.Logging.LogLevel.Information,
                        DbContextLoggerOptions.DefaultWithUtcTime);
         }
 

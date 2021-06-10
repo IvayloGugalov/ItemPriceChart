@@ -7,21 +7,20 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using NLog;
 
-using ItemPriceCharts.UI.WPF.CommandHelpers;
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Services;
+using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class ItemInformationViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(ItemInformationViewModel));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemInformationViewModel));
 
         private readonly IItemService itemService;
 
         private SeriesCollection priceCollection;
-        private LineSeries lineSeries;
         private List<string> labels;
         private bool isInProgress;
 
@@ -47,11 +46,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             private set => this.SetValue(ref this.priceCollection, value);
         }
 
-        public LineSeries LineSeries
-        {
-            get => this.lineSeries;
-            private set => lineSeries = value;
-        }
+        public LineSeries LineSeries { get; private set; }
 
         public IAsyncCommand UpdatePriceCommand { get; }
 
@@ -62,7 +57,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.UpdatePriceCommand = new RelayAsyncCommand(this.UpdatePriceAction, this.UpdatePricePredicate, errorHandler: e =>
             {
-                logger.Error($"Couldn't update item price: {e}");
+                Logger.Error($"Couldn't update item price: {e}");
                 MessageDialogCreator.ShowErrorDialog(message: $"Could not update price for {this.Item.Title}");
             });
 
@@ -108,7 +103,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             }
             else
             {
-                UIEvents.ShowMessageDialog(
+                UiEvents.ShowMessageDialog(
                     new MessageDialogViewModel(
                         title: "Item Price Chart",
                         description: "The price of the item hasn't been changed.",
@@ -121,6 +116,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             return !this.IsInProgress;
         }
 
+/*
         private void CreateTestData(out List<string> dateOfPrices, out double[] oldPrices)
         {
             dateOfPrices = new List<string>
@@ -133,7 +129,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 new DateTime(2019, 12, 10).ToShortDateString(),
             }.ToList();
 
-            oldPrices = new double[]
+            oldPrices = new[]
             {
                 5.66,
                 6.33,
@@ -143,5 +139,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 10.50
             };
         }
+*/
     }
 }

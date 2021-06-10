@@ -1,4 +1,5 @@
 ﻿using ItemPriceCharts.UI.WPF.ViewModels;
+
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
     public static class MessageDialogCreator
@@ -8,7 +9,7 @@ namespace ItemPriceCharts.UI.WPF.Helpers
             string title = "Error",
             ButtonType buttonType = ButtonType.Close)
         {
-            UIEvents.ShowMessageDialog(
+            UiEvents.ShowMessageDialog(
                 new MessageDialogViewModel(
                     title: title,
                     description: message,

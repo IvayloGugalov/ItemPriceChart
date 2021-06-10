@@ -1,5 +1,6 @@
-﻿using ItemPriceCharts.Domain.Entities;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
+using ItemPriceCharts.Domain.Entities;
 
 namespace ItemPriceCharts.Infrastructure.Services
 {

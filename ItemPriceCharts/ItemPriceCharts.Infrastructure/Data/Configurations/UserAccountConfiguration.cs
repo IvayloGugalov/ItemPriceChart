@@ -9,13 +9,13 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<UserAccount> builder)
         {
-            builder.ToTable(nameof(UserAccount))
-                .HasIndex(account => new
-                {
-                    account.Username,
-                    account.Email
-                })
-                .IsUnique();
+            //builder.ToTable(nameof(UserAccount))
+            //    .HasIndex(account => new
+            //    {
+            //        account.Username,
+            //        account.Email.Value
+            //    })
+            //    .IsUnique();
 
             builder.HasKey(account => account.Id);
 

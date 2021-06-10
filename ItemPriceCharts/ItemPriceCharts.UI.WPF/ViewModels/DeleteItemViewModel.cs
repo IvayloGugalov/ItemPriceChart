@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using NLog;
 
@@ -12,7 +11,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class DeleteItemViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(DeleteItemViewModel));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(DeleteItemViewModel));
 
         private readonly IItemService itemService;
 
@@ -27,7 +26,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.DeleteItemCommand = new RelayAsyncCommand(this.DeleteItemAction, errorHandler: e =>
             {
-                logger.Error($"Can't delete item {this.ItemToDelete}.\n{e}");
+                Logger.Error($"Can't delete item {this.ItemToDelete}.\n{e}");
                 MessageDialogCreator.ShowErrorDialog(message: $"Couldn't delete item {this.ItemToDelete.Title}");
             });
         }

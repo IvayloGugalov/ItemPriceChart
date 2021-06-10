@@ -9,18 +9,12 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
 
         public static bool EnsureXmlFileExists()
         {
-            if (File.Exists(XML_FILE_PATH))
-            {
-                return true;
-            }
-            else if (!File.Exists(XML_FILE_PATH))
+            if (!File.Exists(XML_FILE_PATH))
             {
                 File.Create(XML_FILE_PATH).Close();
-
-                return true;
             }
 
-            return false;
+            return true;
         }
     }
 }

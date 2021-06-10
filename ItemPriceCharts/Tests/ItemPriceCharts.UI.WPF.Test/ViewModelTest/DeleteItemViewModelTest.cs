@@ -3,11 +3,12 @@
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Domain.Enums;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
-using ItemPriceCharts.Services.Models;
 
 namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 {
@@ -24,12 +25,12 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             var onlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
 
-            this.item = ItemExtension.ConstructItem(
-                id: 1,
-                url: string.Concat(onlineShop.URL, @"/firstItem"),
+            this.item = ItemExtension.ConstructItemWithParameters(
+                id: new Guid(),
+                url: string.Concat(onlineShop.Url, @"/firstItem"),
                 title: "firstItem",
                 description: "item description",
-                price: 20.5,
+                price: new ItemPrice(20.5),
                 onlineShop: onlineShop,
                 type: ItemType.ComputerItem);
         }
@@ -54,7 +55,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         public void DeleteItemAction_OnExceptionThrown_WillShowMessageDialog()
         {
             MessageDialogViewModel messageDialogViewModel = null;
-            UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
             var expectedOnExceptionDialogMessage = $"Couldn't delete item {this.item.Title}";
 

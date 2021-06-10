@@ -67,10 +67,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private void ShowRegisterViewAction(object param)
         {
-            if (this.registerViewModel is null)
-            {
-                this.registerViewModel = new RegisterViewModel(this.userAccountService, this);
-            }
+            this.registerViewModel ??= new RegisterViewModel(this.userAccountService, this);
 
             this.CurrentViewModel = this.registerViewModel;
         }
@@ -136,7 +133,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         {
             if (!this.SuccessfulLogin)
             {
-                UIEvents.CloseApplication();
+                UiEvents.CloseApplication();
             }
         }
     }

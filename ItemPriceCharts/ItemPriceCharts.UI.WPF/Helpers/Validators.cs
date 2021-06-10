@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-using ItemPriceCharts.Services.Helpers;
+using ItemPriceCharts.UI.WPF.Extensions;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {
@@ -34,7 +34,7 @@ namespace ItemPriceCharts.UI.WPF.Helpers
                     var idn = new IdnMapping();
 
                     // Pull out and process domain name (throws ArgumentException on invalid)
-                    string domainName = idn.GetAscii(match.Groups[2].Value);
+                    var domainName = idn.GetAscii(match.Groups[2].Value);
 
                     return match.Groups[1].Value + domainName;
                 }

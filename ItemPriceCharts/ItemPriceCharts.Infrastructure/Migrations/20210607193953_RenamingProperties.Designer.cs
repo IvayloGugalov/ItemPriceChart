@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ItemPriceCharts.Infrastructure.Migrations
 {
     [DbContext(typeof(ModelsContext))]
-    [Migration("20210520183602_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210607193953_RenamingProperties")]
+    partial class RenamingProperties
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,7 +38,7 @@ namespace ItemPriceCharts.Infrastructure.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("URL")
+                    b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -59,7 +59,7 @@ namespace ItemPriceCharts.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("URL")
+                    b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

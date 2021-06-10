@@ -17,7 +17,7 @@ namespace ItemPriceCharts.UI.WPF
     public partial class App : Application
     {
         private readonly Dictionary<Type, Type> mappedTypes = new Dictionary<Type, Type>();
-        private static readonly Logger logger = LogManager.GetLogger(nameof(App));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(App));
 
         public App()
         {
@@ -32,8 +32,8 @@ namespace ItemPriceCharts.UI.WPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            logger.Info("Starting Application");
-            logger.Debug($"Dispatcher managed thread identifier = {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+            Logger.Info("Starting Application");
+            Logger.Debug($"Dispatcher managed thread identifier = {System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
             this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
             this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
@@ -41,16 +41,16 @@ namespace ItemPriceCharts.UI.WPF
 
             var bootstrapper = new Bootstrapper.Bootstrapper(this, this.mappedTypes);
 
-            Application.Current.Exit += (s, e) =>
+            Application.Current.Exit += (_, _) =>
             {
-                logger.Info("Exiting application");
+                Logger.Info("Exiting application");
                 bootstrapper.Stop();
-                NLog.LogManager.Shutdown();
+                LogManager.Shutdown();
             };
 
             bootstrapper.ShowStartUpWindow();
 
-            logger.Info("Application started");
+            Logger.Info("Application started");
         }
 
         private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
@@ -72,11 +72,11 @@ namespace ItemPriceCharts.UI.WPF
 
         private void HandleException(Exception exception)
         {
-            logger.Error(exception);
+            Logger.Error(exception);
 
-            if (UIEvents.ShowMessageDialog is not null)
+            if (UiEvents.ShowMessageDialog is not null)
             {
-                UIEvents.ShowMessageDialog(
+                UiEvents.ShowMessageDialog(
                     new ViewModels.MessageDialogViewModel(
                         title: nameof(exception),
                         description: exception.Message,

@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class MainWindowViewModel : BindableViewModel
     {
-        private static readonly Logger logger = LogManager.GetLogger(nameof(MainWindowViewModel));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(MainWindowViewModel));
 
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
         private readonly ItemListingViewModel itemListingViewModel;
@@ -48,7 +50,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowLogFileCommand { get; }
         public ICommand ShowItemListingCommand { get; }
         public ICommand ShowItemsForShopCommand { get; }
-        public ICommand ClosedCommand => new RelayCommand(_ => UIEvents.CloseApplication());
+        public ICommand ClosedCommand => new RelayCommand(_ => UiEvents.CloseApplication());
 
         public MainWindowViewModel(UserAccount userAccount)
         {
@@ -58,7 +60,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.UserAccount = userAccount;
             this.currentView = this;
 
-            //this.OnlineShops = this.UserAccount.OnlineShopsForUser.ToObservableCollection();
+            this.OnlineShops = this.UserAccount.OnlineShopsForUser.Select(x => x.OnlineShop).ToObservableCollection();
 
             this.ShowShopsAndItemListingsCommand = new RelayCommand(_ => this.ShowShopsAndItemListingsAction());
             this.ShowItemListingCommand = new RelayCommand(_ => this.ShowItemListingAction());
@@ -66,16 +68,16 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 
-            UIEvents.ShopAdded.Subscribe(this.OnAddedShop);
-            UIEvents.ShopDeleted.Subscribe(this.OnDeletedShop);
+            UiEvents.ShopAdded.Register(this.OnAddedShop);
+            UiEvents.ShopDeleted.Register(this.OnDeletedShop);
         }
 
-        private void OnAddedShop(object sender, OnlineShop e)
+        private void OnAddedShop(OnlineShop e)
         {
             this.OnlineShops.Add(e);
         }
 
-        private void OnDeletedShop(object sender, OnlineShop e)
+        private void OnDeletedShop(OnlineShop e)
         {
             this.OnlineShops.Remove(e);
         }

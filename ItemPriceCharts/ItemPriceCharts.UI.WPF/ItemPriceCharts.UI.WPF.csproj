@@ -49,7 +49,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ItemPriceCharts.Infrastructure\ItemPriceCharts.Infrastructure.csproj" />
-    <ProjectReference Include="..\ItemPriceCharts.Services\ItemPriceCharts.Services.csproj" />
     <ProjectReference Include="..\ItemPriceCharts.XmReaderWriter\ItemPriceCharts.XmReaderWriter.csproj" />
   </ItemGroup>
 

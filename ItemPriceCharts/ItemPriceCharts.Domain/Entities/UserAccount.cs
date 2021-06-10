@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ItemPriceCharts.Domain.Entities
 {
     public class UserAccount : EntityModel
@@ -15,14 +13,14 @@ namespace ItemPriceCharts.Domain.Entities
         public string Password { get; private set; }
 
         public IReadOnlyCollection<UserAccountOnlineShops> OnlineShopsForUser => this.onlineShops?.AsReadOnly();
-        private readonly List<UserAccountOnlineShops> onlineShops;
+        private readonly List<UserAccountOnlineShops> onlineShops = new();
 
         private UserAccount() { }
 
         public UserAccount(string firstName, string lastName, Email email, string userName, string password, ICollection<OnlineShop> onlineShops)
             : this()
         {
-            this.Id = new Guid();
+            this.Id = Guid.NewGuid();
             this.FirstName = !string.IsNullOrWhiteSpace(firstName) ? firstName : throw new ArgumentNullException(nameof(firstName));
             this.LastName = !string.IsNullOrWhiteSpace(lastName) ? lastName : throw new ArgumentNullException(nameof(lastName));
             this.Email = !string.IsNullOrWhiteSpace(email.Value) ? email : throw new ArgumentNullException(nameof(email));
@@ -32,24 +30,18 @@ namespace ItemPriceCharts.Domain.Entities
             this.onlineShops = new List<UserAccountOnlineShops>(onlineShops?.Select(x => new UserAccountOnlineShops(this, x)));
         }
 
-        public void AddOnlineShop(OnlineShop onlineShop, DbContext context = null)
+        // Return status
+        public UserAccountOnlineShops AddOnlineShop(OnlineShop onlineShop)
         {
             if (this.onlineShops != null)
             {
-                this.onlineShops.Add(new UserAccountOnlineShops(this, onlineShop));
+                var userAccountOnlineShop = new UserAccountOnlineShops(this, onlineShop);
+                this.onlineShops.Add(userAccountOnlineShop);
+
+                return userAccountOnlineShop;
             }
-            else if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context), "No context provided when OnlineShops collection is invalid.");
-            }
-            else if (context.Entry(this).IsKeySet)
-            {
-                context.Add(onlineShop);
-            }
-            else
-            {
-                throw new InvalidOperationException("Could not add an online shop.");
-            }
+
+            throw new InvalidOperationException("Could not add an online shop.");
         }
 
         public void RemoveOnlineShop(OnlineShop onlineShop)
@@ -84,16 +76,13 @@ namespace ItemPriceCharts.Domain.Entities
             {
                 return false;
             }
+
             if (this.Username != other.Username)
             {
                 return false;
             }
-            if (this.Password != other.Password)
-            {
-                return false;
-            }
 
-            return true;
+            return this.Password == other.Password;
         }
 
         public static bool operator ==(UserAccount a, UserAccount b)

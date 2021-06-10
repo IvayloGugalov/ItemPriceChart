@@ -10,6 +10,8 @@ namespace ItemPriceCharts.UI.WPF.Views
         public CreateShopView()
         {
             InitializeComponent();
+
+            this.createShop.Click += (_, _) => this.Close();
         }
     }
 }

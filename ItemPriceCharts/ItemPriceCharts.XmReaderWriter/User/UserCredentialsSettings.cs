@@ -23,23 +23,21 @@ namespace ItemPriceCharts.XmReaderWriter.User
 
         public static void ReadSettings()
         {
-            using (var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH))
+            using var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH);
+            try
             {
-                try
+                reader.ReadXmlFile(new Dictionary<string, Action>()
                 {
-                    reader.ReadXmlFile(new Dictionary<string, Action>()
-                    {
-                        { nameof(RememberAccount), () =>  RememberAccount = reader.ReadElementContentAsString() },
-                        { nameof(LoginExpiresDate),  () => LoginExpiresDate = reader.ReadElementContentAsString() },
-                        { nameof(Email), () => Email = reader.ReadElementContentAsString() },
-                        { nameof(Username), () => Username = reader.ReadElementContentAsString() }
-                    });
-                }
-                finally
-                {
-                    reader.Close();
-                    reader.Dispose();
-                }
+                    { nameof(RememberAccount), () =>  RememberAccount = reader.ReadElementContentAsString() },
+                    { nameof(LoginExpiresDate),  () => LoginExpiresDate = reader.ReadElementContentAsString() },
+                    { nameof(Email), () => Email = reader.ReadElementContentAsString() },
+                    { nameof(Username), () => Username = reader.ReadElementContentAsString() }
+                });
+            }
+            finally
+            {
+                reader.Close();
+                reader.Dispose();
             }
         }
 
@@ -53,15 +51,13 @@ namespace ItemPriceCharts.XmReaderWriter.User
 
         public static void WriteToXmlFile()
         {
-            using (var writer = XmlWriteData.CreateWriter(XmlCreateFile.XML_FILE_PATH))
-            {
-                writer.WriteElementBody("UserAccount");
+            using var writer = XmlWriteData.CreateWriter(XmlCreateFile.XML_FILE_PATH);
+            writer.WriteElementBody("UserAccount");
 
-                writer.WriteTo(nameof(Username), Username);
-                writer.WriteTo(nameof(Email), Email);
-                writer.WriteTo(nameof(RememberAccount), RememberAccount);
-                writer.WriteTo(nameof(LoginExpiresDate), LoginExpiresDate);
-            }
+            writer.WriteTo(nameof(Username), Username);
+            writer.WriteTo(nameof(Email), Email);
+            writer.WriteTo(nameof(RememberAccount), RememberAccount);
+            writer.WriteTo(nameof(LoginExpiresDate), LoginExpiresDate);
         }
     }
 }

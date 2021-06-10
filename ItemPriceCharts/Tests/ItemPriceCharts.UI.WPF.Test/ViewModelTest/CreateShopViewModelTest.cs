@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -23,8 +24,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         {
             this.onlineShopServiceMock = new Mock<IOnlineShopService>(MockBehavior.Strict);
 
-            this.onlineShop = OnlineShopExtension.ConstructOnlineShop(
-                id: 1,
+            this.onlineShop = OnlineShopExtension.ConstructOnlineShopWithParameters(
+                id: new Guid(),
                 url: "https://www.someShop.com",
                 title: "someShop");
 
@@ -33,7 +34,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
-                password: "P@ssWorD");
+                password: "P@ssWorD",
+                onlineShops: new List<OnlineShop>());
         }
 
         [TearDown]
@@ -45,11 +47,11 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void AddShopAction_WillCreateItem_Succeeds()
         {
-            this.onlineShopServiceMock.Setup(_ => _.CreateShop(this.onlineShop.URL, this.onlineShop.Title, this.userAccount));
+            this.onlineShopServiceMock.Setup(_ => _.CreateShop(null, this.onlineShop.Url, this.onlineShop.Title));
 
-            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object, this.userAccount)
+            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object, null)
             {
-                NewShopURL = this.onlineShop.URL,
+                NewShopUrl = this.onlineShop.Url,
                 NewShopTitle = this.onlineShop.Title
             };
 
@@ -60,16 +62,16 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         public void AddShopAction_OnExceptionThrown_WillShowMessageDialog()
         {
             MessageDialogViewModel messageDialogViewModel = null;
-            UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
-            var expectedOnExceptionDialogMessage = $"Failed to create new shop with url: {this.onlineShop.URL}";
+            var expectedOnExceptionDialogMessage = $"Failed to create new shop with url: {this.onlineShop.Url}";
 
-            this.onlineShopServiceMock.Setup(_ => _.CreateShop(this.onlineShop.URL, this.onlineShop.Title, this.userAccount))
+            this.onlineShopServiceMock.Setup(_ => _.CreateShop(null, this.onlineShop.Url, this.onlineShop.Title))
                 .Throws(new Exception());
 
-            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object, this.userAccount)
+            var createShopViewModel = new CreateShopViewModel(this.onlineShopServiceMock.Object, null)
             {
-                NewShopURL = this.onlineShop.URL,
+                NewShopUrl = this.onlineShop.Url,
                 NewShopTitle = this.onlineShop.Title
             };
 

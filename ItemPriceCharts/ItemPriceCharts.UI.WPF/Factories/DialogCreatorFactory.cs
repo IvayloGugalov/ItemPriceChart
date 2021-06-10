@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 
 using Autofac;
 using Autofac.Core;
+
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -18,54 +20,42 @@ namespace ItemPriceCharts.UI.WPF.Factories
         {
             this.viewFactory = viewFactory;
 
-            UIEvents.AddSubscribers();
+            UiEvents.ShowCreateShopView.Register(this.CreateShopView);
+            UiEvents.ShowCreateItemView.Register(this.CreateItemView);
+            UiEvents.ShowDeleteItemView.Register(this.CreateDeleteItemView);
+            UiEvents.ShowItemInformationView.Register(this.CreateItemInformationView);
 
-            UIEvents.ShowCreateShopView.Subscribe(this.CreateShopView);
-            UIEvents.ShowCreateItemView.Subscribe(this.CreateItemView);
-            UIEvents.ShowDeleteItemView.Subscribe(this.CreateDeleteItemView);
-            UIEvents.ShowItemInformatioView.Subscribe(this.CreateItemInformationView);
-            UIEvents.ShowMessageDialog = (vm) =>
-            {
-                return Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
-            };
-            UIEvents.ShowLoginRegisterWindow = (vm) =>
-            {
-                return Application.Current.Dispatcher.Invoke(() => new LoginRegisterView(vm).ShowDialog());
-            };
-
-
-            UIEvents.FinishSubscribing();
+            UiEvents.ShowMessageDialog = vm => Application.Current.Dispatcher.Invoke(() => new MessageDialog(vm).ShowDialog());
+            UiEvents.ShowLoginRegisterWindow = vm => Application.Current.Dispatcher.Invoke(() => new LoginRegisterView(vm).ShowDialog());
         }
 
-        private void CreateDeleteItemView(object sender, Item e)
+        private void CreateDeleteItemView(Item e)
         {
             var parameters = new Parameter[] { new NamedParameter("item", e) };
             var window = this.viewFactory.Resolve<DeleteItemViewModel>(parameters);
             window.ShowDialog();
         }
 
-        private void CreateShopView(object sender, UserAccount e)
+        private void CreateShopView(UserAccount user)
         {
-            //var parameters = new Parameter[] { new NamedParameter("userAccount", e) };
-            var parameters = new Parameter[0];
+            var parameters = new Parameter[] { new NamedParameter("userAccount", user) };
             var window = this.viewFactory.Resolve<CreateShopViewModel>(parameters);
             window.ShowDialog();
         }
 
-        private void CreateItemView(object sender, OnlineShop e)
+        private void CreateItemView(OnlineShop e)
         {
             var parameters = new Parameter[] { new NamedParameter("selectedShop", e) };
             var window = this.viewFactory.Resolve<CreateItemViewModel>(parameters);
             window.ShowDialog();
         }
 
-        private void CreateItemInformationView(object sender, Item e)
+        private void CreateItemInformationView(Item e)
         {
             if (e != null)
             {
                 var parameters = new Parameter[] { new NamedParameter("item", e) };
                 var window = this.viewFactory.Resolve<ItemInformationViewModel>(parameters);
-
                 window.ShowDialog();
             }
         }
