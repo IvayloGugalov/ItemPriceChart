@@ -24,7 +24,8 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
             builder.HasMany(shop => shop.Items)
                 .WithOne(item => item.OnlineShop);
 
-            builder.Metadata.FindNavigation(nameof(OnlineShop.Items))
+            builder.Metadata.
+                FindNavigation(nameof(OnlineShop.Items))
                 .SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }

@@ -38,12 +38,12 @@
                 Grid.Row="3"
                 Height="28"
                 Width="400">
-            <TextBox Name="URL"
+            <TextBox Name="urlTextBox"
                      Style="{StaticResource Styles.TextBox.Common}"
                      Foreground="Black"
                      Padding="5 4 0 5"
                      TextAlignment="Center"
-                     Text="{Binding NewItemURL}"/>
+                     Text="{Binding NewItemUrl}"/>
         </Border>
 
         <ComboBox Grid.Row="5"

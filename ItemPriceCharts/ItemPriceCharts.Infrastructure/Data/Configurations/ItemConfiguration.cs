@@ -24,6 +24,14 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
             builder.Property(item => item.Description)
                 .IsRequired();
 
+            builder.Property(item => item.Type)
+                .IsRequired()
+                .HasConversion<int>();
+
+            builder.HasOne(item => item.OnlineShop)
+                .WithMany(shop => shop.Items)
+                .IsRequired();
+
             // Navigation property
             builder.OwnsOne(item => item.CurrentPrice);
             builder.Navigation(item => item.CurrentPrice)
@@ -32,14 +40,6 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
             builder.OwnsOne(item => item.OriginalPrice);
             builder.Navigation(item => item.OriginalPrice)
                 .Metadata.SetPropertyAccessMode(PropertyAccessMode.Field);
-
-            builder.Property(item => item.Type)
-                .IsRequired()
-                .HasConversion<int>();
-
-            builder.HasOne(item => item.OnlineShop)
-                .WithMany(shop => shop.Items)
-                .IsRequired();
 
             builder.OwnsMany(item => item.PricesForItem);
             builder.Navigation(item => item.PricesForItem)

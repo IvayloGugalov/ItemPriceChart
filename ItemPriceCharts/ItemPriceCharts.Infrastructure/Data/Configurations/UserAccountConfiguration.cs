@@ -9,15 +9,20 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<UserAccount> builder)
         {
-            //builder.ToTable(nameof(UserAccount))
-            //    .HasIndex(account => new
-            //    {
-            //        account.Username,
-            //        account.Email.Value
-            //    })
-            //    .IsUnique();
-
             builder.HasKey(account => account.Id);
+
+            builder.ToTable("UserAccounts")
+                .HasIndex(account => new
+                {
+                    account.Username,
+                    account.Email
+                })
+                .IsUnique();
+
+            builder.HasAlternateKey(account => new
+            {
+                account.Username, account.Email
+            });
 
             builder.Property(account => account.Id)
                 .HasColumnName("Id")
@@ -45,9 +50,28 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
             builder.Property(account => account.Password)
                 .IsRequired();
 
+            //builder.Metadata
+            //    .FindNavigation(nameof(UserAccount.OnlineShopsForUser))
+            //    .SetPropertyAccessMode(PropertyAccessMode.Field);
+
             //builder.HasMany(account => account.OnlineShopsForUser)
-            //    .WithMany(onlineShop => onlineShop.UserAccounts)
-            //    .UsingEntity(j => j.ToTable("UserAccountShops"));
+            //    .WithMany(shop => shop.UserAccounts)
+            //    .UsingEntity(j => j.ToTable("UserAccountOnlineShops"));
+
+
+            //builder
+            //    .HasMany(userAccount => userAccount.OnlineShopsForUser)
+            //    .WithMany(shop => shop.UserAccounts)
+            //    .UsingEntity<OnlineShopsForUser>(
+            //        typeBuilder => typeBuilder.HasOne(prop => prop.OnlineShop)
+            //            .WithMany()
+            //            .HasForeignKey(prop => prop.OnlineShopId),
+            //        typeBuilder => typeBuilder.HasOne(prop => prop.UserAccount)
+            //            .WithMany()
+            //            .HasForeignKey(prop => prop.UserAccountId),
+            //        typeBuilder => typeBuilder.HasKey(prop =>
+            //            new { prop.UserAccountId, prop.OnlineShopId })
+            //    );
         }
     }
 }

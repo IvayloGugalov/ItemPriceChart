@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +7,7 @@ using NLog;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Data;
+using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.Infrastructure.Services
 {
@@ -40,34 +40,31 @@ namespace ItemPriceCharts.Infrastructure.Services
             {
                 using ModelsContext dbContext = new();
 
-                var containsDuplicateUsername = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}'").Any();
+                var containsDuplicateUsername = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}'").Any();
 
                 if (containsDuplicateUsername)
                 {
                     return UserAccountRegistrationResult.UserNameAlreadyExists;
                 }
 
-                var containsDuplicateEmail = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Email = '{email}'").Any();
+                var containsDuplicateEmail = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Email = '{email}'").Any();
 
                 if (containsDuplicateEmail)
                 {
                     return UserAccountRegistrationResult.EmailAlreadyExists;
                 }
 
-                dbContext.BeginTransaction();
-
                 var userAccount = new UserAccount(
                     firstName: firstName,
                     lastName: lastName,
                     email: new Email(email),
                     userName: userName,
-                    password: password,
-                    onlineShops: new List<OnlineShop>());
+                    password: password);
 
                 dbContext.UserAccounts.Attach(userAccount);
                 await dbContext.UserAccounts.AddAsync(userAccount).ConfigureAwait(false);
 
-                dbContext.CommitToDatabase();
+                await dbContext.SaveChangesAsync();
 
                 Logger.Debug($"Created new account: '{userAccount}'");
 
@@ -97,7 +94,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                     }
 
                     dbContext.UserAccounts.Remove(userAccount);
-                    dbContext.CommitToDatabase();
+                    await dbContext.SaveChangesAsync();
 
                     Logger.Debug($"Deleted account: '{userAccount}'.");
 
@@ -119,12 +116,13 @@ namespace ItemPriceCharts.Infrastructure.Services
             {
                 using ModelsContext dbContext = new();
 
-                var userAccount = await dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
+                var userAccount = await dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}' AND Email = '{email}'")
                     .Include(u => u.OnlineShopsForUser)
-                    .ThenInclude(s => s.OnlineShop)
+                    .ThenInclude(u => u.OnlineShop)
                     .ThenInclude(o => o.Items)
                     .SingleOrDefaultAsync()
                     .ConfigureAwait(false);
+
                 return userAccount;
             }
             catch (Exception e)
@@ -140,7 +138,7 @@ namespace ItemPriceCharts.Infrastructure.Services
             {
                 using ModelsContext dbContext = new();
 
-                var usernameFound = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}'").Any();
+                var usernameFound = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}'").Any();
 
                 if (!usernameFound)
                 {
@@ -148,7 +146,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                     return (UserAccountLoginResult.InvalidUsername, null);
                 }
 
-                var emailFound = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Email = '{email}'").Any();
+                var emailFound = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Email = '{email}'").Any();
 
                 if (!emailFound)
                 {
@@ -156,26 +154,45 @@ namespace ItemPriceCharts.Infrastructure.Services
                     return (UserAccountLoginResult.InvalidEmail, null);
                 }
 
-                var userAccount = await dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccount WHERE Username = '{userName}' AND Email = '{email}'")
+                var userAccount = await dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}' AND Email = '{email}'")
                     .Include(u => u.OnlineShopsForUser)
-                    .ThenInclude(s => s.OnlineShop)
+                    .ThenInclude(u => u.OnlineShop)
                     .ThenInclude(o => o.Items)
                     .SingleOrDefaultAsync()
                     .ConfigureAwait(false);
 
-                if (userAccount.Password == password)
+                if (userAccount.Password != password)
                 {
-                    Logger.Info($"Logged in as user: {userName}");
-                    return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount);
+                    Logger.Warn($"Invalid password for user: {userName}");
+                    return (loginResult: UserAccountLoginResult.InvalidPassword, null);
                 }
 
-                Logger.Warn($"Invalid password for user: {userName}");
-                return (loginResult: UserAccountLoginResult.InvalidPassword, null);
+                Logger.Info($"Logged in as user: {userName}");
+                return (loginResult: UserAccountLoginResult.SuccessfulLogin, userAccount);
             }
             catch (Exception e)
             {
                 Logger.Error(e, $"Couldn't retrieve user with email: '{email}'.");
                 throw;
+            }
+        }
+
+        public async Task WriteUserCredentials(UserAccount userAccount, bool userWantsToAutoLogin, string expiryDate)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    UserCredentialsSettings.Username = userAccount.Username;
+                    UserCredentialsSettings.Email = userAccount.Email.Value;
+                    UserCredentialsSettings.RememberAccount = userWantsToAutoLogin.ToString();
+                    UserCredentialsSettings.LoginExpiresDate = expiryDate;
+                    UserCredentialsSettings.WriteToXmlFile();
+                });
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Can't save user credentials to User settings file.");
             }
         }
     }

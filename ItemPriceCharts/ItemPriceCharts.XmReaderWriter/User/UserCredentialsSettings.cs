@@ -21,6 +21,8 @@ namespace ItemPriceCharts.XmReaderWriter.User
         [DataMember(EmitDefaultValue = true)]
         public static string Username { get; set; }
 
+        public static (string username, string email) UsernameAndEmail => (Username, Email);
+
         public static void ReadSettings()
         {
             using var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH);
@@ -41,13 +43,13 @@ namespace ItemPriceCharts.XmReaderWriter.User
             }
         }
 
-        public static (string username, string email) UsernameAndEmail => (Username, Email);
+        public static bool ShouldEnableAutoLogin()
+        {
+            _ = bool.TryParse(RememberAccount, out var shouldRememberAccount);
+            _ = DateTime.TryParse(LoginExpiresDate, out var loginExpiresDate);
 
-        public static bool ShouldEnableAutoLogin =>
-            bool.TryParse(RememberAccount, out var shouldRememberAccount) &&
-            shouldRememberAccount &&
-            DateTime.TryParse(LoginExpiresDate, out var loginExpiresDate) &&
-            DateTime.UtcNow <= loginExpiresDate;
+            return shouldRememberAccount && DateTime.UtcNow <= loginExpiresDate;
+        }
 
         public static void WriteToXmlFile()
         {

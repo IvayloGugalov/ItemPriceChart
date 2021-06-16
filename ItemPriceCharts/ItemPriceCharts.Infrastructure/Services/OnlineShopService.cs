@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
-using ItemPriceCharts.Domain.Events;
 using ItemPriceCharts.Infrastructure.Data;
 
 namespace ItemPriceCharts.Infrastructure.Services
@@ -31,20 +30,35 @@ namespace ItemPriceCharts.Infrastructure.Services
                         url: shopUrl,
                         title: shopTitle);
 
-                    dbContext.BeginTransaction();
+                    await dbContext.OnlineShops.AddAsync(newShop).ConfigureAwait(false);
 
-                    var userAccountOnlineShop = userAccount.AddOnlineShop(newShop);
-                    var onlineShop = await dbContext.OnlineShops.AddAsync(newShop);
+                    // Always save before creating the link entity in the Join table
+                    await dbContext.SaveChangesAsync();
 
-                    
+                    // # Will not work:
+                        //dbContext.UserAccountOnlineShops.Add(new UserAccountOnlineShops(userAccount, newShop));
+                            // ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'UNIQUE constraint failed: OnlineShops.Id'.
+                            
 
-                    await dbContext.UserAccountOnlineShops.AddAsync(userAccountOnlineShop);
+                    // # This will work, but it needs to get the entities from the database to start tracking them....
+                        //var user = dbContext.UserAccounts
+                        //    .Include(p => p.OnlineShopsForUser)
+                        //    .Single(p => p.Id == userAccount.Id);
 
-                    dbContext.CommitToDatabase();
+                        //var shop = dbContext.OnlineShops.Include(x => x.UserAccounts)
+                        //    .Single(x => x.Id == newShop.Id);
 
-                    DomainEvents.ShopAdded.Raise(onlineShop.Entity);
+                        //user.AddOnlineShop(shop);
 
-                    Logger.Debug($"Created shop: '{onlineShop}'.");
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        @"INSERT INTO UserAccountOnlineShops (UserAccountId, OnlineShopId) VALUES({0}, {1})", userAccount.Id, newShop.Id)
+                        .ConfigureAwait(false);
+
+                    await dbContext.SaveChangesAsync();
+
+                    userAccount.AddOnlineShop(newShop);
+
+                    Logger.Debug($"Created shop: '{newShop}'.");
                 }
             }
             catch (Exception e)

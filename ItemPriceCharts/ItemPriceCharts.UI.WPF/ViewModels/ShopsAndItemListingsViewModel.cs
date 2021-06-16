@@ -77,16 +77,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private void OnAddedShop(OnlineShop e)
         {
-            // Dali trqbva tuk da se vika add/remove?
-            //this.OnlineShops.Add(e);
+            this.OnlineShops.Add(e);
             this.IsListOfShopsShown = true;
         }
 
         private void OnDeletedShop(OnlineShop e)
         {
-            //this.OnlineShops.Remove(e);
-            //this.UserAccount.RemoveOnlineShop(e);
-            //this.OnPropertyChanged(() => this.IsListOfShopsShown);
+            this.OnlineShops.Remove(e);
+            this.OnPropertyChanged(() => this.IsListOfShopsShown);
         }
 
         private void AddShopsToViewModel()

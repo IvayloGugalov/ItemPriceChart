@@ -27,21 +27,21 @@ namespace ItemPriceCharts.Infrastructure.Services
                 {
                     var (title, description, price) = await ItemService.LoadItemFromWeb(itemUrl, onlineShop.Title).ConfigureAwait(false);
 
-                    dbContext.BeginTransaction();
+                    var createdItem = new Item(
+                        url: itemUrl,
+                        title: title,
+                        description: description,
+                        price: new ItemPrice(price),
+                        onlineShop: onlineShop,
+                        type: type);
 
-                    onlineShop.AddItem(
-                        new Item(
-                            url: itemUrl,
-                            title: title,
-                            description: description,
-                            price: new ItemPrice(price),
-                            onlineShop: onlineShop,
-                            type: type),
-                        dbContext);
+                    await dbContext.Items.AddAsync(createdItem).ConfigureAwait(false);
 
-                    dbContext.CommitToDatabase();
+                    await dbContext.SaveChangesAsync();
 
-                    Logger.Debug($"Saved item: '{title}' to database.");
+                    onlineShop.AddItem(createdItem);
+
+                    Logger.Debug($"Saved a new item: '{title}' to database.");
                 }
             }
             catch (Exception e)
@@ -61,11 +61,9 @@ namespace ItemPriceCharts.Infrastructure.Services
 
                 if (isItemExisting)
                 {
-                    dbContext.BeginTransaction();
-
                     dbContext.Update(item);
 
-                    dbContext.CommitToDatabase();
+                    await dbContext.SaveChangesAsync();
                     Logger.Debug($"Updated item: '{item}'.");
                 }
             }
@@ -87,6 +85,8 @@ namespace ItemPriceCharts.Infrastructure.Services
                 if (isItemExisting)
                 {
                     dbContext.Remove(item);
+                    await dbContext.SaveChangesAsync();
+
                     item.OnlineShop.RemoveItem(item);
 
                     Logger.Debug($"Deleted item: '{item}'.");
@@ -117,13 +117,11 @@ namespace ItemPriceCharts.Infrastructure.Services
                     if (newPrice != item.CurrentPrice.Price)
                     {
                         var itemPrice = new ItemPrice(newPrice);
-                        var updatedItem = item.UpdateItemPrice(itemPrice, dbContext);
-
-                        dbContext.BeginTransaction();
+                        var updatedItem = item.UpdateItemPrice(itemPrice);
 
                         dbContext.Items.Update(item);
 
-                        dbContext.CommitToDatabase();
+                        await dbContext.SaveChangesAsync();
 
                         Logger.Debug($"Update the price of item {updatedItem}.");
 

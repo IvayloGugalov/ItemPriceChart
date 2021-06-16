@@ -38,8 +38,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
-                password: "P@ssWorD",
-                onlineShops: new List<OnlineShop>());
+                password: "P@ssWorD");
 
             this.itemListingViewModel = new ItemListingViewModel(this.userAccount);
             this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.userAccount);

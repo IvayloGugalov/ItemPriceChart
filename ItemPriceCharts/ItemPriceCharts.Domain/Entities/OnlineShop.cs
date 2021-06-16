@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Microsoft.EntityFrameworkCore;
+using ItemPriceCharts.Domain.Events;
 
 namespace ItemPriceCharts.Domain.Entities
 {
@@ -13,7 +13,8 @@ namespace ItemPriceCharts.Domain.Entities
         public IReadOnlyCollection<Item> Items => this.items?.AsReadOnly();
         private readonly List<Item> items = new();
 
-        public ICollection<UserAccountOnlineShops> UserAccounts { get; set; }
+        public IReadOnlyCollection<UserAccountOnlineShops> UserAccounts => this.userAccounts?.AsReadOnly();
+        private readonly List<UserAccountOnlineShops> userAccounts = new();
 
         private OnlineShop() { }
 
@@ -25,24 +26,16 @@ namespace ItemPriceCharts.Domain.Entities
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
         }
 
-        public void AddItem(Item item, DbContext context = null)
+        public void AddItem(Item item)
         {
-            if (this.items != null)
-            {
-                this.items.Add(item);
-            }
-            else if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context), "No context provided when Item collection is invalid.");
-            }
-            else if (context.Entry(this).IsKeySet)
-            {
-                context.Add(item);
-            }
-            else
+            if (this.items == null)
             {
                 throw new InvalidOperationException("Could not add an item.");
             }
+
+            this.items.Add(item);
+
+            DomainEvents.ItemAdded.Raise(item);
         }
 
         public void RemoveItem(Item item)
@@ -53,6 +46,7 @@ namespace ItemPriceCharts.Domain.Entities
             }
 
             this.items.Remove(item);
+            DomainEvents.ItemDeleted.Raise(item);
         }
 
         public override string ToString()

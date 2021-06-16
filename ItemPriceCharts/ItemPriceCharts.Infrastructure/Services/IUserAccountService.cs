@@ -10,5 +10,6 @@ namespace ItemPriceCharts.Infrastructure.Services
         Task<bool> DeleteUserAccount(UserAccount userAccount);
         Task<UserAccount> GetUserAccount(string userName, string email);
         Task<(UserAccountLoginResult loginResult, UserAccount userAccount)> TryGetUserAccount(string userName, string email, string password);
+        Task WriteUserCredentials(UserAccount userAccount, bool userWantsToAutoLogin, string loginExpiryDate);
     }
 }

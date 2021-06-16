@@ -85,13 +85,16 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
                 {
                     UserCredentialsSettings.ReadSettings();
 
-                    if (UserCredentialsSettings.ShouldEnableAutoLogin)
+                    if (UserCredentialsSettings.ShouldEnableAutoLogin())
                     {
                         var userAccount = accountService.GetUserAccount(UserCredentialsSettings.Username, UserCredentialsSettings.Email).GetAwaiter().GetResult();
 
-                        this.ConfigureMainWindow(userAccount);
+                        if (userAccount != null)
+                        {
+                            this.ConfigureMainWindow(userAccount);
 
-                        return;
+                            return;
+                        }
                     }
 
                     (userName, email) = UserCredentialsSettings.UsernameAndEmail;
@@ -122,7 +125,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         private void MigrateDatabase()
         {
-            using ModelsContext dbContext = new ModelsContext();
+            using var dbContext = new ModelsContext();
             dbContext.Database.Migrate();
             if (!dbContext.Database.CanConnect())
             {

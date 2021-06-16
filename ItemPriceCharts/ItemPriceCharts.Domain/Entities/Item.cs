@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using ItemPriceCharts.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace ItemPriceCharts.Domain.Entities
 {
@@ -17,7 +16,7 @@ namespace ItemPriceCharts.Domain.Entities
         public OnlineShop OnlineShop { get; }
 
         public IReadOnlyCollection<ItemPrice> PricesForItem => this.pricesForItem.AsReadOnly();
-        private readonly List<ItemPrice> pricesForItem;
+        private readonly List<ItemPrice> pricesForItem = new();
 
         private Item() { }
 
@@ -39,11 +38,7 @@ namespace ItemPriceCharts.Domain.Entities
             this.OnlineShop = onlineShop ?? throw new ArgumentNullException(nameof(onlineShop));
             this.Type = type;
 
-            this.pricesForItem = new List<ItemPrice>()
-            {
-                this.OriginalPrice,
-                this.CurrentPrice
-            };
+            this.pricesForItem.Add(this.OriginalPrice);
         }
 
         public Item UpdateItem((string title, string description, ItemPrice price) updatedItem)
@@ -55,22 +50,15 @@ namespace ItemPriceCharts.Domain.Entities
             return this;
         }
 
-        public Item UpdateItemPrice(ItemPrice updatedPrice, DbContext context = null)
+        public Item UpdateItemPrice(ItemPrice updatedPrice)
         {
-            if (this.pricesForItem != null)
+            if (this.pricesForItem == null)
             {
-                this.pricesForItem.Add(updatedPrice);
-                this.CurrentPrice = updatedPrice;
+                throw new InvalidOperationException("Could not add a new price for item.");
             }
-            else if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context), "No context provided when pricesForItem collection is invalid.");
-            }
-            else if (context.Entry(this).IsKeySet)
-            {
-                context.Add(updatedPrice);
-                this.CurrentPrice = updatedPrice;
-            }
+
+            this.pricesForItem.Add(updatedPrice);
+            this.CurrentPrice = updatedPrice;
 
             return this;
         }

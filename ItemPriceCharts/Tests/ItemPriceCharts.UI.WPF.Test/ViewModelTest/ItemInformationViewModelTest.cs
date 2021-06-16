@@ -59,22 +59,14 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 new(20.5),
             };
 
+            foreach (var itemPrice in itemPricesCollection)
+            {
+                this.item.UpdateItemPrice(itemPrice);
+            }
 
             this.itemInformationViewModel = new ItemInformationViewModel(this.itemServiceMock.Object, this.item);
 
             Assert.AreEqual(itemPricesCollection.Count, this.itemInformationViewModel.LineSeries.Values.Count);
-        }
-
-        [Test]
-        public void LoadItemPriceInformation_WhenExceptionThrown_WillShowMessageDialog()
-        {
-            MessageDialogViewModel messageDialogViewModel = null;
-            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
-
-            this.itemInformationViewModel = new ItemInformationViewModel(this.itemServiceMock.Object, this.item);
-
-            Assert.IsNotNull(messageDialogViewModel);
-            Assert.AreEqual($"Could not load price information for {this.item.Title}", messageDialogViewModel.Description);
         }
 
         [Test]

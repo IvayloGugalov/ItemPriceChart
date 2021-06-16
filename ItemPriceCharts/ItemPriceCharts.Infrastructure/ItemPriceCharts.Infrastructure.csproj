@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ItemPriceCharts.Domain\ItemPriceCharts.Domain.csproj" />
+    <ProjectReference Include="..\ItemPriceCharts.XmReaderWriter\ItemPriceCharts.XmReaderWriter.csproj" />
   </ItemGroup>
 
 </Project>

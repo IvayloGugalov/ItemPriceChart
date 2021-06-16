@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views"
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
-                    xmlns:models="clr-namespace:ItemPriceCharts.Services.Models;assembly=ItemPriceCharts.Services">
+                    xmlns:enums="clr-namespace:ItemPriceCharts.Domain.Enums;assembly=ItemPriceCharts.Domain">
     <ObjectDataProvider x:Key="ItemTypeDataProvider"
                         MethodName="GetValues"
                         ObjectType="{x:Type System:Enum}">
         <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="models:ItemType"/>
+            <x:Type TypeName="enums:ItemType"/>
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
 </ResourceDictionary>

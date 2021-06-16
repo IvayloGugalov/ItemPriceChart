@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using ItemPriceCharts.Domain.Events;
 
 namespace ItemPriceCharts.Domain.Entities
 {
@@ -12,12 +12,12 @@ namespace ItemPriceCharts.Domain.Entities
         public Email Email { get; private set; }
         public string Password { get; private set; }
 
-        public IReadOnlyCollection<UserAccountOnlineShops> OnlineShopsForUser => this.onlineShops?.AsReadOnly();
-        private readonly List<UserAccountOnlineShops> onlineShops = new();
+        public IReadOnlyCollection<UserAccountOnlineShops> OnlineShopsForUser => this.onlineShopsForUser?.AsReadOnly();
+        private readonly List<UserAccountOnlineShops> onlineShopsForUser = new();
 
         private UserAccount() { }
 
-        public UserAccount(string firstName, string lastName, Email email, string userName, string password, ICollection<OnlineShop> onlineShops)
+        public UserAccount(string firstName, string lastName, Email email, string userName, string password)
             : this()
         {
             this.Id = Guid.NewGuid();
@@ -26,33 +26,29 @@ namespace ItemPriceCharts.Domain.Entities
             this.Email = !string.IsNullOrWhiteSpace(email.Value) ? email : throw new ArgumentNullException(nameof(email));
             this.Username = !string.IsNullOrWhiteSpace(userName) ? userName : throw new ArgumentNullException(nameof(userName));
             this.Password = !string.IsNullOrWhiteSpace(password) ? password : throw new ArgumentNullException(nameof(password));
-
-            this.onlineShops = new List<UserAccountOnlineShops>(onlineShops?.Select(x => new UserAccountOnlineShops(this, x)));
         }
 
         // Return status
-        public UserAccountOnlineShops AddOnlineShop(OnlineShop onlineShop)
+        public void AddOnlineShop(OnlineShop onlineShop)
         {
-            if (this.onlineShops != null)
+            if (this.onlineShopsForUser == null)
             {
-                var userAccountOnlineShop = new UserAccountOnlineShops(this, onlineShop);
-                this.onlineShops.Add(userAccountOnlineShop);
-
-                return userAccountOnlineShop;
+                throw new InvalidOperationException("Could not add an online shop.");
             }
 
-            throw new InvalidOperationException("Could not add an online shop.");
+            this.onlineShopsForUser.Add(new UserAccountOnlineShops(this, onlineShop));
+            DomainEvents.ShopAdded.Raise(onlineShop);
         }
 
-        public void RemoveOnlineShop(OnlineShop onlineShop)
+        public void RemoveOnlineShop(UserAccountOnlineShops onlineShop)
         {
-            if (this.onlineShops == null)
+            if (this.onlineShopsForUser == null)
             {
                 throw new NullReferenceException("You must use .Include(p => p.OnlineShops) before calling this method.");
             }
 
-            var onlineShopForAccount = this.onlineShops.SingleOrDefault(x => x.OnlineShop == onlineShop);
-            this.onlineShops.Remove(onlineShopForAccount);
+            this.onlineShopsForUser.Remove(onlineShop);
+            DomainEvents.ShopDeleted.Raise(onlineShop.OnlineShop);
         }
 
         public override string ToString()

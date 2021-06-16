@@ -23,30 +23,6 @@ namespace ItemPriceCharts.Infrastructure.Data
         public DbSet<UserAccount> UserAccounts { get; set; }
         public DbSet<UserAccountOnlineShops> UserAccountOnlineShops { get; set; }
 
-        public void BeginTransaction()
-        {
-            this.transaction = Database.BeginTransaction();
-        }
-
-        public void CommitToDatabase()
-        {
-            try
-            {
-                this.SaveChanges();
-                this.transaction.Commit();
-            }
-            finally
-            {
-                this.transaction.Dispose();
-            }
-        }
-
-        public void Rollback()
-        {
-            this.transaction.Rollback();
-            this.transaction.Dispose();
-        }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(DatabaseKeyWordConstants.CONNECTION_STRING)

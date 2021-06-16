@@ -34,8 +34,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
-                password: "P@ssWorD",
-                onlineShops: new List<OnlineShop>());
+                password: "P@ssWorD");
         }
 
         [TearDown]

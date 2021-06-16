@@ -8,8 +8,8 @@ namespace ItemPriceCharts.UI.WPF.Converters
     {
         public bool CloseTrigger
         {
-            get { return (bool)GetValue(CloseTriggerProperty); }
-            set { SetValue(CloseTriggerProperty, value); }
+            get => (bool)GetValue(CloseTriggerProperty);
+            set => SetValue(CloseTriggerProperty, value);
         }
 
         public static readonly DependencyProperty CloseTriggerProperty =

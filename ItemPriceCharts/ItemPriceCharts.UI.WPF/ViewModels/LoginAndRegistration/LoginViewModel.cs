@@ -6,7 +6,6 @@ using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
-using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
@@ -80,7 +79,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             {
                 if (this.RememberUser)
                 {
-                    await this.WriteUserCredentials();
+                    await this.userAccountService.WriteUserCredentials(userAccount, this.RememberUser, DateTime.UtcNow.AddDays(30).ToString());
                 }
 
                 this.SuccessfulLogin = true;
@@ -90,25 +89,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             else
             {
                 this.ErrorMessage = LoginViewModel.GetLoginErrorMessage(loginResult);
-            }
-        }
-
-        private async Task WriteUserCredentials()
-        {
-            try
-            {
-                await Task.Run(() =>
-                {
-                    UserCredentialsSettings.Username = this.Username;
-                    UserCredentialsSettings.Email = this.Email;
-                    UserCredentialsSettings.RememberAccount = this.RememberUser.ToString();
-                    UserCredentialsSettings.LoginExpiresDate = DateTime.UtcNow.AddMinutes(30).ToString();
-                    UserCredentialsSettings.WriteToXmlFile();
-                });
-            }
-            catch (Exception e)
-            {
-                MessageDialogCreator.ShowErrorDialog(e.Message);
             }
         }
 
