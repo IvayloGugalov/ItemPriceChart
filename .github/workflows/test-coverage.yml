@@ -1,6 +1,10 @@
 name: ItemPriceChart Colelct Code Coverage
 
-on: [push, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    branches:
+      - [develop, master]
  
 jobs:
   build:
@@ -8,6 +12,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    # Checkout the repo
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -19,23 +24,9 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
+    # Generate coverage report
     - name: Generate coverage report
       run: dotnet test ItemPriceCharts/ItemPriceCharts.sln
         /p:CollectCoverage=true
         /p:CoverletOutput=TestResults/
-        /p:CoverletOutputFormat=opencover
-
-      #- uses: actions/checkout@v1
-      #- name: Setup .NET Core
-      #  uses: actions/setup-dotnet@v1
-      #  with:
-      #     dotnet-version: 3.0.100
-      #- name: Generate coverage report
-      #  run: |
-      #    cd ./Tests/TicketStore.Tests/
-      #    dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
-      #- name: Publish coverage report to coveralls.io
-      #  uses: coverallsapp/github-action@v1.0.1
-      #  with:
-      #    github-token: ${{ secrets.GITHUB_TOKEN }}
-      #    path-to-lcov: ./Tests/TicketStore.Tests/TestResults/coverage.info   
+        /p:CoverletOutputFormat=lcov

@@ -51,11 +51,13 @@ jobs:
     runs-on: windows-latest
 
     env:
+      dotNetVersion: net5.0
       Solution_Name: ItemPriceCharts/ItemPriceCharts.sln
       Project_Path: ItemPriceCharts/ItemPriceCharts.UI.WPF/ItemPriceCharts.UI.WPF.csproj
       WPF_Test_Project_Path: ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/ItemPriceCharts.UI.WPF.Test.csproj, 
       Infrastructure_Test_Project_Path: ItemPriceCharts/Tests/ItemPriceCharts.Infrastructure.Test/ItemPriceCharts.Infrastructure.Test.csproj, 
 
+    # Checkout the repo
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -68,12 +70,15 @@ jobs:
       with:
         dotnet-version: 5.0.x
       
+    # Instal project dependencies
     - name: Install Dependencies
       run: npm install
-      
+    
+    # Restoring the project
     - name: Restore project
       run: dotnet restore ${{ env.Project_Path }}
 
+    # Building the  project
     - name: Build project
       run: dotnet build ${{ env.Project_Path }} -c Release --no-restore
 
