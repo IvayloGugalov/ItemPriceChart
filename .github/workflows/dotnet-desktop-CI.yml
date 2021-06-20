@@ -79,4 +79,4 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test ${{ env.WPF_Test_Project_Path }, {env.Infrastructure_Test_Project_Path}}
+      run: dotnet test ItemPriceCharts/ItemPriceCharts.sln --configuration Release
