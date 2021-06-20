@@ -33,8 +33,12 @@ namespace ItemPriceCharts.Domain.Entities
                 throw new InvalidOperationException("Could not add an item.");
             }
 
-            this.items.Add(item);
+            if (this.items.Contains(item))
+            {
+                throw new InvalidOperationException("Can't add an item which is already created for the shop");
+            }
 
+            this.items.Add(item);
             DomainEvents.ItemAdded.Raise(item);
         }
 
@@ -52,6 +56,36 @@ namespace ItemPriceCharts.Domain.Entities
         public override string ToString()
         {
             return $"Id: {this.Id}, Url: {this.Url}, Title: {this.Title}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is not OnlineShop other)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (this.Title != other.Title)
+            {
+                return false;
+            }
+
+            if (this.Url != other.Url)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
         }
 
         private OnlineShop(

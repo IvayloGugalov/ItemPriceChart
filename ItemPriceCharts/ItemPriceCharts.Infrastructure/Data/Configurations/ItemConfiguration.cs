@@ -32,16 +32,34 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
                 .WithMany(shop => shop.Items)
                 .IsRequired();
 
-            // Navigation property
-            builder.OwnsOne(item => item.CurrentPrice);
-            builder.Navigation(item => item.CurrentPrice)
-                .Metadata.SetPropertyAccessMode(PropertyAccessMode.Field);
+            // Navigation properties
+            builder.OwnsOne(item => item.CurrentPrice)
+                .Property(itemPrice => itemPrice.Price)
+                .HasColumnType("double")
+                .IsRequired();
 
-            builder.OwnsOne(item => item.OriginalPrice);
-            builder.Navigation(item => item.OriginalPrice)
-                .Metadata.SetPropertyAccessMode(PropertyAccessMode.Field);
+            builder.OwnsOne(item => item.OriginalPrice)
+                .Property(itemPrice => itemPrice.Price)
+                .HasColumnType("double")
+                .IsRequired();
 
-            builder.OwnsMany(item => item.PricesForItem);
+            builder.OwnsMany(item => item.PricesForItem,
+                x =>
+                {
+                    x.WithOwner()
+                        .HasForeignKey(nameof(ItemPrice.ItemId));
+                    x.Property<int>("Id");
+                    x.HasKey("Id");
+                    
+                    x.Property(a => a.Price)
+                        .HasColumnType("double")
+                        .IsRequired();
+                    x.Property(a => a.PriceDateRetrieved)
+                        .HasColumnType("date")
+                        .ValueGeneratedNever()
+                        .IsRequired();
+                });
+
             builder.Navigation(item => item.PricesForItem)
                 .Metadata.SetPropertyAccessMode(PropertyAccessMode.Field);
         }

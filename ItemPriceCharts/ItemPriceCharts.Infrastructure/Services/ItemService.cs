@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 
@@ -14,32 +13,42 @@ namespace ItemPriceCharts.Infrastructure.Services
     public class ItemService : IItemService
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemService));
+       
+        private readonly ModelsContext dbContext;
+        private readonly IHtmlWebWrapper htmlServiceWrapper;
+        private readonly IItemDataRetrieveService itemDataRetrieveService;
+
+        public ItemService(ModelsContext dbContext, IHtmlWebWrapper htmlServiceWrapper, IItemDataRetrieveService itemDataRetrieveService)
+        {
+            this.dbContext = dbContext;
+            this.htmlServiceWrapper = htmlServiceWrapper;
+            this.itemDataRetrieveService = itemDataRetrieveService;
+        }
 
         public async Task AddItemToShop(string itemUrl, OnlineShop onlineShop, ItemType type)
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var itemAlreadyExists = await dbContext.Items.SingleOrDefaultAsync(item => item.Url == itemUrl) != null;
+                var itemAlreadyExists = await this.dbContext.Items.SingleOrDefaultAsync(item => item.Url == itemUrl) != null;
 
                 if (!itemAlreadyExists)
                 {
-                    var (title, description, price) = await ItemService.LoadItemFromWeb(itemUrl, onlineShop.Title).ConfigureAwait(false);
+                    var (title, description, price) = await this.LoadItemFromWeb(itemUrl, onlineShop.Title).ConfigureAwait(false);
 
                     var createdItem = new Item(
                         url: itemUrl,
                         title: title,
                         description: description,
-                        price: new ItemPrice(price),
+                        price: price,
                         onlineShop: onlineShop,
                         type: type);
 
-                    await dbContext.Items.AddAsync(createdItem).ConfigureAwait(false);
+                    this.dbContext.OnlineShops.Attach(onlineShop);
 
-                    await dbContext.SaveChangesAsync();
-
+                    // EF Core is tracking the Entity and will automatically add the Item to the DB here
                     onlineShop.AddItem(createdItem);
+
+                    await this.dbContext.SaveChangesAsync();
 
                     Logger.Debug($"Saved a new item: '{title}' to database.");
                 }
@@ -55,15 +64,13 @@ namespace ItemPriceCharts.Infrastructure.Services
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var isItemExisting = await dbContext.Items.FindAsync(item.Id) != null;
+                var isItemExisting = await this.dbContext.Items.FindAsync(item.Id) != null;
 
                 if (isItemExisting)
                 {
-                    dbContext.Update(item);
+                    this.dbContext.Update(item);
 
-                    await dbContext.SaveChangesAsync();
+                    await this.dbContext.SaveChangesAsync();
                     Logger.Debug($"Updated item: '{item}'.");
                 }
             }
@@ -78,18 +85,16 @@ namespace ItemPriceCharts.Infrastructure.Services
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var isItemExisting = await dbContext.Items.FindAsync(item.Id) != null;
+                var isItemExisting = await this.dbContext.Items.FindAsync(item.Id) != null;
 
                 if (isItemExisting)
                 {
-                    dbContext.Remove(item);
-                    await dbContext.SaveChangesAsync();
+                    var onlineShop = await dbContext.OnlineShops.FindAsync(item.OnlineShop.Id);
 
-                    item.OnlineShop.RemoveItem(item);
+                    onlineShop.RemoveItem(item);
+                    await this.dbContext.SaveChangesAsync();
 
-                    Logger.Debug($"Deleted item: '{item}'.");
+                    Logger.Debug($"Deleted item: '{item.Title}'.");
 
                     return true;
                 }
@@ -103,27 +108,25 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
         }
 
-        public async Task<ItemPrice> UpdateItemPrice(Item item)
+        public async Task<ItemPrice> TryUpdateItemPrice(Item item)
         {
             try
             {
-                using ModelsContext dbContext = new();
+                var itemInDb = await this.dbContext.Items.FindAsync(item.Id);
 
-                var isItemExisting = await dbContext.Items.FindAsync(item.Id) != null;
-                if (isItemExisting)
+                if (itemInDb != null)
                 {
-                    var (_, _, newPrice) = await ItemService.LoadItemFromWeb(item.Url, item.OnlineShop.Title).ConfigureAwait(false);
+                    var (_, _, newPrice) = await this.LoadItemFromWeb(item.Url, item.OnlineShop.Title).ConfigureAwait(false);
 
-                    if (newPrice != item.CurrentPrice.Price)
+                    if (newPrice != itemInDb.CurrentPrice.Price)
                     {
-                        var itemPrice = new ItemPrice(newPrice);
-                        var updatedItem = item.UpdateItemPrice(itemPrice);
+                        var itemPrice = new ItemPrice(itemInDb.Id, newPrice);
 
-                        dbContext.Items.Update(item);
+                        itemInDb.UpdateItemPrice(itemPrice);
 
-                        await dbContext.SaveChangesAsync();
+                        await this.dbContext.SaveChangesAsync();
 
-                        Logger.Debug($"Update the price of item {updatedItem}.");
+                        Logger.Debug($"Update the price of item {item}.");
 
                         return itemPrice;
                     }
@@ -138,12 +141,11 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
         }
 
-        private static async Task<(string title, string description, double price)> LoadItemFromWeb(string itemUrl, string shopName)
+        private async Task<(string title, string description, double price)> LoadItemFromWeb(string itemUrl, string shopName)
         {
-            var htmlService = new HtmlWeb();
-            var itemDocument = htmlService.Load(itemUrl);
+            var itemDocument = this.htmlServiceWrapper.LoadDocument(itemUrl);
 
-            return await Task.Run(() => ItemDataRetrieveService.CreateItem(itemDocument, shopName));
+            return await Task.Run(() => this.itemDataRetrieveService.CreateItem(itemDocument, shopName));
         }
 
     }

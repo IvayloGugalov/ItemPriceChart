@@ -34,20 +34,25 @@ namespace ItemPriceCharts.Infrastructure.Services
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(UserAccountService));
 
+        private readonly ModelsContext dbContext;
+
+        public UserAccountService(ModelsContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         public async Task<UserAccountRegistrationResult> CreateUserAccount(string firstName, string lastName, string email, string userName, string password)
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var containsDuplicateUsername = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}'").Any();
+                var containsDuplicateUsername = this.dbContext.UserAccounts.Any(account => account.Username == userName);
 
                 if (containsDuplicateUsername)
                 {
                     return UserAccountRegistrationResult.UserNameAlreadyExists;
                 }
 
-                var containsDuplicateEmail = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Email = '{email}'").Any();
+                var containsDuplicateEmail = this.dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM {nameof(this.dbContext.UserAccounts)} WHERE Email = '{email}'").Any();
 
                 if (containsDuplicateEmail)
                 {
@@ -61,10 +66,10 @@ namespace ItemPriceCharts.Infrastructure.Services
                     userName: userName,
                     password: password);
 
-                dbContext.UserAccounts.Attach(userAccount);
-                await dbContext.UserAccounts.AddAsync(userAccount).ConfigureAwait(false);
+                this.dbContext.UserAccounts.Attach(userAccount);
+                await this.dbContext.UserAccounts.AddAsync(userAccount).ConfigureAwait(false);
 
-                await dbContext.SaveChangesAsync();
+                await this.dbContext.SaveChangesAsync();
 
                 Logger.Debug($"Created new account: '{userAccount}'");
 
@@ -82,19 +87,17 @@ namespace ItemPriceCharts.Infrastructure.Services
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var isUserAccountExisting = await dbContext.UserAccounts.FindAsync(userAccount.Id) != null;
+                var isUserAccountExisting = await this.dbContext.UserAccounts.FindAsync(userAccount.Id) != null;
 
                 if (isUserAccountExisting)
                 {
-                    if (dbContext.UserAccounts.Attach(userAccount).State == EntityState.Deleted)
+                    if (this.dbContext.UserAccounts.Attach(userAccount).State == EntityState.Deleted)
                     {
-                        dbContext.UserAccounts.Attach(userAccount);
+                        this.dbContext.UserAccounts.Attach(userAccount);
                     }
 
-                    dbContext.UserAccounts.Remove(userAccount);
-                    await dbContext.SaveChangesAsync();
+                    this.dbContext.UserAccounts.Remove(userAccount);
+                    await this.dbContext.SaveChangesAsync();
 
                     Logger.Debug($"Deleted account: '{userAccount}'.");
 
@@ -114,9 +117,7 @@ namespace ItemPriceCharts.Infrastructure.Services
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var userAccount = await dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}' AND Email = '{email}'")
+                var userAccount = await this.dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM {nameof(this.dbContext.UserAccounts)} WHERE Username = '{userName}' AND Email = '{email}'")
                     .Include(u => u.OnlineShopsForUser)
                     .ThenInclude(u => u.OnlineShop)
                     .ThenInclude(o => o.Items)
@@ -136,9 +137,7 @@ namespace ItemPriceCharts.Infrastructure.Services
         {
             try
             {
-                using ModelsContext dbContext = new();
-
-                var usernameFound = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}'").Any();
+                var usernameFound = this.dbContext.UserAccounts.Any(account => account.Username == userName);
 
                 if (!usernameFound)
                 {
@@ -146,7 +145,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                     return (UserAccountLoginResult.InvalidUsername, null);
                 }
 
-                var emailFound = dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Email = '{email}'").Any();
+                var emailFound = this.dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM {nameof(this.dbContext.UserAccounts)} WHERE Email = '{email}'").Any();
 
                 if (!emailFound)
                 {
@@ -154,7 +153,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                     return (UserAccountLoginResult.InvalidEmail, null);
                 }
 
-                var userAccount = await dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM UserAccounts WHERE Username = '{userName}' AND Email = '{email}'")
+                var userAccount = await this.dbContext.UserAccounts.FromSqlRaw($"SELECT * FROM {nameof(this.dbContext.UserAccounts)} WHERE Username = '{userName}' AND Email = '{email}'")
                     .Include(u => u.OnlineShopsForUser)
                     .ThenInclude(u => u.OnlineShop)
                     .ThenInclude(o => o.Items)

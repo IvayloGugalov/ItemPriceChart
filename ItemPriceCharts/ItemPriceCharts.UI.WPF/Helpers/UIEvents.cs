@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Threading;
-using ControlzEx.Standard;
+
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Domain.Events;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -31,6 +29,8 @@ namespace ItemPriceCharts.UI.WPF.Helpers
         public static IDomainEventWrapper<OnlineShop> ShopDeleted { get; set; } = new DomainEventWrapper<OnlineShop>(DomainEvents.ShopDeleted);
     }
 
+    public interface IDomainEventWrapper<T> : IDomainEvent<T> { }
+
     public class DomainEventWrapper<T> : IDomainEventWrapper<T>
     {
         private readonly IDomainEvent<T> domainEvent;
@@ -46,6 +46,4 @@ namespace ItemPriceCharts.UI.WPF.Helpers
 
         public void ClearHandlers() => this.domainEvent.ClearHandlers();
     }
-
-    public interface IDomainEventWrapper<T> : IDomainEvent<T> {}
 }

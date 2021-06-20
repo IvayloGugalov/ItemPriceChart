@@ -13,7 +13,7 @@ namespace ItemPriceCharts.UI.WPF.Test.Extensions
             string url,
             string title,
             string description,
-            ItemPrice price,
+            double price,
             OnlineShop onlineShop,
             ItemType type)
         {
@@ -38,7 +38,7 @@ namespace ItemPriceCharts.UI.WPF.Test.Extensions
                 url: string.Concat(onlineShop.Url, "//", new Random(10000).Next().ToString()),
                 title: "firstItem",
                 description: "item description",
-                price: new ItemPrice(new Random(10000).NextDouble()),
+                price: new Random(10000).NextDouble(),
                 onlineShop: onlineShop,
                 type: ItemType.ComputerItem);
         }

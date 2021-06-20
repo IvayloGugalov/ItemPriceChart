@@ -24,7 +24,7 @@ namespace ItemPriceCharts.Domain.Entities
             string url,
             string title,
             string description,
-            ItemPrice price,
+            double price,
             OnlineShop onlineShop,
             ItemType type)
             : this()
@@ -33,8 +33,8 @@ namespace ItemPriceCharts.Domain.Entities
             this.Url = !string.IsNullOrWhiteSpace(url) ? url : throw new ArgumentNullException(nameof(url));
             this.Title = !string.IsNullOrWhiteSpace(title) ? title : throw new ArgumentNullException(nameof(title));
             this.Description = description;
-            this.CurrentPrice = price.Price >= 0 ? price : throw new ArgumentNullException(nameof(price));
-            this.OriginalPrice = price.Price >= 0 ? price : throw new ArgumentNullException(nameof(price));
+            this.CurrentPrice = price >= 0 ? new ItemPrice(this.Id, price) : throw new ArgumentNullException(nameof(price));
+            this.OriginalPrice = price >= 0 ? new ItemPrice(this.Id, price) : throw new ArgumentNullException(nameof(price));
             this.OnlineShop = onlineShop ?? throw new ArgumentNullException(nameof(onlineShop));
             this.Type = type;
 
@@ -80,7 +80,7 @@ namespace ItemPriceCharts.Domain.Entities
                 return false;
             }
 
-            if (this.CurrentPrice != other.CurrentPrice)
+            if (this.CurrentPrice.Price != other.CurrentPrice.Price)
             {
                 return false;
             }
@@ -95,7 +95,12 @@ namespace ItemPriceCharts.Domain.Entities
                 return false;
             }
 
-            return this.Type == other.Type;
+            if (this.Type != other.Type)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override string ToString()
@@ -133,7 +138,7 @@ namespace ItemPriceCharts.Domain.Entities
             string url,
             string title,
             string description,
-            ItemPrice price,
+            double price,
             OnlineShop onlineShop,
             ItemType type)
         {
@@ -141,7 +146,7 @@ namespace ItemPriceCharts.Domain.Entities
             this.Url = url;
             this.Title = title;
             this.Description = description;
-            this.CurrentPrice = price;
+            this.CurrentPrice = new ItemPrice(id, price);
             this.OnlineShop = onlineShop;
             this.Type = type;
         }
@@ -155,7 +160,7 @@ namespace ItemPriceCharts.Domain.Entities
             string url,
             string title,
             string description,
-            ItemPrice price,
+            double price,
             OnlineShop onlineShop,
             ItemType type)
         {

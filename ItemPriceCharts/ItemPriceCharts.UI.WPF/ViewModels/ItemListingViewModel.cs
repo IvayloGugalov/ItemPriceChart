@@ -20,9 +20,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         //Called from outside the class
         public void SetItemsList()
         {
-            this.ItemsList = this.SelectedShop != null ?
-                this.SelectedShop.Items.ToObservableCollection() :
-                this.UserAccount.OnlineShopsForUser.Select(x => x.OnlineShop).SelectMany(shop => shop.Items).ToObservableCollection();
+            this.ItemsList = this.SelectedShop != null
+                ? this.SelectedShop.Items
+                    .ToObservableCollection()
+                : this.UserAccount.OnlineShopsForUser
+                    .Select(x => x.OnlineShop)
+                    .SelectMany(shop => shop.Items)
+                    .ToObservableCollection();
 
             if (this.ItemsList is not null && this.ItemsList.Any())
             {

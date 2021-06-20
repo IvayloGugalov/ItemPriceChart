@@ -35,7 +35,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 url: string.Concat(onlineShop.Url, @"/firstItem"),
                 title: "firstItem",
                 description: "item description",
-                price: new ItemPrice(20.5),
+                price: 20.5,
                 onlineShop: onlineShop,
                 type: ItemType.ComputerItem);
 
@@ -54,9 +54,9 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         {
             var itemPricesCollection = new List<ItemPrice>()
             {
-                new(15),
-                new(16),
-                new(20.5),
+                new(this.item.Id, 15),
+                new(this.item.Id, 16),
+                new(this.item.Id, 20.5),
             };
 
             foreach (var itemPrice in itemPricesCollection)
@@ -72,9 +72,9 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void UpdatePriceAction_WillGetNewPrice_UpdatesChart()
         {
-            var updatedItemPrice = new ItemPrice(21);
+            var updatedItemPrice = new ItemPrice(this.item.Id, 21);
 
-            this.itemServiceMock.Setup(_ => _.UpdateItemPrice(this.item))
+            this.itemServiceMock.Setup(_ => _.TryUpdateItemPrice(this.item))
                 .ReturnsAsync(updatedItemPrice);
 
             this.itemInformationViewModel = new ItemInformationViewModel(this.itemServiceMock.Object, this.item);
@@ -92,7 +92,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             MessageDialogViewModel messageDialogViewModel = null;
             UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
-            this.itemServiceMock.Setup(_ => _.UpdateItemPrice(this.item))
+            this.itemServiceMock.Setup(_ => _.TryUpdateItemPrice(this.item))
                 .ReturnsAsync(It.IsAny<ItemPrice>());
 
             this.itemInformationViewModel = new ItemInformationViewModel(this.itemServiceMock.Object, this.item);
@@ -111,7 +111,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
             var expectedOnExceptionDialogMessage = $"Could not update price for {this.item.Title}";
 
-            this.itemServiceMock.Setup(_ => _.UpdateItemPrice(this.item))
+            this.itemServiceMock.Setup(_ => _.TryUpdateItemPrice(this.item))
                 .Throws(new Exception());
 
             this.itemInformationViewModel = new ItemInformationViewModel(this.itemServiceMock.Object, this.item);

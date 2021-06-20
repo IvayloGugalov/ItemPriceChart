@@ -1,37 +1,18 @@
 ﻿using System;
-using System.IO;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Storage;
 
 using ItemPriceCharts.Domain.Entities;
-using ItemPriceCharts.InfraStructure.Constants;
 
 namespace ItemPriceCharts.Infrastructure.Data
 {
     public class ModelsContext : DbContext
     {
-        private readonly StreamWriter logStream = new(
-            string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DatabaseKeyWordConstants.DATABASE_LOG_PATH),
-            append: true);
-
-        private IDbContextTransaction transaction;
-
         public DbSet<OnlineShop> OnlineShops { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
         public DbSet<UserAccountOnlineShops> UserAccountOnlineShops { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite(DatabaseKeyWordConstants.CONNECTION_STRING)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
-                .LogTo(this.logStream.WriteLine,
-                       Microsoft.Extensions.Logging.LogLevel.Information,
-                       DbContextLoggerOptions.DefaultWithUtcTime);
-        }
+        public ModelsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,7 +22,6 @@ namespace ItemPriceCharts.Infrastructure.Data
         public override void Dispose()
         {
             base.Dispose();
-            this.logStream.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -9,12 +9,12 @@ using ItemPriceCharts.InfraStructure.Constants;
 
 namespace ItemPriceCharts.Infrastructure.Services
 {
-    public static class ItemDataRetrieveService
+    public class ItemDataRetrieveService : IItemDataRetrieveService
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemDataRetrieveService));
 
         // Change Title to a more concrete parameter: id, const....
-        public static (string title, string description, double price) CreateItem(HtmlDocument itemDocument, string onlineShopTitle)
+        public (string title, string description, double price) CreateItem(HtmlDocument itemDocument, string onlineShopTitle)
         {
             return onlineShopTitle switch
             {

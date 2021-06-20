@@ -3,14 +3,16 @@ using System;
 using ItemPriceCharts.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ItemPriceCharts.Infrastructure.Migrations
 {
     [DbContext(typeof(ModelsContext))]
-    partial class ModelsContextModelSnapshot : ModelSnapshot
+    [Migration("20210617102059_FixItemPriceNavigation")]
+    partial class FixItemPriceNavigation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,12 +163,12 @@ namespace ItemPriceCharts.Infrastructure.Migrations
 
                     b.OwnsMany("ItemPriceCharts.Domain.Entities.ItemPrice", "PricesForItem", b1 =>
                         {
-                            b1.Property<Guid>("ItemId")
-                                .HasColumnType("TEXT");
-
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("INTEGER");
+
+                            b1.Property<Guid>("ItemId")
+                                .HasColumnType("TEXT");
 
                             b1.Property<double>("Price")
                                 .HasColumnType("double");

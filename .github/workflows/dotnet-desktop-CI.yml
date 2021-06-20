@@ -53,7 +53,8 @@ jobs:
     env:
       Solution_Name: ItemPriceCharts/ItemPriceCharts.sln
       Project_Path: ItemPriceCharts/ItemPriceCharts/ItemPriceCharts.UI.WPF.csproj
-      Test_Project_Path: ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/ItemPriceCharts.UI.WPF.Test.csproj
+      WPF_Test_Project_Path: ItemPriceCharts/Tests/ItemPriceCharts.UI.WPF.Test/ItemPriceCharts.UI.WPF.Test.csproj, 
+      Infrastructure_Test_Project_Path: ItemPriceCharts\Tests\ItemPriceCharts.Infrastructure.Test\ItemPriceCharts.Infrastructure.Test.csproj, 
 
     steps:
     - name: Checkout
@@ -78,4 +79,4 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test ${{ env.Test_Project_Path }}
+      run: dotnet test ${{ env.WPF_Test_Project_Path }, {env.Infrastructure_Test_Project_Path}}

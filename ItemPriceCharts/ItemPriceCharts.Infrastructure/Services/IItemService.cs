@@ -10,6 +10,6 @@ namespace ItemPriceCharts.Infrastructure.Services
         Task AddItemToShop(string itemUrl, OnlineShop onlineShop, ItemType type);
         Task<bool> DeleteItem(Item item);
         Task UpdateItem(Item item);
-        Task<ItemPrice> UpdateItemPrice(Item item);
+        Task<ItemPrice> TryUpdateItemPrice(Item item);
     }
 }

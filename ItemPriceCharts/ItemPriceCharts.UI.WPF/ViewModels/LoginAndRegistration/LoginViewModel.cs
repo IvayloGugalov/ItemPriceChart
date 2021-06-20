@@ -77,6 +77,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
             if (loginResult == UserAccountLoginResult.SuccessfulLogin)
             {
+                // Write credentials directly into TryGetUserAccount
                 if (this.RememberUser)
                 {
                     await this.userAccountService.WriteUserCredentials(userAccount, this.RememberUser, DateTime.UtcNow.AddDays(30).ToString());

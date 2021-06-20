@@ -30,7 +30,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 url: string.Concat(onlineShop.Url, @"/firstItem"),
                 title: "firstItem",
                 description: "item description",
-                price: new ItemPrice(20.5),
+                price: 20.5,
                 onlineShop: onlineShop,
                 type: ItemType.ComputerItem);
         }

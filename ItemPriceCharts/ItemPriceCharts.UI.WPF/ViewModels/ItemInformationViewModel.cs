@@ -94,7 +94,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.IsInProgress = true;
 
-            var updatedItemPrice = await this.itemService.UpdateItemPrice(this.Item);
+            var updatedItemPrice = await this.itemService.TryUpdateItemPrice(this.Item);
 
             if (updatedItemPrice != null)
             {

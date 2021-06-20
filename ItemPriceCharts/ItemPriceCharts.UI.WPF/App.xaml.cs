@@ -38,6 +38,8 @@ namespace ItemPriceCharts.UI.WPF
             this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
             this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
             this.mappedTypes.Add(typeof(IUserAccountService), typeof(UserAccountService));
+            this.mappedTypes.Add(typeof(IHtmlWebWrapper), typeof(HtmlWebWrapper));
+            this.mappedTypes.Add(typeof(IItemDataRetrieveService), typeof(ItemDataRetrieveService));
 
             var bootstrapper = new Bootstrapper.Bootstrapper(this, this.mappedTypes);
 

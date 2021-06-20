@@ -5,6 +5,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Diagnostics;
 using Autofac.Core;
+using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 
 using NLog;
@@ -125,8 +126,9 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         private void MigrateDatabase()
         {
-            using var dbContext = new ModelsContext();
+            var dbContext = this.container.Resolve<ModelsContext>();
             dbContext.Database.Migrate();
+
             if (!dbContext.Database.CanConnect())
             {
                 throw new Exception("Can't connect to database.");
@@ -135,6 +137,16 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         private void ConfigureContainer(ContainerBuilder builder)
         {
+            builder.RegisterType<ModelsContextFactory>()
+                .AsSelf()
+                .SingleInstance()
+                .OnRelease(instance => instance.Dispose());
+            builder.Register<ModelsContext>(c => c.Resolve<ModelsContextFactory>()
+                    .CreateDbContext())
+                .SingleInstance()
+                .OnRelease(instance => instance.Dispose());
+            builder.RegisterType<HtmlWeb>().AsSelf().InstancePerLifetimeScope();
+
             if (this.mappedTypes != null && this.mappedTypes.Any())
             {
                 builder.RegisterModule(new MappedTypeModules(this.mappedTypes));

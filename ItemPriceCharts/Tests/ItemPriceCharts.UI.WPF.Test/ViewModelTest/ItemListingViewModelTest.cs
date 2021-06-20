@@ -40,8 +40,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         {
             var items = new List<Item>()
             {
-                ItemExtension.ConstructItem(this.defaultOnlineShop),
-                ItemExtension.ConstructItem(this.defaultOnlineShop),
                 ItemExtension.ConstructItem(this.defaultOnlineShop)
             };
 
@@ -68,8 +66,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         {
             var items = new List<Item>()
             {
-                ItemExtension.ConstructItem(this.defaultOnlineShop),
-                ItemExtension.ConstructItem(this.defaultOnlineShop),
                 ItemExtension.ConstructItem(this.defaultOnlineShop)
             };
 
