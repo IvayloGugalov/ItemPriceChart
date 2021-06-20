@@ -14,16 +14,16 @@ jobs:
         fetch-depth: 0
 
     # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+    #- name: Install .NET Core
+    #  uses: actions/setup-dotnet@v1
+    #  with:
+    #    dotnet-version: 5.0.x
     - name: Install Dependencies
       run: npm install
 
     - name: Generate coverage report
       run: |
-        cd ./Tests
+        cd ./Tests/
         dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
 
       #- uses: actions/checkout@v1
