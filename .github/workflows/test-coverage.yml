@@ -34,4 +34,4 @@ jobs:
       run: dotnet test ItemPriceCharts/ItemPriceCharts.sln
         /p:CollectCoverage=true
         /p:CoverletOutput=TestResults/
-        /p:CoverletOutputFormat=lcov
+        /p:CoverletOutputFormat=opencover
