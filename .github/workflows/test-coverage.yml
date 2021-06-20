@@ -2,6 +2,9 @@ name: ItemPriceChart Colelct Code Coverage
 
 on:
   push:
+    branches:
+      - [develop, master]
+
   pull_request:
     branches:
       - [develop, master]
