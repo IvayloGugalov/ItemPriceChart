@@ -6,7 +6,7 @@ using Autofac;
 using Autofac.Core;
 
 using ItemPriceCharts.Domain.Entities;
-using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.Views;
 

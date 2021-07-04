@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using Moq;
+
 using NUnit.Framework;
 
 using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
@@ -14,20 +14,22 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
     [TestFixture]
     public class ItemListingViewModelTest
     {
-        private OnlineShop defaultOnlineShop;
+        private readonly TestableDispatcherWrapper dispatcherWrapper = new();
+        private UiEvents uiEvents;
+
         private UserAccount userAccount;
 
         [SetUp]
         public void SetUp()
         {
-            this.defaultOnlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
-
             this.userAccount = new UserAccount(
                 firstName: "Firstname",
                 lastName: "Lastname",
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
                 password: "P@ssWorD");
+
+            this.uiEvents = new UiEvents(this.dispatcherWrapper);
         }
 
         [TearDown]
@@ -38,19 +40,20 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void GetItems_WithNoSelectedShop_WillCallService()
         {
+            var shop = OnlineShopExtension.ConstructDefaultOnlineShop();
             var items = new List<Item>()
             {
-                ItemExtension.ConstructItem(this.defaultOnlineShop)
+                ItemExtension.ConstructItem(shop)
             };
 
             foreach (var item in items)
             {
-                this.defaultOnlineShop.AddItem(item);
+                shop.AddItem(item);
             }
 
-            this.userAccount.AddOnlineShop(this.defaultOnlineShop);
+            this.userAccount.AddOnlineShop(shop);
 
-            var itemListingViewModel = new ItemListingViewModel(this.userAccount)
+            var itemListingViewModel = new ItemListingViewModel(this.userAccount, this.uiEvents)
             {
                 SelectedShop = null
             };
@@ -64,19 +67,20 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void GetItems_WithSelectedShop_WillRetrieveItems()
         {
+            var shop = OnlineShopExtension.ConstructDefaultOnlineShop();
             var items = new List<Item>()
             {
-                ItemExtension.ConstructItem(this.defaultOnlineShop)
+                ItemExtension.ConstructItem(shop)
             };
 
             foreach (var item in items)
             {
-                this.defaultOnlineShop.AddItem(item);
+                shop.AddItem(item);
             }
 
-            var itemListingViewModel = new ItemListingViewModel(this.userAccount)
+            var itemListingViewModel = new ItemListingViewModel(this.userAccount, this.uiEvents)
             {
-                SelectedShop = this.defaultOnlineShop
+                SelectedShop = shop
             };
 
             itemListingViewModel.SetItemsList();

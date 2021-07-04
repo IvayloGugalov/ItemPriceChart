@@ -7,6 +7,7 @@ using NLog;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Helpers;
 
@@ -52,10 +53,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowItemsForShopCommand { get; }
         public ICommand ClosedCommand => new RelayCommand(_ => UiEvents.CloseApplication());
 
-        public MainWindowViewModel(UserAccount userAccount)
+        public MainWindowViewModel(UserAccount userAccount, UiEvents uiEvents)
         {
-            this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(userAccount);
-            this.itemListingViewModel = new ItemListingViewModel(userAccount);
+            this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(userAccount, uiEvents);
+            this.itemListingViewModel = new ItemListingViewModel(userAccount, uiEvents);
             
             this.UserAccount = userAccount;
             this.currentView = this;
@@ -68,8 +69,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
 
-            UiEvents.ShopAdded.Register(this.OnAddedShop);
-            UiEvents.ShopDeleted.Register(this.OnDeletedShop);
+            uiEvents.ShopAdded.Register(this.OnAddedShop);
+            uiEvents.ShopDeleted.Register(this.OnDeletedShop);
         }
 
         private void OnAddedShop(OnlineShop e)

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace ItemPriceCharts.Domain.Events
 {
-    public class DomainEvent<T> : IDomainEvent<T>
+    public class Event<T> : IEvent<T>
     {
         private readonly List<Delegate> handlers;
 
-        public DomainEvent()
+        public Event()
         {
             this.handlers = new List<Delegate>();
         }

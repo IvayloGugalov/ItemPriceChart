@@ -8,7 +8,7 @@ using NUnit.Framework;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Domain.Enums;
 using ItemPriceCharts.Infrastructure.Services;
-using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 

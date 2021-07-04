@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 using Autofac;
 using Autofac.Diagnostics;
@@ -13,6 +14,7 @@ using NLog;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Data;
 using ItemPriceCharts.Infrastructure.Services;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
 using ItemPriceCharts.UI.WPF.ViewModels;
@@ -103,7 +105,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
                 }
 
                 var loginViewModel = new ViewModels.LoginAndRegistration.LoginViewModel(accountService, userName, email);
-                Helpers.UiEvents.ShowLoginRegisterWindow(loginViewModel);
+                UiEvents.ShowLoginRegisterWindow(loginViewModel);
 
                 if (loginViewModel.SuccessfulLogin)
                 {
@@ -112,7 +114,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Could not show window");
+                Logger.Error(e.InnerException, "Could not show window");
                 throw new Exception("We are having difficulties with the app, please send us the logs!");
             }
         }
@@ -146,6 +148,10 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
                 .SingleInstance()
                 .OnRelease(instance => instance.Dispose());
             builder.RegisterType<HtmlWeb>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<UiEvents>()
+                .AsSelf()
+                .SingleInstance()
+                .WithParameter("dispatcherWrapper", new DispatcherWrapper(Application.Current.Dispatcher));
 
             if (this.mappedTypes != null && this.mappedTypes.Any())
             {

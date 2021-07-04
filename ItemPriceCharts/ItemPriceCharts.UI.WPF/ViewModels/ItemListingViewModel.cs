@@ -3,6 +3,7 @@
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Extensions;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
@@ -11,8 +12,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemListingViewModel));
 
-        public ItemListingViewModel(UserAccount userAccount)
-            : base (userAccount)
+        public ItemListingViewModel(UserAccount userAccount, UiEvents uiEvents)
+            : base (userAccount, uiEvents)
         {
             this.ShouldShowShopInformation = false;
         }

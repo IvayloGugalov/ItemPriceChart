@@ -1,4 +1,5 @@
-﻿using ItemPriceCharts.UI.WPF.ViewModels;
+﻿using ItemPriceCharts.UI.WPF.Events;
+using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Helpers
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using ItemPriceCharts.Domain.Events;
 
 namespace ItemPriceCharts.Domain.Entities

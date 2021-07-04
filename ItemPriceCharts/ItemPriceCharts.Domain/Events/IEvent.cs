@@ -2,7 +2,7 @@
 
 namespace ItemPriceCharts.Domain.Events
 {
-    public interface IDomainEvent<T>
+    public interface IEvent<T>
     {
         void Register(Action<T> eventHandler);
         void Raise(T domainEvent);

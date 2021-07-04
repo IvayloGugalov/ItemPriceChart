@@ -6,8 +6,9 @@ using System.Windows.Threading;
 
 using NLog;
 
-using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.Infrastructure.Services;
+using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Events;
 
 namespace ItemPriceCharts.UI.WPF
 {

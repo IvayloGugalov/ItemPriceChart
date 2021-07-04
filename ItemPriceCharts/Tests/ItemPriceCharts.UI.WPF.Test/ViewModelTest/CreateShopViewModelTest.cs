@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Moq;
 using NUnit.Framework;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Services;
-using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 

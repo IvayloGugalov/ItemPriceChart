@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -6,8 +7,8 @@ using NLog;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Extensions;
-using ItemPriceCharts.UI.WPF.Helpers;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
@@ -20,7 +21,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public bool IsListOfShopsShown
         {
             get => this.isListOfShopsShown;
-            set => this.SetValue(ref this.isListOfShopsShown, value);
+            private set => this.SetValue(ref this.isListOfShopsShown, value);
         }
 
         public ObservableCollection<OnlineShop> OnlineShops { get; set; }
@@ -29,8 +30,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowCreateShopCommand { get; }
         public ICommand ShowAddItemCommand { get; }
 
-        public ShopsAndItemListingsViewModel(UserAccount userAccount)
-            : base (userAccount)
+        public ShopsAndItemListingsViewModel(UserAccount userAccount, UiEvents uiEvents)
+            : base (userAccount, uiEvents)
         {
             this.ShowCreateShopCommand = new RelayCommand(_ => this.ShowCreateShopAction());
             this.ShowAddItemCommand = new RelayCommand(_ => this.ShowAddItemAction());
@@ -39,8 +40,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.AddShopsToViewModel();
             this.ShouldShowShopInformation = true;
 
-            UiEvents.ShopAdded.Register(this.OnAddedShop);
-            UiEvents.ShopDeleted.Register(this.OnDeletedShop);
+            uiEvents.ShopAdded.Register(this.OnAddedShop);
+            uiEvents.ShopDeleted.Register(this.OnDeletedShop);
         }
 
         private void ShowCreateShopAction() => UiEvents.ShowCreateShopView.Raise(this.UserAccount);
@@ -64,7 +65,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                     this.AreItemsShown = true;
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Logger.Info($"Can't load items for {this.SelectedShop}:\n{e}");
                 UiEvents.ShowMessageDialog(
