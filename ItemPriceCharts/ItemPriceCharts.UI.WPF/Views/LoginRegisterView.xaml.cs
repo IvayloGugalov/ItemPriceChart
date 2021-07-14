@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows;
-
-using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
+﻿using System.Windows;
 
 namespace ItemPriceCharts.UI.WPF.Views
 {
@@ -10,10 +7,8 @@ namespace ItemPriceCharts.UI.WPF.Views
     /// </summary>
     public partial class LoginRegisterView : Window
     {
-        public LoginRegisterView(LoginViewModel viewModel)
+        public LoginRegisterView()
         {
-            this.DataContext = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-
             InitializeComponent();
         }
     }

@@ -1,27 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 
 using Autofac;
 using Autofac.Diagnostics;
-using Autofac.Core;
-using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
-
 using NLog;
-
-using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Data;
-using ItemPriceCharts.Infrastructure.Services;
-using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
+using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 using ItemPriceCharts.UI.WPF.Views;
 using ItemPriceCharts.UI.WPF.Views.UserControls;
-using ItemPriceCharts.XmReaderWriter.XmlActions;
-using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
@@ -30,16 +22,16 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         private static readonly Logger Logger = LogManager.GetLogger(nameof(Bootstrapper));
 
         private readonly App app;
-        private readonly Dictionary<Type, Type> mappedTypes;
+        private readonly Dispatcher dispatcher;
 
         private IContainer container;
         private ILifetimeScope lifetimeScope;
         private IViewFactory viewFactory;
 
-        public Bootstrapper(App app, Dictionary<Type, Type> mappedTypes)
+        public Bootstrapper(App app, Dispatcher dispatcher)
         {
             this.app = app;
-            this.mappedTypes = mappedTypes;
+            this.dispatcher = dispatcher;
 
             var builder = new ContainerBuilder();
 
@@ -70,60 +62,27 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
             //LifetimeScope must be init, after all dependencies are registered.
             this.lifetimeScope = this.container.BeginLifetimeScope();
-            this.viewFactory = this.lifetimeScope.Resolve<IViewFactory>(new Parameter[] { new NamedParameter("lifetimeScope", this.lifetimeScope) });
-            _ = new DialogCreatorFactory(this.viewFactory);
+            this.viewFactory = this.lifetimeScope.Resolve<IViewFactory>(new TypedParameter(typeof(ILifetimeScope), this.lifetimeScope));
 
             this.MigrateDatabase();
-            this.RegisterViews();
+            this.BindViewsToViewModels();
+
+            var config = new ConfigureStartUpWindowService(this.app, this.container, this.viewFactory);
+            config.ShowStartUpWindow();
         }
 
-        public void ShowStartUpWindow()
+        /// <summary>
+        /// Register all modules with services.
+        /// Do this before trying to Resolve any service from the context.
+        /// </summary>
+        /// <param name="builder"></param>
+        private void ConfigureContainer(ContainerBuilder builder)
         {
-            try
-            {
-                var (userName, email) = (string.Empty, string.Empty);
-                var accountService = this.container.Resolve<IUserAccountService>();
-
-                if (XmlCreateFile.EnsureXmlFileExists())
-                {
-                    UserCredentialsSettings.ReadSettings();
-
-                    if (UserCredentialsSettings.ShouldEnableAutoLogin())
-                    {
-                        var userAccount = accountService.GetUserAccount(UserCredentialsSettings.Username, UserCredentialsSettings.Email).GetAwaiter().GetResult();
-
-                        if (userAccount != null)
-                        {
-                            this.ConfigureMainWindow(userAccount);
-
-                            return;
-                        }
-                    }
-
-                    (userName, email) = UserCredentialsSettings.UsernameAndEmail;
-                    Logger.Debug($"Found credentials\tUsername:{userName}\tEmail:{email}.");
-                }
-
-                var loginViewModel = new ViewModels.LoginAndRegistration.LoginViewModel(accountService, userName, email);
-                UiEvents.ShowLoginRegisterWindow(loginViewModel);
-
-                if (loginViewModel.SuccessfulLogin)
-                {
-                    this.ConfigureMainWindow(loginViewModel.UserAccount);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e.InnerException, "Could not show window");
-                throw new Exception("We are having difficulties with the app, please send us the logs!");
-            }
-        }
-
-        private void ConfigureMainWindow(UserAccount userAccount)
-        {
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(new Parameter[] { new NamedParameter(nameof(userAccount), userAccount) });
-            this.app.MainWindow = mainWindow;
-            this.app.MainWindow?.Show();
+            builder.RegisterModule<AutofacModule>();
+            builder.RegisterModule(new MappedTypeModules(this.dispatcher));
+            builder.RegisterModule<SelfTypeModule>();
+            builder.RegisterModule<DatabaseModule>();
+            builder.RegisterModule<ViewsAndViewModelsModule>();
         }
 
         private void MigrateDatabase()
@@ -137,34 +96,11 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             }
         }
 
-        private void ConfigureContainer(ContainerBuilder builder)
+        private void BindViewsToViewModels()
         {
-            builder.RegisterType<ModelsContextFactory>()
-                .AsSelf()
-                .SingleInstance()
-                .OnRelease(instance => instance.Dispose());
-            builder.Register<ModelsContext>(c => c.Resolve<ModelsContextFactory>()
-                    .CreateDbContext())
-                .SingleInstance()
-                .OnRelease(instance => instance.Dispose());
-            builder.RegisterType<HtmlWeb>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<UiEvents>()
-                .AsSelf()
-                .SingleInstance()
-                .WithParameter("dispatcherWrapper", new DispatcherWrapper(Application.Current.Dispatcher));
+            this.viewFactory.RegisterUserControl<LoginViewModel, LoginView>();
+            this.viewFactory.RegisterUserControl<RegisterViewModel, RegisterView>();
 
-            if (this.mappedTypes != null && this.mappedTypes.Any())
-            {
-                builder.RegisterModule(new MappedTypeModules(this.mappedTypes));
-            }
-
-            builder.RegisterModule<MainModule>();
-            builder.RegisterModule<ViewModelsModule>();
-            builder.RegisterModule<AutofacModule>();
-        }
-
-        private void RegisterViews()
-        {
             this.viewFactory.Register<MainWindowViewModel, MainWindow>();
 
             this.viewFactory.RegisterUserControl<ItemListingViewModel, ItemListingView>();

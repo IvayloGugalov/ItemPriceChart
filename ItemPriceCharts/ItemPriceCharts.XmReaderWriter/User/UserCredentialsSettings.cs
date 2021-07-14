@@ -25,6 +25,8 @@ namespace ItemPriceCharts.XmReaderWriter.User
 
         public static void ReadSettings()
         {
+            XmlCreateFile.EnsureXmlFileExists();
+
             using var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH);
             try
             {
@@ -45,6 +47,8 @@ namespace ItemPriceCharts.XmReaderWriter.User
 
         public static bool ShouldEnableAutoLogin()
         {
+            UserCredentialsSettings.ReadSettings();
+
             _ = bool.TryParse(RememberAccount, out var shouldRememberAccount);
             _ = DateTime.TryParse(LoginExpiresDate, out var loginExpiresDate);
 

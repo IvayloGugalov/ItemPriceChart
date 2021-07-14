@@ -45,3 +45,4 @@ obj/
 ehthumbs.db
 Thumbs.db
 *.user
+*.editorconfig

@@ -5,7 +5,6 @@ using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Domain.Events;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.ViewModels;
-using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
 namespace ItemPriceCharts.UI.WPF.Events
 {
@@ -13,7 +12,6 @@ namespace ItemPriceCharts.UI.WPF.Events
     {
 
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
-        public static Func<LoginViewModel, bool?> ShowLoginRegisterWindow { get; set; }
 
         public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
 
@@ -22,6 +20,8 @@ namespace ItemPriceCharts.UI.WPF.Events
         public static IEvent<OnlineShop> ShowCreateItemView { get; set; } = new Event<OnlineShop>();
         public static IEvent<Item> ShowDeleteItemView { get; set; } = new Event<Item>();
         public static IEvent<Item> ShowItemInformationView { get; set; } = new Event<Item>();
+        public static IEvent<UserAccount> SuccessfulLogin { get; set; } = new Event<UserAccount>();
+
 
         //Events from EventsLocator for the UI
         public IUiEvent<Item> ItemAdded { get; set; }

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Services;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
@@ -15,9 +16,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private const string CREATION_FAILED_MESSAGE = "Can't create account.";
         private const string NOT_MATCHING_PASSWORDS_MESSAGE = "Passwords do not match";
 
-
         private readonly IUserAccountService userAccountService;
-        private readonly LoginViewModel loginViewModel;
 
         private string confirmPassword;
         private string firstName;
@@ -45,25 +44,24 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             }
         }
 
+        /// <summary>
+        /// Circular Dependency between the view models. Don't change this property as it will break the DI!
+        /// </summary>
+        public INavigationService<LoginViewModel> NavigationService { get; set; }
+
         public IAsyncCommand RegisterCommand { get; }
         public ICommand MoveBackCommand { get; }
 
-        public RegisterViewModel(IUserAccountService userAccountService, LoginViewModel loginViewModel)
+        public RegisterViewModel(IUserAccountService userAccountService)
         {
             this.userAccountService = userAccountService;
-            this.loginViewModel = loginViewModel;
 
             this.RegisterCommand = new RelayAsyncCommand(this.RegisterCommandAction, this.RegisterCommandPredicate, errorHandler: e =>
             {
                 MessageDialogCreator.ShowErrorDialog(message: e.Message);
             });
 
-            this.MoveBackCommand = new RelayCommand(this.MoveBackCommandAction);
-        }
-
-        private void MoveBackCommandAction(object param)
-        {
-            this.loginViewModel.CurrentViewModel = this.loginViewModel;
+            this.MoveBackCommand = new RelayCommand(_ => this.NavigationService.Navigate());
         }
 
         private async Task RegisterCommandAction()
@@ -77,7 +75,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
             if (userAccountCreationResult == UserAccountRegistrationResult.UserAccountCreated)
             {
-                this.MoveBackCommandAction(null);
+                this.MoveBackCommand.Execute(null);
                 return;
             }
 

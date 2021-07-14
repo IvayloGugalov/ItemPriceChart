@@ -8,7 +8,9 @@ namespace ItemPriceCharts.UI.WPF.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ViewFactory>().As<IViewFactory>().SingleInstance();
+            builder.RegisterType<ViewFactory>()
+                .As<IViewFactory>()
+                .SingleInstance();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace ItemPriceCharts.UI.WPF.Factories
             this.map[typeof(TViewModel)] = typeof(TView);
         }
 
-        public Window Resolve<TViewModel>(Parameter[] parameters = null)
+        public Window Resolve<TViewModel>(params Parameter[] parameters)
             where TViewModel : class, IViewModel
         {
             var viewModel = this.LifetimeScope.Resolve<TViewModel>(parameters ?? Array.Empty<Parameter>());

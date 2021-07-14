@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Domain", "I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Infrastructure", "ItemPriceCharts.Infrastructure\ItemPriceCharts.Infrastructure.csproj", "{1852704A-EC81-4CCB-B6D5-3580A00B4442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemPriceCharts.Infrastructure.Test", "Tests\ItemPriceCharts.Infrastructure.Test\ItemPriceCharts.Infrastructure.Test.csproj", "{7B921F42-54FA-41AC-913A-A8C246E5BD93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemPriceCharts.Infrastructure.Test", "Tests\ItemPriceCharts.Infrastructure.Test\ItemPriceCharts.Infrastructure.Test.csproj", "{7B921F42-54FA-41AC-913A-A8C246E5BD93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CC9172E-8CA0-4026-8BBD-8E7C2F40265F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

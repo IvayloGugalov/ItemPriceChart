@@ -1,4 +1,4 @@
-name: ItemPriceChart Colelct Code Coverage
+name: ItemPriceChart Collect Code Coverage
 
 on:
   push:

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 using NLog;
 
-using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Events;
 
@@ -17,7 +15,6 @@ namespace ItemPriceCharts.UI.WPF
     /// </summary>
     public partial class App : Application
     {
-        private readonly Dictionary<Type, Type> mappedTypes = new Dictionary<Type, Type>();
         private static readonly Logger Logger = LogManager.GetLogger(nameof(App));
 
         public App()
@@ -36,13 +33,7 @@ namespace ItemPriceCharts.UI.WPF
             Logger.Info("Starting Application");
             Logger.Debug($"Dispatcher managed thread identifier = {System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
-            this.mappedTypes.Add(typeof(IItemService), typeof(ItemService));
-            this.mappedTypes.Add(typeof(IOnlineShopService), typeof(OnlineShopService));
-            this.mappedTypes.Add(typeof(IUserAccountService), typeof(UserAccountService));
-            this.mappedTypes.Add(typeof(IHtmlWebWrapper), typeof(HtmlWebWrapper));
-            this.mappedTypes.Add(typeof(IItemDataRetrieveService), typeof(ItemDataRetrieveService));
-
-            var bootstrapper = new Bootstrapper.Bootstrapper(this, this.mappedTypes);
+            var bootstrapper = new Bootstrapper.Bootstrapper(this, this.Dispatcher);
 
             Application.Current.Exit += (_, _) =>
             {
@@ -50,8 +41,6 @@ namespace ItemPriceCharts.UI.WPF
                 bootstrapper.Stop();
                 LogManager.Shutdown();
             };
-
-            bootstrapper.ShowStartUpWindow();
 
             Logger.Info("Application started");
         }

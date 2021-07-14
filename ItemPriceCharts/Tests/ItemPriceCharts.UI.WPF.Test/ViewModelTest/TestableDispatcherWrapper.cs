@@ -13,5 +13,10 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
 
             return Task.Delay(1);
         }
+
+        public bool? Invoke(Func<bool?> callback)
+        {
+            return true;
+        }
     }
 }

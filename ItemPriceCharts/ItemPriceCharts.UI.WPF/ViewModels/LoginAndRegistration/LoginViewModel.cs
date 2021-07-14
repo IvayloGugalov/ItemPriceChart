@@ -7,6 +7,7 @@ using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Services;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
@@ -18,18 +19,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private readonly IUserAccountService userAccountService;
 
-        private BindableViewModel currentViewModel;
-        private RegisterViewModel registerViewModel;
         private bool rememberUser = true;
         private bool loginHasExpired;
-
-        public bool SuccessfulLogin { get; set; }
-
-        public BindableViewModel CurrentViewModel
-        {
-            get => this.currentViewModel;
-            set => this.SetValue(ref this.currentViewModel, value);
-        }
 
         public bool RememberUser
         {
@@ -45,9 +36,14 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         public UserAccount UserAccount { get; private set; }
 
+
+        /// <summary>
+        /// Circular Dependency between the view models. Don't change this property as it will break the DI!
+        /// </summary>
+        public INavigationService<RegisterViewModel> NavigationService { get; set; }
+
         public IAsyncCommand LoginCommand { get; }
         public ICommand ShowRegisterViewCommand { get; }
-        public ICommand ClosedCommand => new RelayCommand(_ => this.ClosedCommandAction());
 
         public LoginViewModel(IUserAccountService userAccountService, string userName, string email)
         {
@@ -61,15 +57,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
                 MessageDialogCreator.ShowErrorDialog(message: e.Message);
             });
 
-            this.ShowRegisterViewCommand = new RelayCommand(this.ShowRegisterViewAction);
-            this.CurrentViewModel = this;
-        }
-
-        private void ShowRegisterViewAction(object param)
-        {
-            this.registerViewModel ??= new RegisterViewModel(this.userAccountService, this);
-
-            this.CurrentViewModel = this.registerViewModel;
+            this.ShowRegisterViewCommand = new RelayCommand(_ => this.NavigationService.Navigate());
         }
 
         private async Task LoginCommandAction()
@@ -78,15 +66,13 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
             if (loginResult == UserAccountLoginResult.SuccessfulLogin)
             {
-                // Write credentials directly into TryGetUserAccount
+                // Write credentials directly into TryGetUserAccount??
                 if (this.RememberUser)
                 {
                     await this.userAccountService.WriteUserCredentials(userAccount, this.RememberUser, DateTime.UtcNow.AddDays(30).ToString());
                 }
 
-                this.SuccessfulLogin = true;
-                this.OnPropertyChanged(nameof(this.SuccessfulLogin));
-                this.UserAccount = userAccount;
+                UiEvents.SuccessfulLogin.Raise(userAccount);
             }
             else
             {
@@ -106,17 +92,5 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private bool LoginCommandPredicate() =>
             base.AreCredentialsFilled() &&
             base.IsEmailValid;
-
-        /// <summary>
-        /// Close the application only when the user requested it
-        /// </summary>
-        /// Closing when the registration control is used is handled here as well.
-        private void ClosedCommandAction()
-        {
-            if (!this.SuccessfulLogin)
-            {
-                UiEvents.CloseApplication();
-            }
-        }
     }
 }
