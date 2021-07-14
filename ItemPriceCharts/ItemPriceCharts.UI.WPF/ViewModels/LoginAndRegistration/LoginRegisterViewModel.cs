@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 
-using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Services;
@@ -50,16 +49,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             this.CurrentViewModel = this.CurrentViewModel is LoginViewModel
                 ? this.navigateToRegisterService.CurrentViewModel
                 : this.navigateToLoginService.CurrentViewModel;
-        }
-
-        public UserAccount LoggedUserAccount()
-        {
-            if (this.CurrentViewModel is LoginViewModel loginViewModel && loginViewModel.UserAccount != null)
-            { 
-                return loginViewModel.UserAccount;
-            }
-
-            return null;
         }
 
         /// <summary>
