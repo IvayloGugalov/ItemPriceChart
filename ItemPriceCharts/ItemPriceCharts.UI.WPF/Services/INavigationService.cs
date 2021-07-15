@@ -1,13 +1,13 @@
 ﻿using System;
 
-using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.Services
 {
     public interface INavigationService<TViewModel>
-        where TViewModel : BindableViewModel
+        where TViewModel : BaseViewModel
     {
-        BindableViewModel CurrentViewModel { get; }
+        BaseViewModel CurrentViewModel { get; }
 
         event EventHandler CurrentViewModelChanged;
 

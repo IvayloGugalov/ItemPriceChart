@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -10,17 +9,18 @@ using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class MainWindowViewModel : BindableViewModel
+    public class MainWindowViewModel : BaseViewModel
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(MainWindowViewModel));
 
         private readonly ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
         private readonly ItemListingViewModel itemListingViewModel;
 
-        private BindableViewModel currentView;
+        private BaseViewModel currentView;
         private bool isNewViewDisplayed;
         private OnlineShop selectedShop;
 
@@ -32,7 +32,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.isNewViewDisplayed, value);
         }
 
-        public BindableViewModel CurrentView
+        public BaseViewModel CurrentView
         {
             get => this.currentView;
             set => this.SetValue(ref this.currentView, value);

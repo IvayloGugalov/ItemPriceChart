@@ -5,10 +5,12 @@ using System.Runtime.CompilerServices;
 
 using ItemPriceCharts.UI.WPF.Helpers;
 
-namespace ItemPriceCharts.UI.WPF.ViewModels
+namespace ItemPriceCharts.UI.WPF.ViewModels.Base
 {
-    public abstract class BindableViewModel : IViewModel
+    public abstract class BaseViewModel : IViewModel
     {
+        private bool disposed;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void SetValue<TValue>(ref TValue target, TValue value, Action callback = null,
@@ -18,7 +20,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             {
                 throw new ArgumentNullException(nameof(propertyName));
             }
-            if (object.Equals(target, value))
+            if (Equals(target, value))
             {
                 return;
             }
@@ -47,6 +49,21 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
         }
     }
 }

@@ -6,10 +6,11 @@ using MaterialDesignThemes.Wpf;
 
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class MessageDialogViewModel : BindableViewModel
+    public class MessageDialogViewModel : BaseViewModel
     {
         private const string ACCEPT_TEXT = "Accept";
         private const string CLOSE_TEXT = "Close";

@@ -1,16 +1,16 @@
 ﻿using System;
 
-using ItemPriceCharts.UI.WPF.ViewModels;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.Services
 {
     public class NavigationService<TViewModel> : INavigationService<TViewModel>
-        where TViewModel : BindableViewModel
+        where TViewModel : BaseViewModel
     {
         private readonly TViewModel getViewModel;
-        private BindableViewModel currentViewModel;
+        private BaseViewModel currentViewModel;
 
-        public BindableViewModel CurrentViewModel
+        public BaseViewModel CurrentViewModel
         {
             get => this.currentViewModel;
             set

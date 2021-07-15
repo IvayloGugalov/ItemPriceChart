@@ -3,17 +3,18 @@
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Services;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
-    public class LoginRegisterViewModel : BindableViewModel
+    public class LoginRegisterViewModel : BaseViewModel
     {
         private readonly INavigationService<LoginViewModel> navigateToLoginService;
         private readonly INavigationService<RegisterViewModel> navigateToRegisterService;
 
-        private BindableViewModel currentViewModel;
+        private BaseViewModel currentViewModel;
 
-        public BindableViewModel CurrentViewModel
+        public BaseViewModel CurrentViewModel
         {
             get => this.currentViewModel;
             private set => this.SetValue(ref this.currentViewModel, value);

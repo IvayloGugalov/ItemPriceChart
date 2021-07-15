@@ -1,8 +1,9 @@
 ﻿using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
-    public class UserCredentialForm : BindableViewModel
+    public class UserCredentialForm : BaseViewModel
     {
         private string username;
         private string email;

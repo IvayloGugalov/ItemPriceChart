@@ -12,10 +12,11 @@ using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class ItemInformationViewModel : BindableViewModel
+    public class ItemInformationViewModel : BaseViewModel
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(ItemInformationViewModel));
 

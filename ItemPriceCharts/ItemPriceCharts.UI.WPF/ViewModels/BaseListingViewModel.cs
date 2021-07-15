@@ -5,10 +5,11 @@ using System.Windows.Input;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
+using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public class BaseListingViewModel : BindableViewModel
+    public class BaseListingViewModel : BaseViewModel
     {
         private ObservableCollection<Item> itemsList;
         private OnlineShop selectedShop;

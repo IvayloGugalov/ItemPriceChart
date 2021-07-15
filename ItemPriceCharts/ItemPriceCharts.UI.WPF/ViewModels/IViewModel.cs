@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
-    public interface IViewModel : INotifyPropertyChanged
+    public interface IViewModel : INotifyPropertyChanged, IDisposable
     {
     }
 }
