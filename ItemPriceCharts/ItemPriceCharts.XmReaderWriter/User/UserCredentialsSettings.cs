@@ -21,47 +21,49 @@ namespace ItemPriceCharts.XmReaderWriter.User
         [DataMember(EmitDefaultValue = true)]
         public static string Username { get; set; }
 
+        public static (string username, string email) UsernameAndEmail => (Username, Email);
+
         public static void ReadSettings()
         {
-            using (var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH))
+            XmlCreateFile.EnsureXmlFileExists();
+
+            using var reader = XmlReader.Create(XmlCreateFile.XML_FILE_PATH);
+            try
             {
-                try
+                reader.ReadXmlFile(new Dictionary<string, Action>()
                 {
-                    reader.ReadXmlFile(new Dictionary<string, Action>()
-                    {
-                        { nameof(RememberAccount), () =>  RememberAccount = reader.ReadElementContentAsString() },
-                        { nameof(LoginExpiresDate),  () => LoginExpiresDate = reader.ReadElementContentAsString() },
-                        { nameof(Email), () => Email = reader.ReadElementContentAsString() },
-                        { nameof(Username), () => Username = reader.ReadElementContentAsString() }
-                    });
-                }
-                finally
-                {
-                    reader.Close();
-                    reader.Dispose();
-                }
+                    { nameof(RememberAccount), () =>  RememberAccount = reader.ReadElementContentAsString() },
+                    { nameof(LoginExpiresDate),  () => LoginExpiresDate = reader.ReadElementContentAsString() },
+                    { nameof(Email), () => Email = reader.ReadElementContentAsString() },
+                    { nameof(Username), () => Username = reader.ReadElementContentAsString() }
+                });
+            }
+            finally
+            {
+                reader.Close();
+                reader.Dispose();
             }
         }
 
-        public static (string username, string email) UsernameAndEmail => (Username, Email);
+        public static bool ShouldEnableAutoLogin()
+        {
+            UserCredentialsSettings.ReadSettings();
 
-        public static bool ShouldEnableAutoLogin =>
-            bool.TryParse(RememberAccount, out var shouldRememberAccount) &&
-            shouldRememberAccount &&
-            DateTime.TryParse(LoginExpiresDate, out var loginExpiresDate) &&
-            DateTime.Now <= loginExpiresDate;
+            _ = bool.TryParse(RememberAccount, out var shouldRememberAccount);
+            _ = DateTime.TryParse(LoginExpiresDate, out var loginExpiresDate);
+
+            return shouldRememberAccount && DateTime.UtcNow <= loginExpiresDate;
+        }
 
         public static void WriteToXmlFile()
         {
-            using (var writer = XmlWriteData.CreateWriter(XmlCreateFile.XML_FILE_PATH))
-            {
-                writer.WriteElementBody("UserAccount");
+            using var writer = XmlWriteData.CreateWriter(XmlCreateFile.XML_FILE_PATH);
+            writer.WriteElementBody("UserAccount");
 
-                writer.WriteTo(nameof(Username), Username);
-                writer.WriteTo(nameof(Email), Email);
-                writer.WriteTo(nameof(RememberAccount), RememberAccount);
-                writer.WriteTo(nameof(LoginExpiresDate), LoginExpiresDate);
-            }
+            writer.WriteTo(nameof(Username), Username);
+            writer.WriteTo(nameof(Email), Email);
+            writer.WriteTo(nameof(RememberAccount), RememberAccount);
+            writer.WriteTo(nameof(LoginExpiresDate), LoginExpiresDate);
         }
     }
 }

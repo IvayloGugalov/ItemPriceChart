@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
 
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Models;
-using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Domain.Entities;
+using ItemPriceCharts.Domain.Events;
+using ItemPriceCharts.Infrastructure.Services;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
@@ -20,8 +20,9 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         private Mock<IOnlineShopService> onlineShopServiceMock;
         private Mock<IItemService> itemServiceMock;
 
-        private ItemListingViewModel itemListingViewModel;
-        private ShopsAndItemListingsViewModel shopsAndItemListingsViewModel;
+        private readonly TestableDispatcherWrapper dispatcherWrapper = new();
+        private UiEvents uiEvents;
+
         private OnlineShop onlineShop;
         private UserAccount userAccount;
 
@@ -31,6 +32,8 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             this.onlineShopServiceMock = new Mock<IOnlineShopService>(MockBehavior.Strict);
             this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
 
+            this.uiEvents = new UiEvents(this.dispatcherWrapper);
+
             this.onlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
 
             this.userAccount = new UserAccount(
@@ -39,9 +42,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
                 email: new Email("newEmail@email.bg"),
                 userName: "UserName",
                 password: "P@ssWorD");
-
-            this.itemListingViewModel = new ItemListingViewModel(this.userAccount);
-            this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.userAccount);
         }
 
         [TearDown]
@@ -52,24 +52,11 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         }
 
         [Test]
-        public void ConstructMainWindowViewModel_WhenSetOnlineShopsReturnsNull_WillShowMessageDialog()
-        {
-            //MessageDialogViewModel messageDialogViewModel = null;
-            //UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
-
-            //var expectedOnExceptionDialogMessage = "Couldn't retrieve shops.";
-
-            //var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
-
-            //Assert.AreEqual(expectedOnExceptionDialogMessage, messageDialogViewModel.Description);
-        }
-
-        [Test]
         public void ConstructMainWindowViewModel_WhenSetOnlineShops_WillRetrieveShopsSuccessfully()
         {
 
             this.userAccount.AddOnlineShop(this.onlineShop);
-            var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
+            var mainWindowViewModel = new MainWindowViewModel(this.userAccount, this.uiEvents);
 
             Assert.AreEqual(1, mainWindowViewModel.OnlineShops.Count);
             Assert.AreEqual(this.onlineShop, mainWindowViewModel.OnlineShops.First());
@@ -78,44 +65,32 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [Test]
         public void ShowItemListingAction_WithNoSelectedShop_WillSetItemsList()
         {
-            //this.userAccount.AddOnlineShop(this.onlineShop);
-            //var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
+            this.userAccount.AddOnlineShop(this.onlineShop);
+            var itemListingViewModel = new ItemListingViewModel(this.userAccount, this.uiEvents);
+            var mainWindowViewModel = new MainWindowViewModel(this.userAccount, this.uiEvents);
 
-            //mainWindowViewModel.ShowItemListingCommand.Execute(null);
+            mainWindowViewModel.ShowItemListingCommand.Execute(null);
 
-            //Assert.IsNull(mainWindowViewModel.SelectedShop);
-            //Assert.AreEqual(mainWindowViewModel.CurrentView, this.itemListingViewModel);
-        }
-
-        [Test]
-        public void ShowItemListingAction_OnException_WillShowMessageDialog()
-        {
-            //MessageDialogViewModel messageDialogViewModel = null;
-            //UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
-
-            //var expectedOnExceptionDialogMessage = "Couldn't retrieve items.";
-            //var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
-
-            //mainWindowViewModel.ShowItemListingCommand.Execute(null);
-
-            //Assert.AreEqual(expectedOnExceptionDialogMessage, messageDialogViewModel.Description);
+            Assert.IsNull(mainWindowViewModel.SelectedShop);
+            Assert.AreEqual(itemListingViewModel.GetType(), mainWindowViewModel.CurrentView.GetType());
         }
 
         [Test]
         public void ShowShopsAndItemListingsCommand_WillChangeCurrentView_Successfully()
         {
-            //var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
+            var shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.userAccount, this.uiEvents);
+            var mainWindowViewModel = new MainWindowViewModel(this.userAccount, this.uiEvents);
 
-            //mainWindowViewModel.ShowShopsAndItemListingsCommand.Execute(null);
+            mainWindowViewModel.ShowShopsAndItemListingsCommand.Execute(null);
 
-            //Assert.AreEqual(this.shopsAndItemListingsViewModel, mainWindowViewModel.CurrentView);
-            //Assert.IsTrue(mainWindowViewModel.IsNewViewDisplayed);
+            Assert.AreEqual(shopsAndItemListingsViewModel.GetType(), mainWindowViewModel.CurrentView.GetType());
+            Assert.IsTrue(mainWindowViewModel.IsNewViewDisplayed);
         }
 
         [Test]
         public void ClearViewCommand_WillClearTheView_Successfully()
         {
-            var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
+            var mainWindowViewModel = new MainWindowViewModel(this.userAccount, this.uiEvents);
 
             mainWindowViewModel.ClearViewCommand.Execute(null);
 
@@ -123,37 +98,28 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             Assert.IsFalse(mainWindowViewModel.IsNewViewDisplayed);
         }
 
-        [Test, Ignore("Event is raised 3 times when test is executed with all other tests")]
+        [Test]
         public void OnAddedShop_WillUpdateListOfShops_Successfully()
         {
-
-            var shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.userAccount);
-
-
-            var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
+            var mainWindowViewModel = new MainWindowViewModel(this.userAccount, this.uiEvents);
 
             Assert.AreEqual(Array.Empty<OnlineShop>(), mainWindowViewModel.OnlineShops);
 
-            UIEvents.ShopAdded.Publish(this.onlineShop);
+            DomainEvents.ShopAdded.Raise(this.onlineShop);
 
-            Assert.AreEqual(this.onlineShop, mainWindowViewModel.OnlineShops.First());
+            Assert.AreEqual(this.onlineShop, mainWindowViewModel.OnlineShops.FirstOrDefault());
         }
 
-        [Test, Ignore("Event is raised 3 times when test is executed with all other tests")]
+        [Test]
         public void OnDeletedShop_WillUpdateListOfShops_Successfully()
         {
-            var listOfShops = new List<OnlineShop>() { this.onlineShop };
-
-
-            var shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(this.userAccount);
-
-    
-
-            var mainWindowViewModel = new MainWindowViewModel(this.userAccount);
+            var listOfShops = new List<OnlineShop> { this.onlineShop };
+            this.userAccount.AddOnlineShop(listOfShops.First());
+            var mainWindowViewModel = new MainWindowViewModel(this.userAccount, this.uiEvents);
 
             Assert.AreEqual(listOfShops, mainWindowViewModel.OnlineShops);
 
-            UIEvents.ShopDeleted.Publish(this.onlineShop);
+            DomainEvents.ShopDeleted.Raise(this.onlineShop);
 
             Assert.AreEqual(Array.Empty<OnlineShop>(), mainWindowViewModel.OnlineShops);
         }
@@ -164,7 +130,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             get
             {
                 yield return new TestCaseData(Array.Empty<Item>());
-                yield return new TestCaseData(new List<Item>() { ItemExtension.ConstructDefaultItem(OnlineShopExtension.ConstructDefaultOnlineShop()) });
+                yield return new TestCaseData(new List<Item>() { ItemExtension.ConstructItem(OnlineShopExtension.ConstructDefaultOnlineShop()) });
             }
         }
     }

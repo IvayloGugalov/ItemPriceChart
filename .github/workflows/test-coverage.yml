@@ -1,0 +1,37 @@
+name: ItemPriceChart Collect Code Coverage
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    # Checkout the repo
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET 5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    # Generate coverage report
+    - name: Generate coverage report
+      run: dotnet test ItemPriceCharts/ItemPriceCharts.sln
+        /p:CollectCoverage=true
+        /p:CoverletOutput=TestResults/
+        /p:CoverletOutputFormat=opencover

@@ -1,11 +1,13 @@
-﻿using ItemPriceCharts.Services.Models;
+﻿using System;
+
+using ItemPriceCharts.Domain.Entities;
 
 namespace ItemPriceCharts.UI.WPF.Test.Extensions
 {
     public static class OnlineShopExtension
     {
-        public static OnlineShop ConstructOnlineShop(
-            int id,
+        public static OnlineShop ConstructOnlineShopWithParameters(
+            Guid id,
             string url,
             string title)
         {
@@ -22,7 +24,7 @@ namespace ItemPriceCharts.UI.WPF.Test.Extensions
         public static OnlineShop ConstructDefaultOnlineShop()
         {
             return OnlineShop.Construct(
-                id: 1,
+                id: new Guid(),
                 url: "https://www.someShop.com",
                 title: "someShop");
         }

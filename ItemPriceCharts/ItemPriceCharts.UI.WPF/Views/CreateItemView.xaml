@@ -1,0 +1,72 @@
+﻿<mah:MetroWindow x:Class="ItemPriceCharts.UI.WPF.Views.CreateItemView"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:indicator="clr-namespace:LoadingIndicators.WPF;assembly=LoadingIndicators.WPF"
+                 mc:Ignorable="d"
+                 WindowStyle="SingleBorderWindow"
+                 ResizeMode="CanMinimize"
+                 WindowStartupLocation="CenterScreen"
+                 SizeToContent="Height"
+                 Width="450">
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Top"
+          Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Paste the url of the item, corresponding to it's shop "
+                   Grid.Row="2"
+                   HorizontalAlignment="Center"
+                   Margin="0 0 0 5">
+            <Run Text="{Binding SelectedShop.Title, Mode=OneWay}"/>
+        </TextBlock>
+
+        <Border BorderThickness="1"
+                CornerRadius="10"
+                BorderBrush="Black"
+                Grid.Row="3"
+                Height="28"
+                Width="400">
+            <TextBox Name="urlTextBox"
+                     Style="{StaticResource Styles.TextBox.Common}"
+                     Foreground="Black"
+                     Padding="5 4 0 5"
+                     TextAlignment="Center"
+                     Text="{Binding NewItemUrl}"/>
+        </Border>
+
+        <ComboBox Grid.Row="5"
+                  ItemsSource="{Binding Source={StaticResource ItemTypeDataProvider}}"
+                  SelectedItem="{Binding SelectedItemType}"
+                  Style="{StaticResource Styles.ComboBox}"
+                  Width="200"
+                  Padding="5"/>
+
+        <indicator:LoadingIndicator Grid.Row="5"
+                                    Style="{StaticResource LoadingIndicatorRingStyleKey}"
+                                    Foreground="NavajoWhite"
+                                    IsActive="{Binding IsInProgress}"
+                                    SpeedRatio="1.2"/>
+
+        <Button Grid.Row="6"
+                Name="createItem"
+                Style="{StaticResource Styles.MenuButtons}"
+                Foreground="White"
+                Background="#23689b"
+                HorizontalAlignment="Center"
+                Height="30"
+                Content="Add item"
+                Command="{Binding AddItemCommand}"/>
+    </Grid>
+</mah:MetroWindow>

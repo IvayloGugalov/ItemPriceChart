@@ -3,8 +3,9 @@
 using Moq;
 using NUnit.Framework;
 
-using ItemPriceCharts.Services.Services;
-using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.Domain.Enums;
+using ItemPriceCharts.Infrastructure.Services;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
@@ -31,14 +32,14 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         public void AddItemAction_WillCreate_NewItem()
         {
             var onlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
-            var itemUrl = string.Concat(onlineShop.URL, @"/newItem");
-            var itemType = Services.Models.ItemType.ComputerItem;
+            var itemUrl = string.Concat(onlineShop.Url, @"/newItem");
+            var itemType = ItemType.ComputerItem;
 
-            this.itemServiceMock.Setup(_ => _.CreateItem(itemUrl, onlineShop, itemType));
+            this.itemServiceMock.Setup(_ => _.AddItemToShop(itemUrl, onlineShop, itemType));
 
             var createItemViewModel = new CreateItemViewModel(this.itemServiceMock.Object, onlineShop)
             {
-                NewItemURL = itemUrl,
+                NewItemUrl = itemUrl,
                 SelectedItemType = itemType
             };
 
@@ -49,19 +50,19 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         public void AddItemAction_WhenExceptionThrown_WillShowMessageDialog()
         {
             var onlineShop = OnlineShopExtension.ConstructDefaultOnlineShop();
-            var itemUrl = string.Concat(onlineShop.URL, @"/newItem");
-            var itemType = Services.Models.ItemType.ComputerItem;
+            var itemUrl = string.Concat(onlineShop.Url, @"/newItem");
+            var itemType = ItemType.ComputerItem;
             var expectedOnExceptionDialogMessage = $"Failed to create new item with url: {itemUrl}";
 
             MessageDialogViewModel messageDialogViewModel = null;
-            UIEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
 
-            this.itemServiceMock.Setup(_ => _.CreateItem(It.IsAny<string>(), onlineShop, It.IsAny<Services.Models.ItemType>()))
+            this.itemServiceMock.Setup(_ => _.AddItemToShop(It.IsAny<string>(), onlineShop, It.IsAny<ItemType>()))
                 .Throws(new Exception());
 
             var createItemViewModel = new CreateItemViewModel(this.itemServiceMock.Object, onlineShop)
             {
-                NewItemURL = itemUrl,
+                NewItemUrl = itemUrl,
                 SelectedItemType = itemType
             };
 
