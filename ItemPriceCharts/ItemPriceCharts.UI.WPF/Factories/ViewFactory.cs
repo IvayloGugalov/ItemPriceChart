@@ -32,12 +32,14 @@ namespace ItemPriceCharts.UI.WPF.Factories
             where TViewModel : class, IViewModel
         {
             var viewModel = this.LifetimeScope.Resolve<TViewModel>(parameters ?? Array.Empty<Parameter>());
-
             var viewType = this.map[typeof(TViewModel)];
-            var view = this.LifetimeScope.Resolve(viewType) as Window;
+
+            if (this.LifetimeScope.Resolve(viewType) is not Window view)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
 
             view.DataContext = viewModel;
-
             return view;
         }
 
@@ -53,10 +55,13 @@ namespace ItemPriceCharts.UI.WPF.Factories
         {
             var viewModel = this.LifetimeScope.Resolve<TViewModel>();
             var viewType = this.map[typeof(TViewModel)];
-            var view = this.LifetimeScope.Resolve(viewType) as UserControl;
+
+            if (this.LifetimeScope.Resolve(viewType) is not UserControl view)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
 
             view.DataContext = viewModel;
-
             return view;
         }
     }

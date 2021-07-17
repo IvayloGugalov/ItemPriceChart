@@ -27,6 +27,11 @@ namespace ItemPriceCharts.UI.WPF.Modules
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Dispatcher), this.dispatcher));
 
+            builder.RegisterType<HtmlWebWrapper>()
+                .As<IHtmlWebWrapper>()
+                .InstancePerDependency()
+                .WithParameter(new TypedParameter(typeof(HtmlAgilityPack.HtmlWeb), new HtmlAgilityPack.HtmlWeb()));
+
             builder.RegisterType<NavigationService<LoginViewModel>>()
                 .As<INavigationService<LoginViewModel>>()
                 .SingleInstance();
@@ -39,7 +44,6 @@ namespace ItemPriceCharts.UI.WPF.Modules
                 {typeof(IItemService), typeof(ItemService)},
                 {typeof(IOnlineShopService), typeof(OnlineShopService)},
                 {typeof(IUserAccountService), typeof(UserAccountService)},
-                {typeof(IHtmlWebWrapper), typeof(HtmlWebWrapper)},
                 {typeof(IItemDataRetrieveService), typeof(ItemDataRetrieveService)}
             };
 

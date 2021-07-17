@@ -2,13 +2,14 @@
 using System.Windows.Threading;
 
 using Autofac;
+using Autofac.Core;
 using Autofac.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using NLog;
+
 using ItemPriceCharts.Infrastructure.Data;
 using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Modules;
-using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 using ItemPriceCharts.UI.WPF.Views;
@@ -16,37 +17,31 @@ using ItemPriceCharts.UI.WPF.Views.UserControls;
 
 namespace ItemPriceCharts.UI.WPF.Bootstrapper
 {
-    public class Bootstrapper
+    public static class Bootstrapper
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(Bootstrapper));
 
-        private readonly App app;
-        private readonly Dispatcher dispatcher;
+        private static IContainer container;
+        private static ILifetimeScope lifetimeScope;
+        private static Dispatcher dispatcher;
 
-        private IContainer container;
-        private ILifetimeScope lifetimeScope;
-        private IViewFactory viewFactory;
+        public static IViewFactory ViewFactory { get; private set; }
 
-        public Bootstrapper(App app, Dispatcher dispatcher)
+        public static void Stop()
         {
-            this.app = app;
-            this.dispatcher = dispatcher;
+            lifetimeScope.Dispose();
+            container.Dispose();
+        }
+
+        public static void Start(Dispatcher dispatcher)
+        {
+            Bootstrapper.dispatcher = dispatcher;
 
             var builder = new ContainerBuilder();
 
-            this.ConfigureContainer(builder);
-            this.Start(builder);
-        }
+            ConfigureContainer(builder);
 
-        public void Stop()
-        {
-            this.lifetimeScope.Dispose();
-            this.container.Dispose();
-        }
-
-        private void Start(ContainerBuilder builder)
-        {
-            this.container = builder.Build();
+            container = builder.Build();
 
 #if DEBUG
             var tracer = new DefaultDiagnosticTracer();
@@ -56,18 +51,16 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             };
 
             // Subscribe to the diagnostics with your tracer.
-            this.container.SubscribeToDiagnostics(tracer);
+            container.SubscribeToDiagnostics(tracer);
 #endif
 
             //LifetimeScope must be init, after all dependencies are registered.
-            this.lifetimeScope = this.container.BeginLifetimeScope();
-            this.viewFactory = this.lifetimeScope.Resolve<IViewFactory>(new TypedParameter(typeof(ILifetimeScope), this.lifetimeScope));
+            lifetimeScope = container.BeginLifetimeScope();
+            ViewFactory = lifetimeScope.Resolve<IViewFactory>(new TypedParameter(typeof(ILifetimeScope), lifetimeScope));
 
-            this.MigrateDatabase();
-            this.BindViewsToViewModels();
-
-            var config = new ConfigureStartUpWindowService(this.app, this.container, this.viewFactory);
-            config.ShowStartUpWindow();
+            MigrateDatabase();
+            BindViewsToViewModels();
+            Resolve<DialogCreatorFactory>();
         }
 
         /// <summary>
@@ -75,41 +68,62 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         /// Do this before trying to Resolve any service from the context.
         /// </summary>
         /// <param name="builder"></param>
-        private void ConfigureContainer(ContainerBuilder builder)
+        private static void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterModule<AutofacModule>();
-            builder.RegisterModule(new MappedTypeModules(this.dispatcher));
+            builder.RegisterModule(new MappedTypeModules(Bootstrapper.dispatcher));
             builder.RegisterModule<SelfTypeModule>();
             builder.RegisterModule<DatabaseModule>();
             builder.RegisterModule<ViewsAndViewModelsModule>();
         }
 
-        private void MigrateDatabase()
+        private static void MigrateDatabase()
         {
-            var dbContext = this.container.Resolve<ModelsContext>();
+            var dbContext = container.Resolve<ModelsContext>();
             dbContext.Database.Migrate();
 
             if (!dbContext.Database.CanConnect())
             {
                 throw new Exception("Can't connect to database.");
             }
+
         }
 
-        private void BindViewsToViewModels()
+        private static void BindViewsToViewModels()
         {
-            this.viewFactory.RegisterUserControl<LoginViewModel, LoginView>();
-            this.viewFactory.RegisterUserControl<RegisterViewModel, RegisterView>();
+            ViewFactory.RegisterUserControl<LoginViewModel, LoginView>();
+            ViewFactory.RegisterUserControl<RegisterViewModel, RegisterView>();
 
-            this.viewFactory.Register<MainWindowViewModel, MainWindow>();
+            ViewFactory.Register<MainWindowViewModel, MainWindow>();
 
-            this.viewFactory.RegisterUserControl<ItemListingViewModel, ItemListingView>();
-            this.viewFactory.RegisterUserControl<ShopsAndItemListingsViewModel, ShopsAndItemListingsView>();
+            ViewFactory.RegisterUserControl<ItemListingViewModel, ItemListingView>();
+            ViewFactory.RegisterUserControl<ShopsAndItemListingsViewModel, ShopsAndItemListingsView>();
 
-            this.viewFactory.Register<CreateShopViewModel, CreateShopView>();
+            ViewFactory.Register<CreateShopViewModel, CreateShopView>();
 
-            this.viewFactory.Register<CreateItemViewModel, CreateItemView>();
-            this.viewFactory.Register<DeleteItemViewModel, DeleteItemView>();
-            this.viewFactory.Register<ItemInformationViewModel, ItemInformationView>();
+            ViewFactory.Register<CreateItemViewModel, CreateItemView>();
+            ViewFactory.Register<DeleteItemViewModel, DeleteItemView>();
+            ViewFactory.Register<ItemInformationViewModel, ItemInformationView>();
+        }
+
+        public static T Resolve<T>(params Parameter[] parameters)
+        {
+            if (container == null)
+            {
+                throw new Exception("Bootstrapper hasn't been started!");
+            }
+
+            return container.Resolve<T>(parameters);
+        }
+
+        public static T Resolve<T>()
+        {
+            if (container == null)
+            {
+                throw new Exception("Bootstrapper hasn't been started!");
+            }
+
+            return container.Resolve<T>(new Parameter[0]);
         }
     }
 }

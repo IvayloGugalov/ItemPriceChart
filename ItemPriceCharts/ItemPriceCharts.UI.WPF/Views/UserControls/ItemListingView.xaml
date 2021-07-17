@@ -7,40 +7,59 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
-             mc:Ignorable="d" 
-             d:MinHeight="550"
-             d:MinWidth="450">
+             mc:Ignorable="d"
+             Background="Chocolate">
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="29*"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <ListView Name="ItemsListView"
-                  Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
+        <DataGrid x:Name="ItemDataGrid"
                   ItemsSource="{Binding ItemsList}"
                   SelectedItem="{Binding SelectedItem}"
-                  Style="{StaticResource Styles.ListViewForItems}"
-                  Grid.ColumnSpan="2">
+                  Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
+                  Style="{StaticResource DataGrids.MaterialDesignDataGrid}">
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderThickness="0">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseLeftButtonUp">
-                                <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                                       CommandParameter="{Binding ElementName=ItemsListView,
-                                                       Path=SelectedItem}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                        <TextBlock Text="{Binding Title}" />
-                    </Border>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title, Mode=OneWay}" />
+                <DataGridTextColumn Header="Current Price" Binding="{Binding CurrentPrice.Price, Mode=OneWay, StringFormat={} {0:C}}" />
+                <DataGridTextColumn Header="Original Price" Binding="{Binding OriginalPrice.Price, Mode=OneWay, StringFormat={} {0:C}}" />
 
-            <ListView.Resources>
-                <ContextMenu x:Key="ItemContextMenu"
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button VerticalAlignment="Center"
+                                        Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        Content="View chart"/>
+
+                                <Button Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        Content="Delete"/>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+
+
+
+
+
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                           CommandParameter="{Binding ElementName=ItemDataGrid, Path=SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+
+            <!--<DataGrid.ContextMenu>
+                <ContextMenu Name="asd"
                              Style="{StaticResource Styles.ItemContextMenu}">
-                    <MenuItem Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                    <MenuItem Command="{Binding Path=ShowItemInformationDialogCommand}">
                         <MenuItem.Icon>
                             <materialDesign:PackIcon Kind="InformationVariant"
                                                      Foreground="#3d9bff"
@@ -53,7 +72,7 @@
                         </MenuItem.Header>
                     </MenuItem>
 
-                    <MenuItem Command="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}">
+                    <MenuItem Command="{Binding Path=DeleteItemCommand}">
                         <MenuItem.Icon>
                             <materialDesign:PackIcon Kind="Remove"
                                                      Foreground="#ff2626"
@@ -66,11 +85,11 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </ContextMenu>
-            </ListView.Resources>
+            </DataGrid.ContextMenu>-->
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
+            <!--<DataGrid.ItemContainerStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    --><!--<Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>--><!--
                     <Setter Property="Height" Value="25"/>
                     <Setter Property="FontSize" Value="15"/>
                     <Setter Property="Margin" Value="0 5 0 5"/>
@@ -83,10 +102,10 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}" >
                                 <ContentPresenter HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Width="{TemplateBinding Width}"
-                                        Height="{TemplateBinding Height}"
-                                        TextBlock.TextAlignment="Center"/>
+                                                  VerticalAlignment="Center"
+                                                  Width="{TemplateBinding Width}"
+                                                  Height="{TemplateBinding Height}"
+                                                  TextBlock.TextAlignment="Center"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -97,9 +116,97 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </ListView.ItemContainerStyle>
+        </DataGrid.ItemContainerStyle>-->
+        </DataGrid>
 
-        </ListView>
+
+
+        <GroupBox Visibility="Collapsed">
+            <ListView Name="ItemsListView"
+                  ItemsSource="{Binding ItemsList}"
+                  SelectedItem="{Binding SelectedItem}"
+                  Style="{StaticResource Styles.ListViewForItems}"
+                  Grid.ColumnSpan="2">
+
+                <!--<ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                       CommandParameter="{Binding ElementName=ItemsListView,
+                                                       Path=SelectedItem}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <TextBlock Text="{Binding Title}" />
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>-->
+
+                <ListView.Resources>
+                    <!--<ContextMenu
+                             Style="{StaticResource Styles.ItemContextMenu}">
+                        <MenuItem Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="InformationVariant"
+                                                     Foreground="#3d9bff"
+                                                     VerticalAlignment="Center"
+                                                     Width="20" 
+                                                     Height="20" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <TextBlock Text="Show information"/>
+                            </MenuItem.Header>
+                        </MenuItem>
+
+                        <MenuItem Command="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Remove"
+                                                     Foreground="#ff2626"
+                                                     VerticalAlignment="Center"
+                                                     Width="20" 
+                                                     Height="20" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <TextBlock Text="Delete item"/>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>-->
+                </ListView.Resources>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <!--<Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>-->
+                        <Setter Property="Height" Value="25"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="Margin" Value="0 5 0 5"/>
+                        <Setter Property="FontFamily" Value="Segoe UI"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="Width" Value="440" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="#ededed"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}" >
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Width="{TemplateBinding Width}"
+                                        Height="{TemplateBinding Height}"
+                                        TextBlock.TextAlignment="Center"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+            </ListView>
+        </GroupBox>
     </Grid>
 
 </UserControl>

@@ -10,7 +10,6 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Topmost="False"
-        ResizeMode="CanMinimize"
         Height="600"
         Width="1000">
     <i:Interaction.Triggers>
@@ -47,25 +46,25 @@
                                          Margin="0 15 0 0"/>
 
                 <Button Grid.Row="1"
-                        Style="{StaticResource Styles.MenuButtons}"
+                        Style="{StaticResource Buttons.MenuButtons}"
                         Name="allShops"
                         Content="View shops"
                         Command="{Binding ShowShopsAndItemListingsCommand}"/>
 
                 <Button Grid.Row="5"
-                        Style="{StaticResource Styles.MenuButtons}"
+                        Style="{StaticResource Buttons.MenuButtons}"
                         Name="allItems"
                         Content="View items"
                         Command="{Binding ShowItemListingCommand}"/>
 
                 <Button Grid.Row="4"
-                        Style="{StaticResource Styles.MenuButtons}"
+                        Style="{StaticResource Buttons.MenuButtons}"
                         VerticalAlignment="Bottom"
                         Content="Clear View"
                         Command="{Binding ClearViewCommand}"/>
 
                 <Button Grid.Row="2"
-                        Style="{StaticResource Styles.MenuButtons}"
+                        Style="{StaticResource Buttons.MenuButtons}"
                         Click="Button_Click">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -143,7 +142,7 @@
                 </ListView>
 
                 <Button Grid.Row="6"
-                        Style="{StaticResource Styles.MenuButtons}"
+                        Style="{StaticResource Buttons.MenuButtons}"
                         VerticalAlignment="Bottom"
                         Content="Show log file"
                         Command="{Binding ShowLogFileCommand}">
@@ -155,7 +154,7 @@
         <Grid Grid.Column="1" Background="#2283c9">
             <ContentControl Visibility="{Binding Path=IsNewViewDisplayed, Converter={cv:BoolToVisibilityConverter}}"
                             Content="{Binding CurrentView}"
-                             Style="{StaticResource VisibleAnimation}"/>
+                            Style="{StaticResource VisibleAnimation}"/>
         </Grid>
         
     </Grid>

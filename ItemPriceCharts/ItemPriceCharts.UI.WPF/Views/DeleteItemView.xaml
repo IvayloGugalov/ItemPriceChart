@@ -21,7 +21,7 @@
 
         <StackPanel Orientation="Vertical">
             <TextBlock Grid.ColumnSpan="2"
-                       Style="{StaticResource Styles.Textblock.Common}"
+                       Style="{StaticResource Styles.TextBlock.Common}"
                        Foreground="Black"
                        HorizontalAlignment="Center"
                        Text="Are you sure you want to delete"/>
@@ -44,7 +44,7 @@
 
             <Button Grid.Column="0"
                     Name="positiveButton"
-                    Style="{StaticResource Styles.MessageDialogButton}"
+                    Style="{StaticResource Buttons.MessageDialogButton}"
                     Foreground="White"
                     HorizontalAlignment="Right"
                     Command="{Binding DeleteItemCommand}"
@@ -52,7 +52,7 @@
 
             <Button Grid.Column="2"
                     Name="negativeButton"
-                    Style="{StaticResource Styles.MessageDialogButton}"
+                    Style="{StaticResource Buttons.MessageDialogButton}"
                     Foreground="White"
                     HorizontalAlignment="Left"
                     Content="Cancel"/>

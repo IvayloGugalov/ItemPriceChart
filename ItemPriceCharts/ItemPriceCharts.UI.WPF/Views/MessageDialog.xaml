@@ -78,12 +78,12 @@
                     Name="positiveButton"
                     Content="{Binding PositiveButtonText}"
                     Visibility="{Binding Path=IsSingleButtonShown, Converter={cv:BoolToVisibilityConverter Invert=True}}"
-                    Style="{StaticResource Styles.MessageDialogButton}"/>
+                    Style="{StaticResource Buttons.MessageDialogButton}"/>
 
             <Button Grid.Column="4"
                     Name="negativeButton"
                     Content="{Binding NegativeButtonText}"
-                    Style="{StaticResource Styles.MessageDialogButton}"/>
+                    Style="{StaticResource Buttons.MessageDialogButton}"/>
         </Grid>
     </Grid>
 </mah:MetroWindow>
