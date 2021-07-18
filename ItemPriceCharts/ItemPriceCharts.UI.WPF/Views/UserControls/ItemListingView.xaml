@@ -8,45 +8,56 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
              mc:Ignorable="d"
-             Background="Chocolate">
+             Background="Transparent">
 
     <Grid>
         <DataGrid x:Name="ItemDataGrid"
+                  Margin="5 0 0 0"
                   ItemsSource="{Binding ItemsList}"
                   SelectedItem="{Binding SelectedItem}"
                   Visibility="{Binding AreItemsShown, Converter={cv:BoolToVisibilityConverter}}"
-                  Style="{StaticResource DataGrids.MaterialDesignDataGrid}">
+                  Style="{StaticResource DataGrids.CustomDataGrid}"
+                  RowStyle="{StaticResource DataGrids.CustomRowStyle}"
+                  CellStyle="{StaticResource DataGrids.CustomCellStyle}">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title, Mode=OneWay}" />
-                <DataGridTextColumn Header="Current Price" Binding="{Binding CurrentPrice.Price, Mode=OneWay, StringFormat={} {0:C}}" />
-                <DataGridTextColumn Header="Original Price" Binding="{Binding OriginalPrice.Price, Mode=OneWay, StringFormat={} {0:C}}" />
-
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Button VerticalAlignment="Center"
-                                        Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        Content="View chart"/>
-
-                                <Button Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                        Command="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        Content="Delete"/>
-                            </Grid>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Title"
+                                    Binding="{Binding Title, Mode=OneWay}" />
+                <DataGridTextColumn Header="Current Price"
+                                    Binding="{Binding CurrentPrice.Price, Mode=OneWay, StringFormat={} {0:C}}" />
+                <DataGridTextColumn Header="Original Price"
+                                    Binding="{Binding OriginalPrice.Price, Mode=OneWay, StringFormat={} {0:C}}"/>
             </DataGrid.Columns>
 
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border HorizontalAlignment="Stretch"
+                            Margin="15 0 15 3"
+                            BorderThickness="0 0.5 0 0"
+                            BorderBrush="Black">
+                        <Grid Margin="0 5 0 0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalAlignment="Left"
+                                    Height="20"
+                                    Command="{Binding Path=DataContext.ShowItemInformationDialogCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    Content="View chart"/>
 
-
+                            <Button Grid.Column="2"
+                                    HorizontalAlignment="Left"
+                                    Height="20"
+                                    VerticalAlignment="Bottom"
+                                    Command="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    Content="Delete"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
 
 
             <!--<i:Interaction.Triggers>
@@ -86,37 +97,6 @@
                     </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>-->
-
-            <!--<DataGrid.ItemContainerStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    --><!--<Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>--><!--
-                    <Setter Property="Height" Value="25"/>
-                    <Setter Property="FontSize" Value="15"/>
-                    <Setter Property="Margin" Value="0 5 0 5"/>
-                    <Setter Property="FontFamily" Value="Segoe UI"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                    <Setter Property="Width" Value="440" />
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="Foreground" Value="#ededed"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}" >
-                                <ContentPresenter HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Width="{TemplateBinding Width}"
-                                                  Height="{TemplateBinding Height}"
-                                                  TextBlock.TextAlignment="Center"/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="White"/>
-                            <Setter Property="Cursor" Value="Hand" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-        </DataGrid.ItemContainerStyle>-->
         </DataGrid>
 
 
