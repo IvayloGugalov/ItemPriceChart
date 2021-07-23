@@ -3,15 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels"
+        xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
         xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:custom="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Topmost="False"
-        Height="600"
-        Width="1000">
+        MinHeight="600"
+        MinWidth="1000">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding Path=ClosedCommand}"/>
@@ -21,137 +23,19 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromLeft}">
+        <controls:LogOutModalControl Grid.Column="0"
+                                     Grid.ColumnSpan="2"
+                                     Panel.ZIndex="10"/>
 
-            <Grid Background="#024f94"
-                  Width="150">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <materialDesign:PackIcon Kind="ShoppingCart"
-                                         Foreground="White"
-                                         HorizontalAlignment="Center"
-                                         Width="40"
-                                         Height="40"
-                                         Margin="0 15 0 0"/>
-
-                <Button Grid.Row="1"
-                        Style="{StaticResource Buttons.MenuButtons}"
-                        Name="allShops"
-                        Content="View shops"
-                        Command="{Binding ShowShopsAndItemListingsCommand}"/>
-
-                <Button Grid.Row="5"
-                        Style="{StaticResource Buttons.MenuButtons}"
-                        Name="allItems"
-                        Content="View items"
-                        Command="{Binding ShowItemListingCommand}"/>
-
-                <Button Grid.Row="4"
-                        Style="{StaticResource Buttons.MenuButtons}"
-                        VerticalAlignment="Bottom"
-                        Content="Clear View"
-                        Command="{Binding ClearViewCommand}"/>
-
-                <Button Grid.Row="2"
-                        Style="{StaticResource Buttons.MenuButtons}"
-                        Click="Button_Click">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="20 0 0 0">
-                            <materialDesign:PackIcon Margin="0 3 5 0"
-                                                     Kind="Shop" />
-                            <Label Padding="0"
-                                   Foreground="White"
-                                   Content="Shops"/>
-                        </StackPanel>
-
-                        <Grid Grid.Column="1"
-                              Margin="25 4 10 4">
-                            <materialDesign:PackIcon Name="ArrowUp"
-                                                     Kind="ArrowUp" />
-                            <materialDesign:PackIcon Name="ArrowDown"
-                                                     Kind="ArrowDown" />
-                        </Grid>
-                    </Grid>
-                </Button>
-
-                <ListView Grid.Row="3"
-                          Style="{StaticResource VisibleAnimation}"
-                          Name="listOfShops"
-                          Background="Transparent"
-                          BorderThickness="0"
-                          ItemsSource="{Binding OnlineShops}"
-                          SelectedItem="{Binding SelectedShop}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderThickness="0">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemListingCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                            CommandParameter="{Binding ElementName=listOfShops,
-                                            Path=SelectedItem}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <TextBlock Text="{Binding Title}" />
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="Height" Value="25"/>
-                            <Setter Property="FontSize" Value="15"/>
-                            <Setter Property="Margin" Value="0 3"/>
-                            <Setter Property="FontFamily" Value="Segoe UI"/>
-                            <Setter Property="Width" Value="100" />
-                            <Setter Property="Foreground" Value="LightGray"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListBoxItem}" >
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                          VerticalAlignment="Center"
-                                                          Width="{TemplateBinding Width}"
-                                                          Height="{TemplateBinding Height}"
-                                                          TextBlock.TextAlignment="Left"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="Cursor" Value="Hand" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-
-                <Button Grid.Row="6"
-                        Style="{StaticResource Buttons.MenuButtons}"
-                        VerticalAlignment="Bottom"
-                        Content="Show log file"
-                        Command="{Binding ShowLogFileCommand}">
-                </Button>
-            </Grid>
-
+        <materialDesign:TransitioningContent Grid.Column="0"
+                                             OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromLeft}">
+            <controls:SideMenuView />
         </materialDesign:TransitioningContent>
 
-        <Grid Grid.Column="1" Background="#2283c9">
+        <Grid Grid.Column="1">
             <ContentControl Visibility="{Binding Path=IsNewViewDisplayed, Converter={cv:BoolToVisibilityConverter}}"
                             Content="{Binding CurrentView}"
                             Style="{StaticResource VisibleAnimation}"/>

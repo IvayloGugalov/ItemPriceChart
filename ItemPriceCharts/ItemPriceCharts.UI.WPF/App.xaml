@@ -39,6 +39,10 @@
                 <controls:ShopsAndItemListingsView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewModels:UserSettingsSideMenuViewModel}">
+                <controls:UserSettingsSideMenuControl/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewModels:ItemListingViewModel}">
                 <controls:ItemListingView />
             </DataTemplate>

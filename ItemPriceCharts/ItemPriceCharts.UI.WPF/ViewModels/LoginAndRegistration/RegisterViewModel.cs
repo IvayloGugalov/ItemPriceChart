@@ -21,6 +21,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private string confirmPassword;
         private string firstName;
         private string lastName;
+        private string successMessage;
 
         public string FirstName
         {
@@ -42,6 +43,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
                 this.ErrorMessage = string.Empty;
                 this.SetValue(ref this.confirmPassword, value);
             }
+        }
+
+        public string SuccessMessage
+        {
+            get => this.successMessage;
+            private set => this.SetValue(ref this.successMessage, value);
         }
 
         /// <summary>
@@ -75,11 +82,27 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
             if (userAccountCreationResult == UserAccountRegistrationResult.UserAccountCreated)
             {
+                this.SuccessMessage = "Account created\nMoving to Log in window";
+
+                await Task.Delay(4000);
                 this.MoveBackCommand.Execute(null);
+
+                this.ResetViewModel();
                 return;
             }
 
             this.ErrorMessage = RegisterViewModel.GetCredentialsErrorMessage(userAccountCreationResult);
+        }
+
+        private void ResetViewModel()
+        {
+            this.FirstName = string.Empty;
+            this.LastName = string.Empty;
+            this.Email = string.Empty;
+            this.Username = string.Empty;
+            this.Password = string.Empty;
+            this.ConfirmPassword = string.Empty;
+            this.SuccessMessage = string.Empty;
         }
 
         private static string GetCredentialsErrorMessage(UserAccountRegistrationResult errorType) => errorType switch

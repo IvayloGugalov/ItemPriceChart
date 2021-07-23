@@ -46,11 +46,21 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => SetValue(ref this.selectedShop, value);
         }
 
+        public bool IsOpen
+        {
+            get => this.isOpen;
+            set => SetValue(ref this.isOpen, value);
+        }
+        private bool isOpen;
+
         public ICommand ShowShopsAndItemListingsCommand { get; }
         public ICommand ClearViewCommand { get; }
         public ICommand ShowLogFileCommand { get; }
         public ICommand ShowItemListingCommand { get; }
         public ICommand ShowItemsForShopCommand { get; }
+        public ICommand ShowLogOutModalCommand { get; }
+        public ICommand LogOutCommand { get; }
+        public ICommand CancelLogOutCommand { get; }
         public ICommand ClosedCommand => new RelayCommand(_ => UiEvents.CloseApplication());
 
         public MainWindowViewModel(UserAccount userAccount, UiEvents uiEvents)
@@ -58,6 +68,8 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.shopsAndItemListingsViewModel = new ShopsAndItemListingsViewModel(userAccount, uiEvents);
             this.itemListingViewModel = new ItemListingViewModel(userAccount, uiEvents);
             
+            _ = new UserSettingsSideMenuViewModel(userAccount);
+
             this.UserAccount = userAccount;
             this.currentView = this;
 
@@ -68,6 +80,10 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowItemsForShopCommand = new RelayCommand(_ => this.ShowItemListingAction());
             this.ClearViewCommand = new RelayCommand(_ => this.ClearViewAction());
             this.ShowLogFileCommand = new RelayCommand(_ => LogHelper.OpenLogFolder());
+
+            this.ShowLogOutModalCommand = new RelayCommand(_ => this.IsOpen = true);
+            this.LogOutCommand = new RelayCommand(_ => { });
+            this.CancelLogOutCommand = new RelayCommand(_ => this.IsOpen = false);
 
             uiEvents.ShopAdded.Register(this.OnAddedShop);
             uiEvents.ShopDeleted.Register(this.OnDeletedShop);

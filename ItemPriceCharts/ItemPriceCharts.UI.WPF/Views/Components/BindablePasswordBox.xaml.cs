@@ -13,8 +13,8 @@ namespace ItemPriceCharts.UI.WPF.Views.Components
 
         public string Password
         {
-            get { return (string)GetValue(PasswordProperty); }
-            set { SetValue(PasswordProperty, value); }
+            get => (string)GetValue(PasswordProperty);
+            set => SetValue(PasswordProperty, value);
         }
 
         public static readonly DependencyProperty PasswordProperty =

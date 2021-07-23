@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>Resources\Images\basket icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,6 +18,8 @@
 
   <ItemGroup>
     <None Remove="nlog.config" />
+    <None Remove="Resources\Images\basket icon.ico" />
+    <None Remove="Resources\Images\basket.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +56,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ItemPriceCharts.Infrastructure\ItemPriceCharts.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\basket icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\basket.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

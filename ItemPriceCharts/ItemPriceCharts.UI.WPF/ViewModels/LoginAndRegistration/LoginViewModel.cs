@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
@@ -33,9 +32,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
             get => this.loginHasExpired;
             set => this.SetValue(ref this.loginHasExpired, value);
         }
-
-        public UserAccount UserAccount { get; private set; }
-
 
         /// <summary>
         /// Circular Dependency between the view models. Don't change this property as it will break the DI!

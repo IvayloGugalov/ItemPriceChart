@@ -13,11 +13,18 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         private readonly INavigationService<RegisterViewModel> navigateToRegisterService;
 
         private BaseViewModel currentViewModel;
+        private bool showAnimation;
 
         public BaseViewModel CurrentViewModel
         {
             get => this.currentViewModel;
             private set => this.SetValue(ref this.currentViewModel, value);
+        }
+
+        public bool ShowAnimation
+        {
+            get => this.showAnimation;
+            private set => this.SetValue(ref this.showAnimation, value);
         }
 
         /// <summary>
@@ -26,7 +33,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
         /// /// </summary>
         public bool SuccessfulLogin { get; private set; }
 
-        public ICommand ClosedCommand => new RelayCommand(_ => this.ClosedCommandAction());
+        public ICommand CloseCommand => new RelayCommand(_ => this.ClosedCommandAction());
 
         public LoginRegisterViewModel(INavigationService<LoginViewModel> navigateToLoginService, INavigationService<RegisterViewModel> navigateToRegisterService)
         {
@@ -47,6 +54,9 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 
         private void OnCurrentViewModelChanged(object sender, object parameter)
         {
+            this.ShowAnimation = true;
+            this.ShowAnimation = false;
+
             this.CurrentViewModel = this.CurrentViewModel is LoginViewModel
                 ? this.navigateToRegisterService.CurrentViewModel
                 : this.navigateToLoginService.CurrentViewModel;

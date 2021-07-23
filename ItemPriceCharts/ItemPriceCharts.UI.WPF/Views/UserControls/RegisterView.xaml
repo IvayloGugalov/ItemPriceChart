@@ -6,10 +6,16 @@
              xmlns:components="clr-namespace:ItemPriceCharts.UI.WPF.Views.Components"
              xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:indicators="clr-namespace:LoadingIndicators.WPF;assembly=LoadingIndicators.WPF"
              mc:Ignorable="d"
              d:DesignHeight="280"
              d:DesignWidth="400">
-    <Grid Margin="10">
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding Path=RegisterCommand}" Key="Enter" />
+    </UserControl.InputBindings>
+
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
@@ -36,7 +42,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Style="{StaticResource MaterialDesignIconForegroundButton}"
+            <Button Style="{StaticResource MaterialDesignIconButton}"
                     Command="{Binding MoveBackCommand}"
                     Width="30"
                     Height="30"
@@ -120,5 +126,27 @@
                    TextAlignment="Center"
                    Foreground="Crimson"
                    FontSize="13.5"/>
+
+        <TextBlock Grid.Row="16"
+                   Visibility="{Binding SuccessMessage, Converter={StaticResource StringIsEmptyVisibilityConverter}}"
+                   Text="{Binding SuccessMessage}"
+                   Padding="5 0 5 5"
+                   Margin="-20 0"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Stretch"
+                   TextAlignment="Center"
+                   Foreground="YellowGreen"
+                   FontSize="13.5"/>
+
+        <indicators:LoadingIndicator Grid.Row="6"
+                                     Grid.ColumnSpan="4"
+                                     Grid.RowSpan="4"
+                                     Style="{StaticResource LoadingIndicatorRingStyleKey}"
+                                     Foreground="Black"
+                                     Focusable="False"
+                                     Width="60"
+                                     Height="60"
+                                     Visibility="{Binding SuccessMessage, Converter={StaticResource StringIsEmptyVisibilityConverter}}"
+                                     SpeedRatio="1.2"/>
     </Grid>
 </UserControl>

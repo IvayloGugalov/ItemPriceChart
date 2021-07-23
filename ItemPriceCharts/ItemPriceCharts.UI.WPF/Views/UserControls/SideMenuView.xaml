@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="ItemPriceCharts.UI.WPF.Views.UserControls.SideMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450"
+             d:DesignWidth="150">
+    <Grid Background="#024f94"
+                  Width="150">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <materialDesign:PackIcon Kind="ShoppingCart"
+                                 Foreground="White"
+                                 HorizontalAlignment="Center"
+                                 Width="40"
+                                 Height="40"
+                                 Margin="0 15 0 0"/>
+
+        <local:UserSettingsSideMenuControl Grid.Row="2" />
+
+        <Button Grid.Row="3"
+                Style="{StaticResource Buttons.MenuButtons}"
+                Click="Button_Click">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="20 0 0 0">
+                    <materialDesign:PackIcon Margin="0 3 5 0"
+                                             Kind="Shop" />
+                    <Label Padding="0"
+                           Foreground="White"
+                           Content="Shops"/>
+                </StackPanel>
+
+                <Grid Grid.Column="1"
+                      Margin="25 4 10 4">
+                    <materialDesign:PackIcon Name="ArrowUp"
+                                             Kind="ArrowUp" />
+                    <materialDesign:PackIcon Name="ArrowDown"
+                                             Kind="ArrowDown" />
+                </Grid>
+            </Grid>
+        </Button>
+
+        <ListView Grid.Row="4"
+                  Style="{StaticResource VisibleAnimation}"
+                  Name="listOfShops"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  ItemsSource="{Binding OnlineShops}"
+                  SelectedItem="{Binding SelectedShop}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="0">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="MouseLeftButtonUp">
+                                <b:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemListingCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                       CommandParameter="{Binding ElementName=listOfShops, Path=SelectedItem}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <TextBlock Text="{Binding Title}" />
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Height" Value="25"/>
+                    <Setter Property="FontSize" Value="15"/>
+                    <Setter Property="Margin" Value="0 3"/>
+                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                    <Setter Property="Width" Value="100" />
+                    <Setter Property="Foreground" Value="LightGray"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}" >
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Width="{TemplateBinding Width}"
+                                                  Height="{TemplateBinding Height}"
+                                                  TextBlock.TextAlignment="Left"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <Button Grid.Row="4"
+                Style="{StaticResource Buttons.MenuButtons}"
+                Name="allItems"
+                Content="View items"
+                Command="{Binding ShowItemListingCommand}"/>
+
+        <Button Grid.Row="5"
+                Style="{StaticResource Buttons.MenuButtons}"
+                VerticalAlignment="Bottom"
+                Content="Clear View"
+                Command="{Binding ClearViewCommand}"/>
+
+        <Button Grid.Row="7"
+                Style="{StaticResource Buttons.MenuButtons}"
+                VerticalAlignment="Bottom"
+                Content="Show log file"
+                Command="{Binding ShowLogFileCommand}"/>
+
+    </Grid>
+</UserControl>

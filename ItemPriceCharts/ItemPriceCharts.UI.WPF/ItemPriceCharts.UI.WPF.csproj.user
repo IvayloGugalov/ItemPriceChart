@@ -42,6 +42,9 @@
     <Compile Update="Views\UserControls\LoginView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\LogOutModalControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\RegisterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -51,8 +54,17 @@
     <Compile Update="Views\UserControls\ShopsAndItemListingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\SideMenuView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\UserSettingsSideMenuControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\ModalStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\MyWatermarkTextBoxStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -101,6 +113,9 @@
     <Page Update="Views\UserControls\LoginView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\UserControls\LogOutModalControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\UserControls\RegisterView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -111,6 +126,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\SideMenuView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\UserSettingsSideMenuControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
