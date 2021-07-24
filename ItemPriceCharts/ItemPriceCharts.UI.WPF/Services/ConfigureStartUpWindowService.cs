@@ -74,8 +74,14 @@ namespace ItemPriceCharts.UI.WPF.Services
                 .Resolve<MainWindowViewModel>(new Parameter[]
                     { new TypedParameter(typeof(UserAccount), userAccount) });
 
+            if (mainWindow == null)
+            {
+                throw new NullReferenceException(nameof(mainWindow));
+            }
+
             this.app.MainWindow = mainWindow;
-            this.app.MainWindow?.Show();
+            this.app.MainWindow.Show();
+            this.app.MainWindow.Activate();
         }
 
         private UserAccount GetUserAccount(IUserAccountService userAccountService)
