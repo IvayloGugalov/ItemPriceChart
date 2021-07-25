@@ -11,7 +11,7 @@
     </UserControl.InputBindings>
 
     <controls:Modal x:Name="modal"
-                    IsOpen="{Binding IsOpen}">
+                    IsOpen="{Binding IsLogOutModalOpen}">
         <Grid Height="150"
               Width="300">
             <Grid.RowDefinitions>

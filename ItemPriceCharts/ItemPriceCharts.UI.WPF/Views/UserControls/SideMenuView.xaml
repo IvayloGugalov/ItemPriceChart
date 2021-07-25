@@ -20,6 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -212,19 +213,45 @@
 
         </ListView>
 
+
         <Button Grid.Row="4"
+                x:Name="addShopButton"
+                Margin="5 10 0 0"
+                HorizontalAlignment="Left"
+                Command="{Binding ShowCreateShopCommand}"
+                Style="{StaticResource Buttons.UserSettingsButton}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <materialDesign:PackIcon Grid.Column="1"
+                                         Kind="ShoppingBasketPlus"
+                                         Width="20"
+                                         Height="20"/>
+                <Label Grid.Column="2"
+                       Padding="5 0 0 1"
+                       Content="Add a shop"
+                       Foreground="White"/>
+            </Grid>
+        </Button>
+
+        <Button Grid.Row="5"
                 Style="{StaticResource Buttons.MenuButtons}"
                 Name="allItems"
                 Content="View all items"
                 Command="{Binding ShowItemListingCommand}"/>
 
-        <Button Grid.Row="5"
+        <Button Grid.Row="6"
                 Style="{StaticResource Buttons.MenuButtons}"
                 VerticalAlignment="Bottom"
                 Content="Clear View"
                 Command="{Binding ClearViewCommand}"/>
 
-        <Button Grid.Row="8"
+        <Button Grid.Row="9"
                 Style="{StaticResource Buttons.MenuButtons}"
                 VerticalAlignment="Bottom"
                 Content="Show log file"

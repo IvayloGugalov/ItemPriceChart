@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 
+using Autofac;
+using Autofac.Core;
 using NLog;
 
 using ItemPriceCharts.Domain.Entities;
@@ -18,8 +20,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private BaseViewModel currentView;
         private bool isNewViewDisplayed;
 
-        public UserAccount UserAccount { get; }
-
         public bool IsNewViewDisplayed
         {
             get => this.isNewViewDisplayed;
@@ -32,13 +32,21 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             set => this.SetValue(ref this.currentView, value);
         }
 
+        public UserAccount UserAccount { get; }
+
+        public SideMenuViewModel SideMenuViewModel { get; }
+
         public ICommand ClosedCommand => new RelayCommand(_ => UiEvents.CloseApplication());
 
         public MainWindowViewModel(UserAccount userAccount, UiEvents uiEvents)
         {
             this.itemListingViewModel = new ItemListingViewModel(userAccount, uiEvents);
 
-            this.SideMenuViewModel = new SideMenuViewModel(userAccount, uiEvents);
+            this.SideMenuViewModel = Bootstrapper.Bootstrapper.Resolve<SideMenuViewModel>(parameters: new Parameter[]
+            {
+                new TypedParameter(typeof(UserAccount), userAccount),
+                new TypedParameter(typeof(UiEvents), uiEvents)
+            });
             this.OnPropertyChanged(nameof(this.SideMenuViewModel));
 
             this.SideMenuViewModel.ShowItems += this.ShowItemListingAction;
@@ -48,9 +56,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.currentView = this;
 
         }
-
-        public SideMenuViewModel SideMenuViewModel { get; }
-
 
         private void ClearViewAction()
         {

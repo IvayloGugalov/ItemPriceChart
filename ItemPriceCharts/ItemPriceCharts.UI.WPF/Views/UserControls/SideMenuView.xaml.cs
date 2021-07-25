@@ -16,6 +16,7 @@ namespace ItemPriceCharts.UI.WPF.Views.UserControls
             this.ArrowUp.Visibility = Visibility.Collapsed;
 
             this.buttonsContainer.Visibility = Visibility.Collapsed;
+            this.addShopButton.Visibility = Visibility.Collapsed;
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -30,12 +31,14 @@ namespace ItemPriceCharts.UI.WPF.Views.UserControls
             if (this.listOfShops.Visibility != Visibility.Visible)
             {
                 this.listOfShops.Visibility = Visibility.Visible;
+                this.addShopButton.Visibility = Visibility.Visible;
                 this.ArrowDown.Visibility = Visibility.Collapsed;
                 this.ArrowUp.Visibility = Visibility.Visible;
             }
             else
             {
                 this.listOfShops.Visibility = Visibility.Collapsed;
+                this.addShopButton.Visibility = Visibility.Collapsed;
                 this.ArrowUp.Visibility = Visibility.Collapsed;
                 this.ArrowDown.Visibility = Visibility.Visible;
             }

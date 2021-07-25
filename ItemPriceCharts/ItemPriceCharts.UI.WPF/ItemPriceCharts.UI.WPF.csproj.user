@@ -30,6 +30,9 @@
     <Compile Update="Views\LoginRegisterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Unused\UnusedElements.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\ItemListingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -99,6 +102,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\LoginRegisterView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Unused\UnusedElements.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UserControls\ItemListingView.xaml">
