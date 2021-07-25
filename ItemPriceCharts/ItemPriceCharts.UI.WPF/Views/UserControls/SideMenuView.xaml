@@ -3,93 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              Focusable="False"
              d:DesignHeight="450"
              d:DesignWidth="150">
-
-    <UserControl.Resources>
-        <Style x:Key="scroll_thumb_style" TargetType="{x:Type Thumb}">
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="OverridesDefaultStyle" Value="true"/>
-            <Setter Property="IsTabStop" Value="false"/>
-            <Setter Property="Focusable" Value="false"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Thumb">
-                        <Border x:Name="rectangle"
-                                BorderThickness="0"
-                                Background="LightGray"
-                                Height="{TemplateBinding Height}"
-                                Width="{TemplateBinding Width}"
-                                SnapsToDevicePixels="True"
-                                CornerRadius="10"/>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background"
-                                        TargetName="rectangle"
-                                        Value="Gray"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                    
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <ControlTemplate x:Key="scroll_background" TargetType="{x:Type RepeatButton}">
-            <Border Background="Transparent" />
-        </ControlTemplate>
-
-        <Style x:Key="scrollBarr" TargetType="ScrollBar">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Grid Width="10">
-                            <Border Width="10"
-                                    HorizontalAlignment="Center"
-                                    CornerRadius="5"
-                                    Background="DarkGray"/>
-
-
-                            <!--  Set the ViewporSize to NaN to disable autosizing of the Thumb.  -->
-                            <!--  Set the Thumb height in the Thumb style.  -->
-                            <Track HorizontalAlignment="Center"
-                                   Name="PART_Track"
-                                   Height="{TemplateBinding Height}"
-                                   Width="{TemplateBinding Width}"
-                                   Maximum="{TemplateBinding Maximum}"
-                                   Minimum="{TemplateBinding Minimum}"
-                                   ViewportSize="NaN" 
-                                   Value="{TemplateBinding Value}"
-                                   IsDirectionReversed="True">
-
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Template="{StaticResource scroll_background}"
-                                                  Command="ScrollBar.LineUpCommand"  />
-                                </Track.DecreaseRepeatButton>
-
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Template="{StaticResource scroll_background}"
-                                                  Command="ScrollBar.LineDownCommand" />
-                                </Track.IncreaseRepeatButton>
-
-                                <Track.Thumb>
-                                    <Thumb Style="{StaticResource scroll_thumb_style}" />
-                                </Track.Thumb>
-                            </Track>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-    </UserControl.Resources>
 
     <Grid Background="#024f94"
           Width="150">
@@ -101,7 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -112,9 +31,90 @@
                                  Height="40"
                                  Margin="0 15 0 0"/>
 
-        <local:UserSettingsSideMenuControl Grid.Row="2" />
+        <!-- User Settings options -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <Button Grid.Row="3"
+            <Button Grid.Row="0"
+                    Style="{StaticResource Buttons.MenuButtons}"
+                    Click="ButtonBase_OnClick">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="User"
+                                             Width="20"
+                                             Height="20"/>
+                    <Label Padding="5 0 0 1"
+                           Content="Account"
+                           Foreground="White"/>
+                </StackPanel>
+            </Button>
+
+            <Grid Grid.Row="1"
+                  x:Name="buttonsContainer"
+                  Style="{StaticResource VisibleAnimation}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0"
+                        Style="{StaticResource Buttons.UserSettingsButton}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon Grid.Column="1"
+                                                 Kind="SettingsApplications"
+                                                 Width="20"
+                                                 Height="20"/>
+                        <Label Grid.Column="2"
+                               Padding="5 0 0 1"
+                               Content="Settings"
+                               Foreground="White"/>
+                    </Grid>
+                </Button>
+
+                <Button Grid.Row="1"
+                        Style="{StaticResource Buttons.UserSettingsButton}"/>
+
+                <Button Grid.Row="4"
+                        Command="{Binding ShowLogOutModalCommand}"
+                        Style="{StaticResource Buttons.UserSettingsButton}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon Grid.Column="1"
+                                                 Kind="LocalCafeToGoOutline"
+                                                 Width="20"
+                                                 Height="20"/>
+                        <Label Grid.Column="2"
+                               Padding="5 0 0 1"
+                               Content="Log out"
+                               Foreground="White"/>
+                    </Grid>
+                </Button>
+
+            </Grid>
+        </Grid>
+
+        <Button Grid.Row="2"
                 Style="{StaticResource Buttons.MenuButtons}"
                 Click="Button_Click">
             <Grid>
@@ -142,9 +142,9 @@
             </Grid>
         </Button>
 
-        <ListView Grid.Row="4"
+        <ListView Grid.Row="3"
                   Style="{StaticResource VisibleAnimation}"
-                  Name="listOfShops"
+                  x:Name="listOfShops"
                   Background="Transparent"
                   BorderThickness="0"
                   ItemsSource="{Binding OnlineShops}"
@@ -160,7 +160,7 @@
 
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="MouseLeftButtonUp">
-                                <b:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemListingCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                <b:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemsForShopCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                        CommandParameter="{Binding ElementName=listOfShops, Path=SelectedItem}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
@@ -173,53 +173,52 @@
 
                         <TextBlock Grid.Column="1"
                                    Text="{Binding Title}" />
+
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
+
+            <ListView.Resources>
+                <!-- Create the context menu for the selected item -->
+                <ContextMenu x:Key="ShopContextMenu"
+                             Style="{StaticResource Styles.ItemContextMenu}">
+                    <MenuItem Command="{Binding Path=DataContext.ShowAddItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="Add"
+                                                     Foreground="#00ff51"
+                                                     VerticalAlignment="Center"
+                                                     Width="20" 
+                                                     Height="20" />
+                        </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <TextBlock VerticalAlignment="Center">
+                                <Run Text="Add a product to"/>
+                                <Run Text="{Binding Title, Mode=OneWay}"/>
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </ContextMenu>
+
+                <!-- Set the ScrollBar Style -->
+                <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ListView.ScrollBarStyle}" />
+            </ListView.Resources>
+
             <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Height" Value="25"/>
-                    <Setter Property="FontSize" Value="15"/>
-                    <Setter Property="Margin" Value="0 3"/>
-                    <Setter Property="FontFamily" Value="Segoe UI"/>
-                    <Setter Property="Width" Value="100" />
-                    <Setter Property="Foreground" Value="LightGray"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}" >
-                                <ContentPresenter HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Width="{TemplateBinding Width}"
-                                                  Height="{TemplateBinding Height}"
-                                                  TextBlock.TextAlignment="Left"/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="White"/>
-                            <Setter Property="Cursor" Value="Hand" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </Style.Triggers>
+                <!-- Setting the ListViewItem Style here, because we need to set the ContextMenu and it's bindings also -->
+                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource ListView.ItemContainerStyle}">
+                    <Setter Property="ContextMenu" Value="{StaticResource ShopContextMenu}"/>
                 </Style>
             </ListView.ItemContainerStyle>
 
-            <ListView.Resources>
-                <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource scrollBarr}" />
-            </ListView.Resources>
-
         </ListView>
 
-        <Button Grid.Row="5"
+        <Button Grid.Row="4"
                 Style="{StaticResource Buttons.MenuButtons}"
                 Name="allItems"
                 Content="View all items"
                 Command="{Binding ShowItemListingCommand}"/>
 
-        <Button Grid.Row="6"
+        <Button Grid.Row="5"
                 Style="{StaticResource Buttons.MenuButtons}"
                 VerticalAlignment="Bottom"
                 Content="Clear View"
@@ -230,8 +229,6 @@
                 VerticalAlignment="Bottom"
                 Content="Show log file"
                 Command="{Binding ShowLogFileCommand}"/>
-
-
 
     </Grid>
 </UserControl>

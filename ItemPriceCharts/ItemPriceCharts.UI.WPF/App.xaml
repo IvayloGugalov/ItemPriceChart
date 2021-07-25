@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="Styles/Styles.xaml" />
                 <ResourceDictionary Source="Styles/Buttons.xaml" />
                 <ResourceDictionary Source="Styles/DataGrids.xaml" />
+                <ResourceDictionary Source="Styles/ListViews.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
@@ -38,10 +39,6 @@
 
             <DataTemplate DataType="{x:Type viewModels:ShopsAndItemListingsViewModel}">
                 <controls:ShopsAndItemListingsView />
-            </DataTemplate>
-
-            <DataTemplate DataType="{x:Type viewModels:UserSettingsSideMenuViewModel}">
-                <controls:UserSettingsSideMenuControl/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewModels:ItemListingViewModel}">

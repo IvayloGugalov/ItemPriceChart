@@ -14,6 +14,15 @@ namespace ItemPriceCharts.UI.WPF.Views.UserControls
 
             this.listOfShops.Visibility = Visibility.Collapsed;
             this.ArrowUp.Visibility = Visibility.Collapsed;
+
+            this.buttonsContainer.Visibility = Visibility.Collapsed;
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.buttonsContainer.Visibility = this.buttonsContainer.Visibility != Visibility.Visible
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

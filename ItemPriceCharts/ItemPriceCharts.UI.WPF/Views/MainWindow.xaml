@@ -26,13 +26,16 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!-- Setting the DataContext here and in the ViewModel, as it is not picked up by the UserControl otherwise -->
         <controls:LogOutModalControl Grid.Column="0"
                                      Grid.ColumnSpan="2"
-                                     Panel.ZIndex="10"/>
+                                     Panel.ZIndex="10"
+                                     DataContext="{Binding SideMenuViewModel}" />
 
         <materialDesign:TransitioningContent Grid.Column="0"
                                              OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromLeft}">
-            <controls:SideMenuView />
+            <!-- Setting the DataContext here and in the ViewModel, as it is not picked up by the UserControl otherwise -->
+            <controls:SideMenuView DataContext="{Binding SideMenuViewModel}" />
         </materialDesign:TransitioningContent>
 
         <Grid Grid.Column="1">
