@@ -14,13 +14,13 @@ using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.UI.WPF.Services
 {
-    public class ConfigureStartUpWindowService : IDisposable
+    public class StartUpService : IDisposable
     {
-        private static readonly Logger Logger = LogManager.GetLogger(nameof(ConfigureStartUpWindowService));
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(StartUpService));
         
         private readonly App app;
 
-        public ConfigureStartUpWindowService(App app)
+        public StartUpService(App app)
         {
             this.app = app;
         }
@@ -71,8 +71,8 @@ namespace ItemPriceCharts.UI.WPF.Services
         private void ConfigureMainWindow(UserAccount userAccount)
         {
             var mainWindow = Bootstrapper.Bootstrapper.ViewFactory?
-                .Resolve<MainWindowViewModel>(new Parameter[]
-                    { new TypedParameter(typeof(UserAccount), userAccount) });
+                .Resolve<MainWindowViewModel>(
+                    new Parameter[] { new TypedParameter(typeof(UserAccount), userAccount) });
 
             if (mainWindow == null)
             {

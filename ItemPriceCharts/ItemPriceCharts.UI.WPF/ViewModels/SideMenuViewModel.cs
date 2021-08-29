@@ -8,6 +8,7 @@ using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Helpers;
+using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
@@ -45,7 +46,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public event Action<OnlineShop> ShowItems;
         public event Action ClearView;
 
-        public SideMenuViewModel(UserAccount userAccount, UiEvents uiEvents)
+        public SideMenuViewModel(ILogOutService logOutService, UiEvents uiEvents, UserAccount userAccount)
         {
             this.OnlineShops = userAccount.OnlineShopsForUser.Select(x => x.OnlineShop).ToObservableCollection();
 
@@ -61,7 +62,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowAddItemCommand = new RelayCommand(_ => UiEvents.ShowCreateItemView.Raise(this.SelectedShop));
 
             this.ShowLogOutModalCommand = new RelayCommand(_ => this.IsLogOutModalOpen = true);
-            this.LogOutCommand = new RelayCommand(_ => { });
+            this.LogOutCommand = new RelayCommand(_ => logOutService.LogOut());
             this.CancelLogOutCommand = new RelayCommand(_ => this.IsLogOutModalOpen = false);
 
             uiEvents.ShopAdded.Register(this.OnAddedShop);

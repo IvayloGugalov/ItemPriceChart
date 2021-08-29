@@ -54,7 +54,7 @@ namespace ItemPriceCharts.UI.WPF
 
             Logger.Info("Application started");
 
-            var config = new ConfigureStartUpWindowService(this);
+            var config = new StartUpService(this);
             config.ShowStartUpWindow();
             config.Dispose();
 

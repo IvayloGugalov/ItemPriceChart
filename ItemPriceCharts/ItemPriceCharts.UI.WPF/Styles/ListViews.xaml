@@ -12,7 +12,7 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Border x:Name="rectangle"
                             BorderThickness="0"
-                            Background="Gray"
+                            Background="DarkGray"
                             Height="{TemplateBinding Height}"
                             Width="12"
                             SnapsToDevicePixels="True"
@@ -22,7 +22,7 @@
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Background"
                                     TargetName="rectangle"
-                                    Value="LightGray"/>
+                                    Value="Gray"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -42,7 +42,7 @@
                         <Border Width="12"
                                 HorizontalAlignment="Center"
                                 CornerRadius="10"
-                                Background="DarkGray"/>
+                                Background="LightGray"/>
 
                         <!--  Set the ViewporSize to NaN to disable autosizing of the Thumb.  -->
                         <!--  Set the Thumb height in the Thumb style.  -->

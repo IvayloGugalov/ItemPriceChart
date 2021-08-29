@@ -41,6 +41,7 @@ namespace ItemPriceCharts.UI.WPF.Modules
 
             var mappedTypes = new Dictionary<Type, Type>
             {
+                {typeof(ILogOutService), typeof(LogOutService)},
                 {typeof(IItemService), typeof(ItemService)},
                 {typeof(IOnlineShopService), typeof(OnlineShopService)},
                 {typeof(IUserAccountService), typeof(UserAccountService)},
