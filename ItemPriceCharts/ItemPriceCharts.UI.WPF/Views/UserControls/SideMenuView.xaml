@@ -42,9 +42,7 @@
             <Button Grid.Row="0"
                     Style="{StaticResource Buttons.MenuButtons}"
                     Click="ButtonBase_OnClick">
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="User"
                                              Width="20"
                                              Height="20"/>
@@ -135,7 +133,7 @@
                 </StackPanel>
 
                 <Grid Grid.Column="1"
-                      Margin="25 4 10 4">
+                      Margin="10 4 10 4">
                     <materialDesign:PackIcon Name="ArrowUp"
                                              Kind="ArrowUp" />
                     <materialDesign:PackIcon Name="ArrowDown"
