@@ -4,6 +4,7 @@ using NUnit.Framework;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Events;
+using ItemPriceCharts.UI.WPF.Test.Extensions;
 using ItemPriceCharts.UI.WPF.ViewModels;
 
 namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
@@ -11,9 +12,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
     [TestFixture]
     public class MainWindowViewModelTest
     {
-        private Mock<IOnlineShopService> onlineShopServiceMock;
-        private Mock<IItemService> itemServiceMock;
-
         private readonly TestableDispatcherWrapper dispatcherWrapper = new();
         private UiEvents uiEvents;
 
@@ -22,9 +20,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [SetUp]
         public void SetUp()
         {
-            this.onlineShopServiceMock = new Mock<IOnlineShopService>(MockBehavior.Strict);
-            this.itemServiceMock = new Mock<IItemService>(MockBehavior.Strict);
-
             Bootstrapper.Bootstrapper.Start(this.dispatcherWrapper);
 
             this.uiEvents = new UiEvents(this.dispatcherWrapper);
@@ -40,8 +35,6 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         [TearDown]
         public void TearDown()
         {
-            this.onlineShopServiceMock.VerifyAll();
-            this.itemServiceMock.VerifyAll();
         }
 
         [Test]

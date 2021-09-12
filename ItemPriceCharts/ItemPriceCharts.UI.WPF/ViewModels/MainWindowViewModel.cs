@@ -47,7 +47,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
                 new TypedParameter(typeof(UserAccount), userAccount),
                 new TypedParameter(typeof(UiEvents), uiEvents)
             });
-            this.OnPropertyChanged(nameof(this.SideMenuViewModel));
 
             this.SideMenuViewModel.ShowItems += this.ShowItemListingAction;
             this.SideMenuViewModel.ClearView += this.ClearViewAction;
