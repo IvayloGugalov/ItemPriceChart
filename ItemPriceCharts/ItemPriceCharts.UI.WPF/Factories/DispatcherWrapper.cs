@@ -18,22 +18,22 @@ namespace ItemPriceCharts.UI.WPF.Factories
 
         public Task InvokeAsync(Action callback)
         {
-            if (Thread.CurrentThread.ManagedThreadId != this.DispatcherId)
-            {
-                throw new IncorrectThreadInvocationException(
-                    $"Current thread is not the Dispatcher Thread. Current thread id: {Thread.CurrentThread.ManagedThreadId}");
-            }
+            //if (Thread.CurrentThread.ManagedThreadId != this.DispatcherId)
+            //{
+            //    throw new IncorrectThreadInvocationException(
+            //        $"Current thread is not the Dispatcher Thread. Current thread id: {Thread.CurrentThread.ManagedThreadId}");
+            //}
 
             return this.dispatcher.InvokeAsync(callback).Task;
         }
 
         public bool? Invoke(Func<bool?> callback)
         {
-            if (Thread.CurrentThread.ManagedThreadId != this.DispatcherId)
-            {
-                throw new IncorrectThreadInvocationException(
-                    $"Current thread is not the Dispatcher Thread. Current thread id: {Thread.CurrentThread.ManagedThreadId}");
-            }
+            //if (Thread.CurrentThread.ManagedThreadId != this.DispatcherId)
+            //{
+            //    throw new IncorrectThreadInvocationException(
+            //        $"Current thread is not the Dispatcher Thread. Current thread id: {Thread.CurrentThread.ManagedThreadId}");
+            //}
 
             return callback.Invoke();
         }

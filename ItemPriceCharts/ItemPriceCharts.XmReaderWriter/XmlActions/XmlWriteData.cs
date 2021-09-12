@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace ItemPriceCharts.XmReaderWriter.XmlActions
 {
@@ -48,10 +50,21 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(filePath);
 
-            var userNodes = xmlDoc.SelectNodes(node);
-            foreach (XmlNode userNode in userNodes)
+            var userNode = xmlDoc.SelectSingleNode(node);
+            userNode.InnerText = value;
+
+            xmlDoc.Save(filePath);
+        }
+
+        public static void UpdateElementsValue(string filePath, IDictionary<string, string> nodesValues)
+        {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+
+            foreach (var nodeValue in nodesValues)
             {
-                userNode.InnerText = value;
+                var userNode = xmlDoc.SelectSingleNode(nodeValue.Key);
+                userNode.InnerText = nodeValue.Value;
             }
 
             xmlDoc.Save(filePath);
@@ -77,6 +90,22 @@ namespace ItemPriceCharts.XmReaderWriter.XmlActions
                 this.xmlWriter.WriteEndDocument();
                 this.xmlWriter.Close();
                 this.xmlWriter.Dispose();
+            }
+        }
+    }
+
+    public static class XmlClearData
+    {
+        public static XDocument CreateXmlDocument(string filePath)
+        {
+            return XDocument.Load(filePath);
+        }
+
+        public static void RemoveElementsFromDocument(this XDocument document, params string[] elements)
+        {
+            foreach (var element in elements)
+            {
+                document.Descendants(element).Remove();
             }
         }
     }

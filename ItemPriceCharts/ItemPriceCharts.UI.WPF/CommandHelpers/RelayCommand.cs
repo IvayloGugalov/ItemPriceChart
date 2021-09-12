@@ -21,7 +21,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         private readonly Action<T> execute = null;
         private readonly Func<bool> canExecute = null;
 
-        public RelayCommand(Action<T> execute, Func<object> predicate) : this(execute, null)
+        protected RelayCommand(Action<T> execute, Func<object> predicate) : this(execute, null)
         {
         }
 

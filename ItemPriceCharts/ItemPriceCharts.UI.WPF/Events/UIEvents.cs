@@ -10,7 +10,6 @@ namespace ItemPriceCharts.UI.WPF.Events
 {
     public class UiEvents
     {
-
         public static Func<MessageDialogViewModel, bool?> ShowMessageDialog { get; set; }
 
         public static void CloseApplication() => Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);

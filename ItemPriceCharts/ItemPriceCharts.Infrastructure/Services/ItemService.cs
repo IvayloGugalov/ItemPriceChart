@@ -118,7 +118,7 @@ namespace ItemPriceCharts.Infrastructure.Services
                 {
                     var (_, _, newPrice) = await this.LoadItemFromWeb(item.Url, item.OnlineShop.Title).ConfigureAwait(false);
 
-                    if (newPrice != itemInDb.CurrentPrice.Price)
+                    if (Math.Abs(newPrice - itemInDb.CurrentPrice.Price) >= 0.01)
                     {
                         var itemPrice = new ItemPrice(itemInDb.Id, newPrice);
 

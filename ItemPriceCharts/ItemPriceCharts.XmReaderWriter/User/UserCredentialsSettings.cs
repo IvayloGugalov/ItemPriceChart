@@ -9,6 +9,8 @@ namespace ItemPriceCharts.XmReaderWriter.User
 {
     public static class UserCredentialsSettings
     {
+        private const string USER_ACCOUNT_NODE_NAME = "UserAccount";
+
         [DataMember(EmitDefaultValue = true)]
         public static string RememberAccount { get; set; }
 
@@ -58,12 +60,27 @@ namespace ItemPriceCharts.XmReaderWriter.User
         public static void WriteToXmlFile()
         {
             using var writer = XmlWriteData.CreateWriter(XmlCreateFile.XML_FILE_PATH);
-            writer.WriteElementBody("UserAccount");
+            writer.WriteElementBody(USER_ACCOUNT_NODE_NAME);
 
             writer.WriteTo(nameof(Username), Username);
             writer.WriteTo(nameof(Email), Email);
             writer.WriteTo(nameof(RememberAccount), RememberAccount);
             writer.WriteTo(nameof(LoginExpiresDate), LoginExpiresDate);
+        }
+
+        public static void RemoveUserDetailsFromXmlFile()
+        {
+            var xmlDocument = XmlClearData.CreateXmlDocument(XmlCreateFile.XML_FILE_PATH);
+
+            // Remove only the properties for the Account.
+            // Removing the account element will remove the xml tags and the document won't be saved.
+            xmlDocument.RemoveElementsFromDocument(
+                nameof(Username),
+                nameof(Email),
+                nameof(RememberAccount),
+                nameof(LoginExpiresDate));
+
+            xmlDocument.Save(XmlCreateFile.XML_FILE_PATH);
         }
     }
 }

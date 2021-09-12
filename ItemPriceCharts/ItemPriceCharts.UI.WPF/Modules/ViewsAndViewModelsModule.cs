@@ -29,6 +29,8 @@ namespace ItemPriceCharts.UI.WPF.Modules
             builder.RegisterType<MainWindowViewModel>().SingleInstance();
             builder.RegisterType<MainWindow>().SingleInstance();
 
+            builder.RegisterType<SideMenuViewModel>().SingleInstance();
+
             builder.RegisterType<ShopsAndItemListingsViewModel>();
             builder.RegisterType<ItemListingViewModel>();
 

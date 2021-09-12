@@ -87,7 +87,7 @@
         </Border>
 
         <Button Grid.Row="6"
-                Style="{StaticResource Styles.MenuButtons}"
+                Style="{StaticResource Buttons.MenuButtons}"
                 HorizontalAlignment="Center"
                 Command="{Binding UpdatePriceCommand}"
                 Foreground="WhiteSmoke"

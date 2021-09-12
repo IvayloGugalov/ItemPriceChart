@@ -7,7 +7,6 @@ using NLog;
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Events;
-using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.ViewModels;
 using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 using ItemPriceCharts.UI.WPF.Views;
@@ -15,31 +14,32 @@ using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.UI.WPF.Services
 {
-    public class ConfigureStartUpWindowService
+    public class StartUpService : IStartUpService, IDisposable
     {
-        private readonly IContainer container;
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(StartUpService));
+        
         private readonly App app;
-        private readonly IViewFactory viewFactory;
-        private static readonly Logger Logger = LogManager.GetLogger(nameof(ConfigureStartUpWindowService));
 
-        public ConfigureStartUpWindowService(App app, IContainer container, IViewFactory viewFactory)
+        public StartUpService(App app)
         {
             this.app = app;
-            this.container = container;
-            this.viewFactory = viewFactory;
+        }
+
+        public void Dispose()
+        {
+            UiEvents.SuccessfulLogin.ClearHandlers();
         }
 
         public void ShowStartUpWindow()
         {
             try
             {
-                var accountService = this.container.Resolve<IUserAccountService>();
+                var accountService = Bootstrapper.Bootstrapper.Resolve<IUserAccountService>();
 
-                var userAccount = this.TryGetUserAccount(accountService);
+                var userAccount = this.GetUserAccount(accountService);
                 if (userAccount != null)
                 {
                     this.ConfigureMainWindow(userAccount);
-                    UiEvents.SuccessfulLogin = null;
                     return;
                 }
 
@@ -49,12 +49,12 @@ namespace ItemPriceCharts.UI.WPF.Services
                 Logger.Debug($"Found credentials\tUsername: {userName}\tEmail: {email}.");
 
                 // pass the parameters to LoginViewModel
-                this.container.Resolve<LoginViewModel>(
+                Bootstrapper.Bootstrapper.Resolve<LoginViewModel>(
                     new NamedParameter(nameof(userName), userName),
                     new NamedParameter(nameof(email), email));
 
-                var loginRegisterView = this.container.Resolve<LoginRegisterView>();
-                var loginRegisterViewModel = this.container.Resolve<LoginRegisterViewModel>();
+                var loginRegisterView = Bootstrapper.Bootstrapper.Resolve<LoginRegisterView>();
+                var loginRegisterViewModel = Bootstrapper.Bootstrapper.Resolve<LoginRegisterViewModel>();
 
                 UiEvents.SuccessfulLogin.Register(this.ConfigureMainWindow);
 
@@ -70,12 +70,16 @@ namespace ItemPriceCharts.UI.WPF.Services
 
         private void ConfigureMainWindow(UserAccount userAccount)
         {
-            var mainWindow = this.viewFactory.Resolve<MainWindowViewModel>(new Parameter[] { new TypedParameter(typeof(UserAccount), userAccount) });
-            this.app.MainWindow = mainWindow;
-            this.app.MainWindow?.Show();
+            var mainWindow = Bootstrapper.Bootstrapper.ViewFactory
+                .Resolve<MainWindowViewModel>(
+                    new Parameter[] { new TypedParameter(typeof(UserAccount), userAccount) });
+
+            this.app.MainWindow = mainWindow ?? throw new NullReferenceException(nameof(mainWindow));
+            this.app.MainWindow.Show();
+            this.app.MainWindow.Activate();
         }
 
-        private UserAccount TryGetUserAccount(IUserAccountService userAccountService)
+        private UserAccount GetUserAccount(IUserAccountService userAccountService)
         {
             return UserCredentialsSettings.ShouldEnableAutoLogin()
                 ? userAccountService.GetUserAccount(UserCredentialsSettings.Username, UserCredentialsSettings.Email)

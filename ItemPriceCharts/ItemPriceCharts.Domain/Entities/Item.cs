@@ -80,7 +80,7 @@ namespace ItemPriceCharts.Domain.Entities
                 return false;
             }
 
-            if (this.CurrentPrice.Price != other.CurrentPrice.Price)
+            if (Math.Abs(this.CurrentPrice.Price - other.CurrentPrice.Price) >= 0.01)
             {
                 return false;
             }

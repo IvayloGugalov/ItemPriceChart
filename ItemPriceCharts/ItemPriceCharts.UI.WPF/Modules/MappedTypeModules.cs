@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Threading;
-
 using Autofac;
 
 using ItemPriceCharts.Infrastructure.Services;
@@ -13,19 +11,23 @@ namespace ItemPriceCharts.UI.WPF.Modules
 {
     public class MappedTypeModules : Module
     {
-        private readonly Dispatcher dispatcher;
+        private readonly IDispatcherWrapper dispatcher;
 
-        public MappedTypeModules(Dispatcher dispatcher)
+        public MappedTypeModules(IDispatcherWrapper dispatcher)
         {
             this.dispatcher = dispatcher;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<DispatcherWrapper>()
+            builder.RegisterInstance(this.dispatcher)
                 .As<IDispatcherWrapper>()
-                .SingleInstance()
-                .WithParameter(new TypedParameter(typeof(Dispatcher), this.dispatcher));
+                .SingleInstance();
+
+            builder.RegisterType<HtmlWebWrapper>()
+                .As<IHtmlWebWrapper>()
+                .InstancePerDependency()
+                .WithParameter(new TypedParameter(typeof(HtmlAgilityPack.HtmlWeb), new HtmlAgilityPack.HtmlWeb()));
 
             builder.RegisterType<NavigationService<LoginViewModel>>()
                 .As<INavigationService<LoginViewModel>>()
@@ -36,10 +38,10 @@ namespace ItemPriceCharts.UI.WPF.Modules
 
             var mappedTypes = new Dictionary<Type, Type>
             {
+                {typeof(ILogOutService), typeof(LogOutService)},
                 {typeof(IItemService), typeof(ItemService)},
                 {typeof(IOnlineShopService), typeof(OnlineShopService)},
                 {typeof(IUserAccountService), typeof(UserAccountService)},
-                {typeof(IHtmlWebWrapper), typeof(HtmlWebWrapper)},
                 {typeof(IItemDataRetrieveService), typeof(ItemDataRetrieveService)}
             };
 

@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Threading;
 
 using NLog;
 
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Events;
+using ItemPriceCharts.UI.WPF.Factories;
+using ItemPriceCharts.UI.WPF.Services;
 
 namespace ItemPriceCharts.UI.WPF
 {
@@ -33,16 +37,29 @@ namespace ItemPriceCharts.UI.WPF
             Logger.Info("Starting Application");
             Logger.Debug($"Dispatcher managed thread identifier = {System.Threading.Thread.CurrentThread.ManagedThreadId}");
 
-            var bootstrapper = new Bootstrapper.Bootstrapper(this, this.Dispatcher);
+            // Set the current Culture to the app
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    XmlLanguage.GetLanguage(
+                        CultureInfo.CurrentCulture.IetfLanguageTag)));
+
+            Bootstrapper.Bootstrapper.Start(new DispatcherWrapper(this.Dispatcher));
 
             Application.Current.Exit += (_, _) =>
             {
                 Logger.Info("Exiting application");
-                bootstrapper.Stop();
+                Bootstrapper.Bootstrapper.Stop();
                 LogManager.Shutdown();
             };
 
             Logger.Info("Application started");
+
+            var config = new StartUpService(this);
+            config.ShowStartUpWindow();
+            config.Dispose();
+
+            Logger.Info("Finished start up window navigation");
         }
 
         private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)

@@ -1,0 +1,75 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+
+    <Style x:Key="DataGrids.CustomCellStyle" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+        <Setter Property="Margin" Value="15 10 15 10"></Setter>
+        <Setter Property="BorderThickness" Value="0"></Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+            <Trigger Property="IsFocused" Value="False">
+                <Setter Property="Background" Value="Transparent"></Setter>
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style x:Key="DataGrids.CustomColumnHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+    </Style>
+
+    <Style x:Key="DataGrids.CustomRowStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="WhiteSmoke"/>
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Background" Value="Transparent"></Setter>
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="LightGray"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DataGrids.CustomDataGrid" TargetType="{x:Type DataGrid}">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="AlternationCount" Value="1"/>
+        <Setter Property="BorderBrush" Value="Chocolate"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="DarkGray"/>
+        <Setter Property="BorderThickness" Value="0 0 1 0"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="GridLinesVisibility" Value="None" />
+        <Setter Property="MinColumnWidth" Value="120" />
+        <Setter Property="CanUserReorderColumns" Value="False" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="SelectionUnit" Value="FullRow"></Setter>
+        <!--<Setter VisualStateManager.VisualStateGroups></Setter>-->
+
+        <!--<Setter Property="HorizontalGridLinesBrush">
+            <Setter.Value>
+                <Binding Path="BorderBrush" RelativeSource="{RelativeSource Self}" />
+            </Setter.Value>
+        </Setter>-->
+        <!--<Setter Property="VerticalGridLinesBrush" Value="{Binding HorizontalGridLinesBrush, RelativeSource={RelativeSource Self}}" />-->
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+        <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="TextBlock.TextAlignment" Value="Justify" />
+        <Setter Property="AlternatingRowBackground" Value="Red"/>
+    </Style>
+</ResourceDictionary>

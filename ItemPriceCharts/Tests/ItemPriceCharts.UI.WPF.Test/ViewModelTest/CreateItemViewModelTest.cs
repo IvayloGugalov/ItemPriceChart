@@ -55,7 +55,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
             var expectedOnExceptionDialogMessage = $"Failed to create new item with url: {itemUrl}";
 
             MessageDialogViewModel messageDialogViewModel = null;
-            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+            UiEvents.ShowMessageDialog = viewmodel => { messageDialogViewModel = viewmodel; return false; };
 
             this.itemServiceMock.Setup(_ => _.AddItemToShop(It.IsAny<string>(), onlineShop, It.IsAny<ItemType>()))
                 .Throws(new Exception());

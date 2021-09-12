@@ -10,11 +10,11 @@ namespace ItemPriceCharts.UI.WPF.Modules
         {
             builder.RegisterType<ModelsContextFactory>()
                 .AsSelf()
-                .InstancePerLifetimeScope()
+                .SingleInstance()
                 .OnRelease(instance => instance.Dispose());
 
             builder.Register<ModelsContext>(c => c.Resolve<ModelsContextFactory>().CreateDbContext())
-                .InstancePerLifetimeScope()
+                .SingleInstance()
                 .OnRelease(instance => instance.Dispose());
         }
     }

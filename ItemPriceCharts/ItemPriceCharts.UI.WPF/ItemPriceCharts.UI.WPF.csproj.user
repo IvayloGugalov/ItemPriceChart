@@ -30,6 +30,9 @@
     <Compile Update="Views\LoginRegisterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Unused\UnusedElements.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\ItemListingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -42,6 +45,9 @@
     <Compile Update="Views\UserControls\LoginView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\LogOutModalControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\RegisterView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -51,9 +57,24 @@
     <Compile Update="Views\UserControls\ShopsAndItemListingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\SideMenuView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\ModalStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\MyWatermarkTextBoxStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\Buttons.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\DataGrids.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\ListViews.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Themes\Generic.xaml">
@@ -83,6 +104,9 @@
     <Page Update="Views\LoginRegisterView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\Unused\UnusedElements.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\UserControls\ItemListingView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -95,6 +119,9 @@
     <Page Update="Views\UserControls\LoginView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\UserControls\LogOutModalControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\UserControls\RegisterView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -105,6 +132,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\SideMenuView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

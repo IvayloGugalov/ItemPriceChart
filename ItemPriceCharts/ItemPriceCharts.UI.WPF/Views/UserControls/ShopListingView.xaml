@@ -17,93 +17,11 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Button Grid.Row="0"
-                Style="{StaticResource Styles.MenuButtons}"
-                HorizontalAlignment="Center"
-                Command="{Binding ShowCreateShopCommand}"
-                Margin="5 10"
-                Content="Add a new shop"/>
+        
 
         <Grid Grid.Row="2"
               Visibility="{Binding IsListOfShopsShown, Converter={cv:BoolToVisibilityConverter}}">
-            <ListView Name="OnlineShopsListView"
-                      ItemsSource="{Binding Path=OnlineShops}"
-                      SelectedItem="{Binding SelectedShop}"
-                      Style="{StaticResource Styles.ListViewForShops}" >
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderThickness="0">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseLeftButtonUp">
-                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ShowItemsCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                           CommandParameter="{Binding ElementName=OnlineShopsListView,
-                                           Path=SelectedItem}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                            <TextBlock Text="{Binding Title}" />
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-                <ListView.Resources>
-                    <ContextMenu x:Key="ShopContextMenu"
-                                 Style="{StaticResource Styles.ItemContextMenu}">
-                        <MenuItem Command="{Binding Path=DataContext.ShowAddItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
-                            <MenuItem.Icon>
-                                <materialDesign:PackIcon Kind="Add"
-                                                         Foreground="#00ff51"
-                                                         VerticalAlignment="Center"
-                                                         Width="20" 
-                                                         Height="20" />
-                            </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <TextBlock>
-                                    <Run Text="Add a product to"/>
-                                    <Run Text="{Binding Title, Mode=OneWay}"/>
-                                </TextBlock>
-                            </MenuItem.Header>
-                        </MenuItem>
-
-                    </ContextMenu>
-                </ListView.Resources>
-
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="ContextMenu" Value="{StaticResource ShopContextMenu}"/>
-                        <Setter Property="Height" Value="30"/>
-                        <Setter Property="FontSize" Value="20"/>
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="FontFamily" Value="Segoe UI"/>
-                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                        <Setter Property="Width" Value="246" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Foreground" Value="#c7c7c7"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListBoxItem}" >
-                                    <Border Width="248"
-                            BorderBrush="White">
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Width="{TemplateBinding Width}"
-                                          Height="{TemplateBinding Height}"
-                                          TextBlock.TextAlignment="Center">
-                                        </ContentPresenter>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Foreground" Value="White"/>
-                                <Setter Property="Cursor" Value="Hand" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListView.ItemContainerStyle>
-
-            </ListView>
+            
         </Grid>
     </Grid>
 </UserControl>

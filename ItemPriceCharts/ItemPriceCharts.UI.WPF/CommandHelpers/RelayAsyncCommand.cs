@@ -50,14 +50,14 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
             return !this.isExecuting && (this.canExecute?.Invoke() ?? true);
         }
 
-        public async Task ExecuteAsync()
+        public Task ExecuteAsync()
         {
             if (this.CanExecute())
             {
                 try
                 {
                     this.isExecuting = true;
-                    await this.execute();
+                    return this.execute();
                 }
                 finally
                 {
@@ -66,6 +66,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
             }
 
             this.RaiseCantExecuteChanged();
+            return Task.CompletedTask;
         }
 
         protected void RaiseCantExecuteChanged()

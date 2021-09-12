@@ -60,7 +60,7 @@ namespace ItemPriceCharts.UI.WPF.Test.ViewModelTest
         public void AddShopAction_OnExceptionThrown_WillShowMessageDialog()
         {
             MessageDialogViewModel messageDialogViewModel = null;
-            UiEvents.ShowMessageDialog = (viewmodel) => { messageDialogViewModel = viewmodel; return false; };
+            UiEvents.ShowMessageDialog = viewmodel => { messageDialogViewModel = viewmodel; return false; };
 
             var expectedOnExceptionDialogMessage = $"Failed to create new shop with url: {this.onlineShop.Url}";
 

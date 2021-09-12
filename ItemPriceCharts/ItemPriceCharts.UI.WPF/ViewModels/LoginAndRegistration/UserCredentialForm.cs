@@ -1,5 +1,6 @@
 ﻿using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.ViewModels.Base;
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration
 {
