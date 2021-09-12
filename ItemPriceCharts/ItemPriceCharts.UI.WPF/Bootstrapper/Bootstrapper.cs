@@ -23,7 +23,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
 
         private static IContainer container;
         private static ILifetimeScope lifetimeScope;
-        private static Dispatcher dispatcher;
+        private static IDispatcherWrapper dispatcher;
 
         public static IViewFactory ViewFactory { get; private set; }
 
@@ -33,7 +33,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             container.Dispose();
         }
 
-        public static void Start(Dispatcher dispatcher)
+        public static void Start(IDispatcherWrapper dispatcher)
         {
             Bootstrapper.dispatcher = dispatcher;
 

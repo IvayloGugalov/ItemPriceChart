@@ -9,6 +9,7 @@ using NLog;
 
 using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Events;
+using ItemPriceCharts.UI.WPF.Factories;
 using ItemPriceCharts.UI.WPF.Services;
 
 namespace ItemPriceCharts.UI.WPF
@@ -43,7 +44,7 @@ namespace ItemPriceCharts.UI.WPF
                     XmlLanguage.GetLanguage(
                         CultureInfo.CurrentCulture.IetfLanguageTag)));
 
-            Bootstrapper.Bootstrapper.Start(this.Dispatcher);
+            Bootstrapper.Bootstrapper.Start(new DispatcherWrapper(this.Dispatcher));
 
             Application.Current.Exit += (_, _) =>
             {

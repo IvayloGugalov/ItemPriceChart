@@ -55,7 +55,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.IsInProgress = true;
             this.OnPropertyChanged(nameof(this.IsInProgress));
 
-            await Task.Run(() => this.itemService.AddItemToShop(this.NewItemUrl, this.SelectedShop, this.SelectedItemType));
+            await this.itemService.AddItemToShop(this.NewItemUrl, this.SelectedShop, this.SelectedItemType);
 
             this.IsInProgress = false;
             this.OnPropertyChanged(nameof(this.IsInProgress));
