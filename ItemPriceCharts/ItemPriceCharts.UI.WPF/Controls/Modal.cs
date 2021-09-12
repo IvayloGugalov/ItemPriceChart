@@ -7,7 +7,8 @@ namespace ItemPriceCharts.UI.WPF.Controls
     public class Modal : ContentControl
     {
         public static readonly DependencyProperty IsOpenProperty =
-            DependencyProperty.Register(nameof(IsOpen),
+            DependencyProperty.Register(
+                nameof(IsOpen),
                 typeof(bool),
                 typeof(Modal),
                 new PropertyMetadata(false));

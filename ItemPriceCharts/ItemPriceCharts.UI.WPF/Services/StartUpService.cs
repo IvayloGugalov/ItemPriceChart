@@ -14,7 +14,7 @@ using ItemPriceCharts.XmReaderWriter.User;
 
 namespace ItemPriceCharts.UI.WPF.Services
 {
-    public class StartUpService : IDisposable
+    public class StartUpService : IStartUpService, IDisposable
     {
         private static readonly Logger Logger = LogManager.GetLogger(nameof(StartUpService));
         
@@ -70,16 +70,11 @@ namespace ItemPriceCharts.UI.WPF.Services
 
         private void ConfigureMainWindow(UserAccount userAccount)
         {
-            var mainWindow = Bootstrapper.Bootstrapper.ViewFactory?
+            var mainWindow = Bootstrapper.Bootstrapper.ViewFactory
                 .Resolve<MainWindowViewModel>(
                     new Parameter[] { new TypedParameter(typeof(UserAccount), userAccount) });
 
-            if (mainWindow == null)
-            {
-                throw new NullReferenceException(nameof(mainWindow));
-            }
-
-            this.app.MainWindow = mainWindow;
+            this.app.MainWindow = mainWindow ?? throw new NullReferenceException(nameof(mainWindow));
             this.app.MainWindow.Show();
             this.app.MainWindow.Activate();
         }
