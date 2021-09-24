@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.ViewModels"
         xmlns:controls="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
         xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+        xmlns:behaviors="clr-namespace:ItemPriceCharts.UI.WPF.Behaviors"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:custom="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
@@ -35,7 +36,17 @@
         <materialDesign:TransitioningContent Grid.Column="0"
                                              OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromLeft}">
             <!-- Setting the DataContext here and in the ViewModel, as it is not picked up by the UserControl otherwise -->
-            <controls:SideMenuView DataContext="{Binding SideMenuViewModel}" />
+            <controls:SideMenuView DataContext="{Binding SideMenuViewModel}" 
+                                   behaviors:ResponsiveBehavior.IsResponsive="True"
+                                   behaviors:ResponsiveBehavior.HorizontalBreakpoint="1600">
+
+                <behaviors:ResponsiveBehavior.HorizontalBreakpointSetters>
+                    <SetterBaseCollection>
+                        <Setter Property="controls:SideMenuView.Width" Value="250" />
+                    </SetterBaseCollection>
+                </behaviors:ResponsiveBehavior.HorizontalBreakpointSetters>
+
+            </controls:SideMenuView>
         </materialDesign:TransitioningContent>
 
         <Grid Grid.Column="1">

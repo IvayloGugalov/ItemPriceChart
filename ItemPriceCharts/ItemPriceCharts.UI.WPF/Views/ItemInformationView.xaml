@@ -10,7 +10,7 @@
         WindowStartupLocation="CenterScreen"
         SizeToContent="Height" 
         ResizeMode="CanMinimize"
-        Width="600"
+        Width="888"
         MinHeight="500">
     <Window.Background>
         <LinearGradientBrush>
