@@ -7,11 +7,9 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              Focusable="False"
-             d:DesignHeight="450"
-             d:DesignWidth="150">
+             d:DesignHeight="450">
 
-    <Grid Background="#024f94"
-          Width="150">
+    <Grid Background="#024f94">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
