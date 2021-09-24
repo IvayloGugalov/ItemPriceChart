@@ -42,7 +42,7 @@
 
                 <behaviors:ResponsiveBehavior.HorizontalBreakpointSetters>
                     <SetterBaseCollection>
-                        <Setter Property="controls:LogOutModalControl.Width" Value="250" />
+                        <Setter Property="controls:SideMenuView.Width" Value="250" />
                     </SetterBaseCollection>
                 </behaviors:ResponsiveBehavior.HorizontalBreakpointSetters>
 

@@ -97,17 +97,18 @@ namespace ItemPriceCharts.UI.WPF.Behaviors
             if (GetIsResponsive(element))
             {
                 if (currentWindow != null)
-                    currentWindow.SizeChanged += (s, e) => UpdateElement(currentWindow.Width, element);
+                    currentWindow.SizeChanged += (s, e) => UpdateElement(currentWindow, element);
             }
             else
             {
                 if (currentWindow != null)
-                    currentWindow.SizeChanged -= (s, e) => UpdateElement(currentWindow.Width, element);
+                    currentWindow.SizeChanged -= (s, e) => UpdateElement(currentWindow, element);
             }
         }
 
-        private static void UpdateElement(double currentWindowWidth, FrameworkElement element)
+        private static void UpdateElement(Window currentWindow, FrameworkElement element)
         {
+            var currentWindowWidth = currentWindow.Width;
             var breakpointWidth = GetHorizontalBreakpoint(element);
 
             if (currentWindowWidth >= breakpointWidth &&
@@ -123,6 +124,12 @@ namespace ItemPriceCharts.UI.WPF.Behaviors
                 SetIsHorizontalBreakpointSettersActive(element, false);
 
                 element.Style = element.Style.BasedOn;
+            }
+            else if (currentWindow.WindowState == WindowState.Maximized)
+            {
+                SetIsHorizontalBreakpointSettersActive(element, true);
+
+                element.Style = CreateResponsiveStyle(element);
             }
         }
 
