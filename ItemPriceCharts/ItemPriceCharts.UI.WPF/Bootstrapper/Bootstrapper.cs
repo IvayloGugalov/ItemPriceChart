@@ -93,6 +93,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
         {
             ViewFactory.RegisterUserControl<LoginViewModel, LoginView>();
             ViewFactory.RegisterUserControl<RegisterViewModel, RegisterView>();
+            ViewFactory.RegisterUserControl<UserSettingsViewModel, UserSettingsModalControl>();
 
             ViewFactory.Register<MainWindowViewModel, MainWindow>();
 

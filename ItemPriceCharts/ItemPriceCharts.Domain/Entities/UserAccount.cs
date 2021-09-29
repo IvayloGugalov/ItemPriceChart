@@ -13,6 +13,8 @@ namespace ItemPriceCharts.Domain.Entities
         public Email Email { get; private set; }
         public string Password { get; private set; }
 
+        public string FullName => string.Join(' ', this.FirstName, this.LastName);
+
         public IReadOnlyCollection<UserAccountOnlineShops> OnlineShopsForUser => this.onlineShopsForUser?.AsReadOnly();
         private readonly List<UserAccountOnlineShops> onlineShopsForUser = new();
 

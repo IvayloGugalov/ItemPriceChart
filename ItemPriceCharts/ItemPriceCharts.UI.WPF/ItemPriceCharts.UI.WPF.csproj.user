@@ -60,6 +60,9 @@
     <Compile Update="Views\UserControls\SideMenuView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\UserSettingsModalControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\ModalStyle.xaml">
@@ -135,6 +138,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UserControls\SideMenuView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\UserSettingsModalControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

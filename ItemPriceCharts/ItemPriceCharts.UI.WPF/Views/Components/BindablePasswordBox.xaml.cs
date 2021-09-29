@@ -30,9 +30,27 @@ namespace ItemPriceCharts.UI.WPF.Views.Components
                     isAnimationProhibited: false,
                     defaultUpdateSourceTrigger: UpdateSourceTrigger.PropertyChanged));
 
+
+        public string Watermark
+        {
+            get => (string)GetValue(WatermarkProperty);
+            set => SetValue(WatermarkProperty, value);
+        }
+
+        public static readonly DependencyProperty WatermarkProperty =
+            DependencyProperty.Register(
+                name: nameof(Watermark),
+                propertyType: typeof(string),
+                ownerType: typeof(BindablePasswordBox),
+                typeMetadata: new PropertyMetadata(
+                    defaultValue: "Password",
+                    propertyChangedCallback: WatermarkPropertyChanged));
+
         public BindablePasswordBox()
         {
             InitializeComponent();
+
+            this.passwordBox.Watermark = this.Watermark;
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -58,6 +76,19 @@ namespace ItemPriceCharts.UI.WPF.Views.Components
             {
                 bindablePasswordBox.UpdatePassword();
             }
+        }
+
+        private static void WatermarkPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is BindablePasswordBox bindablePasswordBox)
+            {
+                bindablePasswordBox.UpdateWatermark();
+            }
+        }
+
+        private void UpdateWatermark()
+        {
+            this.passwordBox.Watermark = this.Watermark;
         }
     }
 }

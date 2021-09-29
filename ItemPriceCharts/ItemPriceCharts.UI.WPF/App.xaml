@@ -44,6 +44,10 @@
             <DataTemplate DataType="{x:Type viewModels:ItemListingViewModel}">
                 <controls:ItemListingView />
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModels:UserSettingsViewModel}">
+                <controls:UserSettingsModalControl />
+            </DataTemplate>
             
         </ResourceDictionary>
     </Application.Resources>
