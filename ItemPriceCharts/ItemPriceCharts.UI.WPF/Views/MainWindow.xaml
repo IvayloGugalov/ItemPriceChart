@@ -12,9 +12,9 @@
         xmlns:custom="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Topmost="True"
-        MinHeight="576"
-        MinWidth="1024">
+        Topmost="false"
+        MinHeight="720"
+        MinWidth="1280">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding Path=ClosedCommand}"/>
@@ -32,14 +32,6 @@
                                      Grid.ColumnSpan="2"
                                      Panel.ZIndex="10"
                                      DataContext="{Binding SideMenuViewModel}" />
-
-        <!-- TODO: Find a more elegant way of setting up the user control without creating it before the view model is created, as the DataContext will initially be set to the MainViewModel -->
-        <custom:Modal Grid.Column="0"
-                      Grid.ColumnSpan="2"
-                      Panel.ZIndex="9"
-                      IsOpen="{Binding SideMenuViewModel.IsUserSettingsOpened}">
-            <ContentControl Content="{Binding SideMenuViewModel.UserSettingsViewModel}" />
-        </custom:Modal>
 
         <materialDesign:TransitioningContent Grid.Column="0"
                                              OpeningEffect="{materialDesign:TransitionEffect Kind=SlideInFromLeft}">

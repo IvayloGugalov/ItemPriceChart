@@ -48,10 +48,18 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.SideMenuViewModel.ShowItems += this.ShowItemListingAction;
             this.SideMenuViewModel.ClearView += this.ClearViewAction;
+            this.SideMenuViewModel.ShowUserSettings += this.ShowUserSettingsAction;
 
             this.UserAccount = userAccount;
             this.currentView = this;
+        }
 
+        private void ShowUserSettingsAction()
+        {
+            if (this.CurrentView is UserSettingsViewModel) return;
+
+            this.CurrentView = new UserSettingsViewModel(this.UserAccount);
+            this.IsNewViewDisplayed = true;
         }
 
         private void ClearViewAction()

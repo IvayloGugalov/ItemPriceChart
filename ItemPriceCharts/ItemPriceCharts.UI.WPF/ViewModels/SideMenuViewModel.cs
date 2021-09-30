@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-using Autofac;
-
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
 using ItemPriceCharts.UI.WPF.Events;
@@ -33,13 +31,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
         private bool isLogOutModalOpen;
 
-        public bool IsUserSettingsOpened
-        {
-            get => this.isUserSettingsOpened;
-            set => this.SetValue(ref this.isUserSettingsOpened, value);
-        }
-        private bool isUserSettingsOpened;
-
         public UserAccount UserAccount { get; }
 
         public ICommand ShowItemsForShopCommand { get; }
@@ -56,6 +47,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         public event Action<OnlineShop> ShowItems;
         public event Action ClearView;
+        public event Action ShowUserSettings;
 
         public SideMenuViewModel(ILogOutService logOutService, UiEvents uiEvents, UserAccount userAccount)
         {
@@ -73,7 +65,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowCreateShopCommand = new RelayCommand(_ => UiEvents.ShowCreateShopView.Raise(userAccount));
             this.ShowAddItemCommand = new RelayCommand(_ => UiEvents.ShowCreateItemView.Raise(this.SelectedShop));
 
-            this.ShowUserSettingsCommand = new RelayCommand(_ => this.ShowUserSettingsCommandAction());
+            this.ShowUserSettingsCommand = new RelayCommand(_ => this.ShowUserSettings?.Invoke());
             this.ShowLogOutModalCommand = new RelayCommand(_ => this.IsLogOutModalOpen = true);
             this.LogOutCommand = new RelayCommand(_ => logOutService.LogOut());
             this.CancelLogOutCommand = new RelayCommand(_ => this.IsLogOutModalOpen = false);
@@ -91,17 +83,5 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             this.OnlineShops.Remove(e);
         }
-
-        private void ShowUserSettingsCommandAction()
-        {
-            if (this.UserSettingsViewModel == null)
-            {
-                this.UserSettingsViewModel = Bootstrapper.Bootstrapper.Resolve<UserSettingsViewModel>(new TypedParameter(typeof(UserAccount), this.UserAccount));
-                this.OnPropertyChanged(nameof(this.UserSettingsViewModel));
-                this.IsUserSettingsOpened = true;
-            }
-        }
-        // TODO: Try to remove this from here
-        public UserSettingsViewModel UserSettingsViewModel { get; private set; }
     }
 }
