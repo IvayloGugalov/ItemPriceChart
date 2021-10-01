@@ -16,6 +16,7 @@
                 <ResourceDictionary Source="Styles/Buttons.xaml" />
                 <ResourceDictionary Source="Styles/DataGrids.xaml" />
                 <ResourceDictionary Source="Styles/ListViews.xaml" />
+                <ResourceDictionary Source="Styles/Borders.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />

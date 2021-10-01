@@ -25,5 +25,21 @@ namespace ItemPriceCharts.UI.WPF.Views.UserControls
             InitializeComponent();
            
         }
+
+        private void ShowPasswordCharsCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            this.currentPassword.Visibility = System.Windows.Visibility.Collapsed;
+            this.currentPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+
+            this.currentPasswordTextBox.Focus();
+        }
+
+        private void ShowPasswordCharsCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.currentPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+            this.currentPassword.Visibility = System.Windows.Visibility.Visible;
+
+            this.currentPassword.Focus();
+        }
     }
 }
