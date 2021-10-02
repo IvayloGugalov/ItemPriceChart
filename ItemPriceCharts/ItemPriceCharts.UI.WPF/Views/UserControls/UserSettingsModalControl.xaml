@@ -10,7 +10,6 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d">
 
-    
     <UserControl.Resources>
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="18" />
@@ -18,8 +17,6 @@
         <Style TargetType="{x:Type StackPanel}">
             <Setter Property="Background" Value="White" />
         </Style>
-        
-        
     </UserControl.Resources>
 
     <Border Style="{StaticResource Borders.UserSettingsControlBorder}">
@@ -42,23 +39,39 @@
                             Padding="10">
                         <StackPanel Orientation="Vertical"
                                     HorizontalAlignment="Center">
-                            <Border CornerRadius="50"
-                                    Width="80"
-                                    Height="80"
-                                    Background="CadetBlue"
-                                    VerticalAlignment="Top"
-                                    HorizontalAlignment="Center">
-                                <materialDesign:PackIcon Margin="10"
-                                                         Width="60"
-                                                         Height="60"
-                                                         Kind="FaceMale"
-                                                         Foreground="LightBlue" />
-                            </Border>
+
+                            <Grid>
+                                <Border CornerRadius="50"
+                                        Width="80"
+                                        Height="80"
+                                        Background="CadetBlue"
+                                        Visibility="{Binding UserProfileImage, Converter={cv:ObjectToVisibilityConverter Invert=True}}"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Margin="10"
+                                                             Width="60"
+                                                             Height="60"
+                                                             Kind="FaceMale"
+                                                             Foreground="LightBlue" />
+                                </Border>
+
+                                <Ellipse Width="80"
+                                         Height="80"
+                                         Visibility="{Binding UserProfileImage, Converter={cv:ObjectToVisibilityConverter}}"
+                                         VerticalAlignment="Top"
+                                         HorizontalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding UserProfileImage.Source}"
+                                                    Stretch="Fill"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Grid>
 
                             <TextBlock Margin="0 5 0 0"
-                                       HorizontalAlignment="Center">
+                                       HorizontalAlignment="Center"
+                                       IsEnabled="{Binding IsUpdatingProfileImage ,Converter={cv:InverseBoolConverter}}">
                                 <Hyperlink Style="{StaticResource Styles.HyperLink}" 
-                                           Command="{Binding ChooseImageCommand}">
+                                           Command="{Binding UpdateProfileImageCommand}">
                                     <Run Text="Update Photo" />
                                 </Hyperlink>
                             </TextBlock>

@@ -23,6 +23,9 @@ namespace ItemPriceCharts.XmReaderWriter.User
         [DataMember(EmitDefaultValue = true)]
         public static string Username { get; set; }
 
+        [DataMember(EmitDefaultValue = false)]
+        public static string ProfileImagePath { get; set; }
+
         public static (string username, string email) UsernameAndEmail => (Username, Email);
 
         public static void ReadSettings()
@@ -37,7 +40,8 @@ namespace ItemPriceCharts.XmReaderWriter.User
                     { nameof(RememberAccount), () =>  RememberAccount = reader.ReadElementContentAsString() },
                     { nameof(LoginExpiresDate),  () => LoginExpiresDate = reader.ReadElementContentAsString() },
                     { nameof(Email), () => Email = reader.ReadElementContentAsString() },
-                    { nameof(Username), () => Username = reader.ReadElementContentAsString() }
+                    { nameof(Username), () => Username = reader.ReadElementContentAsString() },
+                    { nameof(ProfileImagePath), () => ProfileImagePath = reader.ReadElementContentAsString() }
                 });
             }
             finally
@@ -66,6 +70,7 @@ namespace ItemPriceCharts.XmReaderWriter.User
             writer.WriteTo(nameof(Email), Email);
             writer.WriteTo(nameof(RememberAccount), RememberAccount);
             writer.WriteTo(nameof(LoginExpiresDate), LoginExpiresDate);
+            writer.WriteTo(nameof(ProfileImagePath), ProfileImagePath);
         }
 
         public static void RemoveUserDetailsFromXmlFile()
@@ -78,7 +83,8 @@ namespace ItemPriceCharts.XmReaderWriter.User
                 nameof(Username),
                 nameof(Email),
                 nameof(RememberAccount),
-                nameof(LoginExpiresDate));
+                nameof(LoginExpiresDate),
+                nameof(ProfileImagePath));
 
             xmlDocument.Save(XmlCreateFile.XML_FILE_PATH);
         }

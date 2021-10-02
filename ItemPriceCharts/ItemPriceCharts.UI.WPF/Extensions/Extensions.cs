@@ -19,5 +19,16 @@ namespace ItemPriceCharts.UI.WPF.Extensions
 
             return enumerable;
         }
+
+        public static IDictionary<T, K> ForEach<T, K>(this IDictionary<T, K> dictionary, Action<T, K> action)
+        {
+            foreach (var (key, value) in dictionary)
+            {
+                action(key, value);
+            }
+
+            return dictionary;
+        }
+        
     }
 }

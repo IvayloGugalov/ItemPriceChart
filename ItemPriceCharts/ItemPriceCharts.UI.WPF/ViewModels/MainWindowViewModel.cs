@@ -58,7 +58,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         {
             if (this.CurrentView is UserSettingsViewModel) return;
 
-            this.CurrentView = new UserSettingsViewModel(this.UserAccount);
+            this.CurrentView = Bootstrapper.Bootstrapper.Resolve<UserSettingsViewModel>(new TypedParameter(typeof(UserAccount), this.UserAccount));
             this.IsNewViewDisplayed = true;
         }
 

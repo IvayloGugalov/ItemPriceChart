@@ -1,17 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+
+using NLog;
+
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Extensions;
+using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels.Base;
 
 namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class UserSettingsViewModel : BaseViewModel
     {
+        private static readonly Logger Logger = LogManager.GetLogger(nameof(UserSettingsViewModel));
+
+        private readonly IImageService imageService;
         public UserAccount UserAccount { get; }
 
         public string CurrentPassword
@@ -35,28 +42,90 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
         private string repeatNewPassword;
 
+        public bool IsUpdatingProfileImage
+        {
+            get => this.isUpdatingProfileImage;
+            set => this.SetValue(ref this.isUpdatingProfileImage, value);
+        }
+        private bool isUpdatingProfileImage;
+
         public bool IsTwoFactorAuthEnabled => false;
 
-        public ICommand ChooseImageCommand { get; }
+        public Image UserProfileImage { get; private set; }
+
+        public ICommand UpdateProfileImageCommand { get; }
         public ICommand UpdateEmailCommand { get; }
         public ICommand UpdatePasswordCommand { get; }
         public ICommand EnableTwoStepVerificationCommand { get; }
         public ICommand DisableTwoStepVerificationCommand { get; }
         public ICommand CloseAccountCommand { get; }
 
-        public UserSettingsViewModel(UserAccount userAccount)
+        public UserSettingsViewModel(IImageService imageService, UserAccount userAccount)
         {
+            this.imageService = imageService;
             this.UserAccount = userAccount;
 
-
-
-
-            this.ChooseImageCommand = new RelayCommand(_ => {});
+            this.UpdateProfileImageCommand = new RelayAsyncCommand(this.UpdateProfileImageAction);
             this.UpdateEmailCommand = new RelayCommand(_ => {});
             this.UpdatePasswordCommand = new RelayCommand(_ => {});
             this.EnableTwoStepVerificationCommand = new RelayCommand(_ => { });
             this.DisableTwoStepVerificationCommand = new RelayCommand(_ => { });
             this.CloseAccountCommand = new RelayCommand(_ => {});
+            
+            this.SetProfileImage().FireAndForgetSafeAsync();
         }
+
+        private async Task SetProfileImage()
+        {
+            string profileImagePath = null;
+            var imageFound = await Task.Run(() => this.imageService.TryGetProfileImagePath(out profileImagePath));
+
+            if (imageFound && !string.IsNullOrEmpty(profileImagePath))
+            {
+                this.UserProfileImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(profileImagePath))
+                };
+                this.OnPropertyChanged(nameof(this.UserProfileImage));
+            }
+        }
+
+        private async Task UpdateProfileImageAction()
+        {
+            // TODO: Add PropertyObserver
+            this.IsUpdatingProfileImage = true;
+
+            try
+            {
+                var profileImagePath = string.Empty;
+                var success = await Task.Run(() => this.imageService.TryCreateUserProfileImage(out profileImagePath));
+                await Task.Delay(TimeSpan.FromSeconds(10));
+                if (success)
+                {
+                    var profileImage = new Image
+                    {
+                        Source = new BitmapImage(new Uri(profileImagePath))
+                    };
+
+                    this.UserProfileImage = profileImage;
+                    this.OnPropertyChanged(nameof(this.UserProfileImage));
+
+                    return;
+                }
+
+                // TODO: Show error message
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Could not update users' profile image.");
+            }
+            finally
+            {
+                this.IsUpdatingProfileImage = false;
+            }
+        }
+
+
+
     }
 }
