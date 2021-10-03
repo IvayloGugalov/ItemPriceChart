@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
@@ -49,9 +48,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
         private bool isUpdatingProfileImage;
 
+        public bool RequestToUpdateEmail { get; set; }
+
         public bool IsTwoFactorAuthEnabled => false;
 
-        public Image UserProfileImage { get; private set; }
+        public BitmapImage UserProfileImage { get; private set; }
 
         public ICommand UpdateProfileImageCommand { get; }
         public ICommand UpdateEmailCommand { get; }
@@ -66,13 +67,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.UserAccount = userAccount;
 
             this.UpdateProfileImageCommand = new RelayAsyncCommand(this.UpdateProfileImageAction);
-            this.UpdateEmailCommand = new RelayCommand(_ => {});
+            this.UpdateEmailCommand = new RelayCommand(this.UpdateEmailAction);
             this.UpdatePasswordCommand = new RelayCommand(_ => {});
             this.EnableTwoStepVerificationCommand = new RelayCommand(_ => { });
             this.DisableTwoStepVerificationCommand = new RelayCommand(_ => { });
             this.CloseAccountCommand = new RelayCommand(_ => {});
             
-            this.SetProfileImage().FireAndForgetSafeAsync();
+            this.SetProfileImage().FireAndForgetSafeAsync(continueOnCapturedContext: false);
+        }
+
+        private void UpdateEmailAction(object obj)
+        {
+            this.RequestToUpdateEmail = true;
+            this.OnPropertyChanged(nameof(this.RequestToUpdateEmail));
         }
 
         private async Task SetProfileImage()
@@ -82,10 +89,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             if (imageFound && !string.IsNullOrEmpty(profileImagePath))
             {
-                this.UserProfileImage = new Image
-                {
-                    Source = new BitmapImage(new Uri(profileImagePath))
-                };
+                this.UserProfileImage = new BitmapImage(new Uri(profileImagePath));
                 this.OnPropertyChanged(nameof(this.UserProfileImage));
             }
         }
@@ -98,14 +102,11 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             try
             {
                 var profileImagePath = string.Empty;
-                var success = await Task.Run(() => this.imageService.TryCreateUserProfileImage(out profileImagePath));
-                await Task.Delay(TimeSpan.FromSeconds(10));
-                if (success)
+                var imageCreated = await Task.Run(() => this.imageService.TryCreateUserProfileImage(out profileImagePath));
+
+                if (imageCreated)
                 {
-                    var profileImage = new Image
-                    {
-                        Source = new BitmapImage(new Uri(profileImagePath))
-                    };
+                    var profileImage = new BitmapImage(new Uri(profileImagePath));
 
                     this.UserProfileImage = profileImage;
                     this.OnPropertyChanged(nameof(this.UserProfileImage));

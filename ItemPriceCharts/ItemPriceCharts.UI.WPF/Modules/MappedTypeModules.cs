@@ -6,6 +6,7 @@ using Autofac;
 using ItemPriceCharts.Infrastructure.Services;
 using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Factories;
+using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
@@ -37,6 +38,7 @@ namespace ItemPriceCharts.UI.WPF.Modules
                 {typeof(IFileSystemWrapper), typeof(FileSystemWrapper)},
                 {typeof(IProcessWrapper), typeof(ProcessWrapper)},
                 {typeof(IImageService), typeof(ImageService)},
+                {typeof(IImageProxy), typeof(ImageProxy)},
             };
 
             var mappedTypesSingleInstance = new Dictionary<Type, Type>
@@ -47,8 +49,8 @@ namespace ItemPriceCharts.UI.WPF.Modules
 
             var mappedTypesPerScope = new Dictionary<Type, Type>
             {
-                {typeof(ILogOutService), typeof(LogOutService)},
                 {typeof(IItemService), typeof(ItemService)},
+                {typeof(ILogOutService), typeof(LogOutService)},
                 {typeof(IOnlineShopService), typeof(OnlineShopService)},
                 {typeof(IUserAccountService), typeof(UserAccountService)},
                 {typeof(IItemDataRetrieveService), typeof(ItemDataRetrieveService)}
