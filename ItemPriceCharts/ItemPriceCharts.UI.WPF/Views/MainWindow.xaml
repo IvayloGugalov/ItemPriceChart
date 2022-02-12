@@ -12,9 +12,9 @@
         xmlns:custom="clr-namespace:ItemPriceCharts.UI.WPF.Controls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Topmost="False"
-        MinHeight="600"
-        MinWidth="1000">
+        Topmost="false"
+        MinHeight="720"
+        MinWidth="1280">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding Path=ClosedCommand}"/>
@@ -42,7 +42,7 @@
 
                 <behaviors:ResponsiveBehavior.HorizontalBreakpointSetters>
                     <SetterBaseCollection>
-                        <Setter Property="controls:SideMenuView.Width" Value="250" />
+                        <Setter Property="controls:SideMenuView.Width" Value="200" />
                     </SetterBaseCollection>
                 </behaviors:ResponsiveBehavior.HorizontalBreakpointSetters>
 

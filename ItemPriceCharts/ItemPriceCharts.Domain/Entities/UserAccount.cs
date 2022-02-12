@@ -13,6 +13,8 @@ namespace ItemPriceCharts.Domain.Entities
         public Email Email { get; private set; }
         public string Password { get; private set; }
 
+        public string FullName => string.Join(' ', this.FirstName, this.LastName);
+
         public IReadOnlyCollection<UserAccountOnlineShops> OnlineShopsForUser => this.onlineShopsForUser?.AsReadOnly();
         private readonly List<UserAccountOnlineShops> onlineShopsForUser = new();
 
@@ -50,6 +52,16 @@ namespace ItemPriceCharts.Domain.Entities
 
             this.onlineShopsForUser.Remove(onlineShop);
             DomainEvents.ShopDeleted.Raise(onlineShop.OnlineShop);
+        }
+
+        public void UpdateEmail(string newEmail)
+        {
+            if (newEmail == this.Email.Value)
+            {
+                throw new ArgumentException("Can't update the email with the same value.");
+            }
+
+            this.Email = new Email(newEmail);
         }
 
         public override string ToString()

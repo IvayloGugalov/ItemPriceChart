@@ -61,7 +61,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels.Base
             this.disposed = true;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.Dispose(true);
         }

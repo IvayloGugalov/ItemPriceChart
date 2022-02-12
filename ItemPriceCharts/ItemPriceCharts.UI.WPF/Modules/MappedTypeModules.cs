@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Autofac;
 
 using ItemPriceCharts.Infrastructure.Services;
+using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Factories;
+using ItemPriceCharts.UI.WPF.Helpers;
 using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels.LoginAndRegistration;
 
@@ -29,28 +32,44 @@ namespace ItemPriceCharts.UI.WPF.Modules
                 .InstancePerDependency()
                 .WithParameter(new TypedParameter(typeof(HtmlAgilityPack.HtmlWeb), new HtmlAgilityPack.HtmlWeb()));
 
-            builder.RegisterType<NavigationService<LoginViewModel>>()
-                .As<INavigationService<LoginViewModel>>()
-                .SingleInstance();
-            builder.RegisterType<NavigationService<RegisterViewModel>>()
-                .As<INavigationService<RegisterViewModel>>()
-                .SingleInstance();
-
-            var mappedTypes = new Dictionary<Type, Type>
+            var mappedTypesInstancePerDependency = new Dictionary<Type, Type>
             {
-                {typeof(ILogOutService), typeof(LogOutService)},
+                {typeof(ISystemDialogWrapper), typeof(SystemDialogWrapper)},
+                {typeof(IFileSystemWrapper), typeof(FileSystemWrapper)},
+                {typeof(IProcessWrapper), typeof(ProcessWrapper)},
+                {typeof(IImageService), typeof(ImageService)},
+                {typeof(IImageProxy), typeof(ImageProxy)},
+            };
+
+            var mappedTypesSingleInstance = new Dictionary<Type, Type>
+            {
+                {typeof(INavigationService<LoginViewModel>), typeof(NavigationService<LoginViewModel>)},
+                {typeof(INavigationService<RegisterViewModel>), typeof(NavigationService<RegisterViewModel>)},
+            };
+
+            var mappedTypesPerScope = new Dictionary<Type, Type>
+            {
                 {typeof(IItemService), typeof(ItemService)},
+                {typeof(ILogOutService), typeof(LogOutService)},
                 {typeof(IOnlineShopService), typeof(OnlineShopService)},
                 {typeof(IUserAccountService), typeof(UserAccountService)},
                 {typeof(IItemDataRetrieveService), typeof(ItemDataRetrieveService)}
             };
 
-            foreach (var (type, value) in mappedTypes)
-            {
+            mappedTypesInstancePerDependency.ForEach((type, value) =>
                 builder.RegisterType(value)
                     .As(type)
-                    .InstancePerLifetimeScope();
-            }
+                    .InstancePerDependency());
+
+            mappedTypesSingleInstance.ForEach((type, value) =>
+                builder.RegisterType(value)
+                    .As(type)
+                    .SingleInstance());
+
+            mappedTypesPerScope.ForEach((type, value) =>
+                builder.RegisterType(value)
+                    .As(type)
+                    .InstancePerLifetimeScope());
         }
     }
 }

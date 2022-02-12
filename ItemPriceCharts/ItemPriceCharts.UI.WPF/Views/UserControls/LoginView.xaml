@@ -12,10 +12,6 @@
              d:DesignHeight="320"
              d:DesignWidth="400">
 
-    <UserControl.Resources>
-        <cv:EmptyStringToVisibilityConverter x:Key="StringToVis"/>
-    </UserControl.Resources>
-
     <UserControl.InputBindings>
         <KeyBinding Command="{Binding Path=LoginCommand}" Key="Enter" />
     </UserControl.InputBindings>
@@ -81,7 +77,7 @@
                     Height="27"/>
 
             <TextBlock Grid.Row="10"
-                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVis}}"
+                       Visibility="{Binding ErrorMessage, Converter={cv:NullOrEmptyStringToVisibilityConverter}}"
                        Background="Pink"
                        Text="{Binding ErrorMessage}"
                        Padding="5 8"

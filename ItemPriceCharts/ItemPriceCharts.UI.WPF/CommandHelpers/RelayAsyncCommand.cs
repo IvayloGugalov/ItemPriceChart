@@ -10,6 +10,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
     public interface IAsyncCommand : ICommand
     {
         Task ExecuteAsync();
+        void RaiseCanExecuteChanged();
     }
 
     public class RelayAsyncCommand : IAsyncCommand
@@ -65,11 +66,11 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
                 }
             }
 
-            this.RaiseCantExecuteChanged();
+            this.RaiseCanExecuteChanged();
             return Task.CompletedTask;
         }
 
-        protected void RaiseCantExecuteChanged()
+        public void RaiseCanExecuteChanged()
         {
             this.InternalCanExecuteChanged.Raise(this);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ItemPriceCharts.InfraStructure.Constants
 {
@@ -26,6 +27,8 @@ namespace ItemPriceCharts.InfraStructure.Constants
 
     public static class Paths
     {
-        public static readonly string XML_FILE_PATH = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"\ItemPriceCharts\myXmlFile.xml");
+        public static readonly string APPLICATION_APPDATA_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ItemPriceCharts");
+
+        public static readonly string XML_FILE_PATH = Path.Combine(APPLICATION_APPDATA_PATH, "myXmlFile.xml");
     }
 }

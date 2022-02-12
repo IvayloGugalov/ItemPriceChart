@@ -17,20 +17,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
         private readonly ItemListingViewModel itemListingViewModel;
 
-        private BaseViewModel currentView;
-        private bool isNewViewDisplayed;
-
         public bool IsNewViewDisplayed
         {
             get => this.isNewViewDisplayed;
             set => this.SetValue(ref this.isNewViewDisplayed, value);
         }
+        private bool isNewViewDisplayed;
 
         public BaseViewModel CurrentView
         {
             get => this.currentView;
             set => this.SetValue(ref this.currentView, value);
         }
+        private BaseViewModel currentView;
 
         public UserAccount UserAccount { get; }
 
@@ -41,7 +40,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public MainWindowViewModel(UserAccount userAccount, UiEvents uiEvents)
         {
             this.itemListingViewModel = new ItemListingViewModel(userAccount, uiEvents);
-
             this.SideMenuViewModel = Bootstrapper.Bootstrapper.Resolve<SideMenuViewModel>(parameters: new Parameter[]
             {
                 new TypedParameter(typeof(UserAccount), userAccount),
@@ -50,10 +48,18 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.SideMenuViewModel.ShowItems += this.ShowItemListingAction;
             this.SideMenuViewModel.ClearView += this.ClearViewAction;
+            this.SideMenuViewModel.ShowUserSettings += this.ShowUserSettingsAction;
 
             this.UserAccount = userAccount;
             this.currentView = this;
+        }
 
+        private void ShowUserSettingsAction()
+        {
+            if (this.CurrentView is UserSettingsViewModel) return;
+
+            this.CurrentView = Bootstrapper.Bootstrapper.Resolve<UserSettingsViewModel>(new TypedParameter(typeof(UserAccount), this.UserAccount));
+            this.IsNewViewDisplayed = true;
         }
 
         private void ClearViewAction()
@@ -70,6 +76,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 
             this.CurrentView = this.itemListingViewModel;
             this.IsNewViewDisplayed = true;
+        }
+
+        public override void Dispose()
+        {
+            this.SideMenuViewModel.ShowItems -= this.ShowItemListingAction;
+            this.SideMenuViewModel.ClearView -= this.ClearViewAction;
         }
     }
 }

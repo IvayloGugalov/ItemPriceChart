@@ -19,11 +19,6 @@ namespace ItemPriceCharts.Infrastructure.Data.Configurations
                 })
                 .IsUnique();
 
-            builder.HasAlternateKey(account => new
-            {
-                account.Username, account.Email
-            });
-
             builder.Property(account => account.Id)
                 .HasColumnName("Id")
                 .ValueGeneratedNever();

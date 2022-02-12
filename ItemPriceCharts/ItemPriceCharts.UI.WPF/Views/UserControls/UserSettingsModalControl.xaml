@@ -1,0 +1,360 @@
+﻿<UserControl x:Class="ItemPriceCharts.UI.WPF.Views.UserControls.UserSettingsModalControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ItemPriceCharts.UI.WPF.Views.UserControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:cv="clr-namespace:ItemPriceCharts.UI.WPF.Converters"
+             xmlns:components="clr-namespace:ItemPriceCharts.UI.WPF.Views.Components"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="18" />
+        </Style>
+        <Style TargetType="{x:Type StackPanel}">
+            <Setter Property="Background" Value="White" />
+        </Style>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource Borders.UserSettingsControlBorder}">
+        <TabControl Background="Transparent">
+            <TabItem Header="Profile">
+                <Grid Margin="25 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--Update Photo-->
+                    <Border Grid.Row="0"
+                            HorizontalAlignment="Stretch"
+                            Background="White"
+                            CornerRadius="15"
+                            Padding="10">
+                        <StackPanel Orientation="Vertical"
+                                    HorizontalAlignment="Center">
+
+                            <Grid>
+                                <Border CornerRadius="50"
+                                        Width="80"
+                                        Height="80"
+                                        Background="CadetBlue"
+                                        Visibility="{Binding UserProfileImage, Converter={cv:ObjectToVisibilityConverter Invert=True}}"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Margin="10"
+                                                             Width="60"
+                                                             Height="60"
+                                                             Kind="FaceMale"
+                                                             Foreground="LightBlue" />
+                                </Border>
+
+                                <Ellipse Width="100"
+                                         Height="100"
+                                         RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                         Visibility="{Binding UserProfileImage, Converter={cv:ObjectToVisibilityConverter}}"
+                                         HorizontalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding UserProfileImage}"
+                                                    Stretch="Fill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Grid>
+
+                            <TextBlock Margin="0 5 0 0"
+                                       HorizontalAlignment="Center"
+                                       IsEnabled="{Binding IsUpdatingProfileImage ,Converter={cv:InverseBoolConverter}}">
+                                <Hyperlink Style="{StaticResource Styles.HyperLink}" 
+                                           Command="{Binding UpdateProfileImageCommand}">
+                                    <Run Text="Update Photo" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <!--Account Name--><!--Account Information-->
+                    <!--Email Address-->
+                    <Grid Grid.Row="2"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+
+                        <Border Style="{StaticResource Borders.UserSettingsBoxBorder.Information}">
+                            <StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0 5">
+                                <TextBlock Text="{Binding UserAccount.FullName}" />
+
+                                <TextBlock Margin="0 10 0 0"
+                                           FontWeight="Light"
+                                           Text="Joined 2021"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="2"
+                                Grid.Column="0"
+                                Style="{StaticResource Borders.UserSettingsBoxBorder.Information}">
+                            <StackPanel Orientation="Vertical"
+                                        Margin="0 5">
+                                <TextBlock Text="Email address" />
+
+                                <TextBlock Margin="0 10 0 0"
+                                           Text="{Binding UserAccount.Email.Value}" />
+
+                                <TextBlock Margin="0 5 0 0"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="Light">
+                                    <Hyperlink Style="{StaticResource Styles.HyperLink}" 
+                                               Command="{Binding UpdateEmailCommand}">
+                                        <Run Text="Update Email" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2"
+                                Grid.Row="0"
+                                Grid.RowSpan="4"
+                                Style="{StaticResource Borders.UserSettingsBoxBorder.Information}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="20" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="15" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="15" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="15" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="15" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0"
+                                           HorizontalAlignment="Center"
+                                           Text="Account information" />
+
+                                <DockPanel Grid.Row="2">
+                                    <TextBlock FontWeight="Medium"
+                                               Text="Address"
+                                               Margin="0 0 40 0"/>
+                                    <TextBlock HorizontalAlignment="Right"
+                                               Text="{Binding UserAccount.Email.Value}" />
+                                </DockPanel>
+
+                                <DockPanel Grid.Row="4">
+                                    <TextBlock Text="Email"
+                                               FontWeight="Medium"
+                                               Margin="0 0 40 0"/>
+                                    <TextBlock Text="{Binding UserAccount.Email.Value}"
+                                               HorizontalAlignment="Right" />
+                                </DockPanel>
+
+                                <DockPanel Grid.Row="6">
+                                    <TextBlock Text="Country"
+                                               FontWeight="Medium"
+                                               Margin="0 0 40 0"/>
+                                    <TextBlock Text="{Binding UserAccount.Email.Value}"
+                                               HorizontalAlignment="Right" />
+                                </DockPanel>
+
+                                <DockPanel Grid.Row="8">
+                                    <TextBlock Text="Phone"
+                                               FontWeight="Medium"
+                                               Margin="0 0 40 0"/>
+                                    <TextBlock Text="{Binding UserAccount.Email.Value}"
+                                               HorizontalAlignment="Right" />
+                                </DockPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!--Close Account-->
+                    <Button Grid.Row="4"
+                            Content="Close your account"
+                            Style="{StaticResource MaterialDesignFlatLightBgButton}"
+                            materialDesign:ButtonAssist.CornerRadius="15"
+                            Foreground="White"
+                            Background="DodgerBlue"
+                            Height="32"
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            Command="{Binding CloseAccountCommand}" />
+
+                </Grid>
+
+            </TabItem>
+
+            <TabItem Header="Security">
+                <Grid Margin="15 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Update Password-->
+                    <Border Style="{StaticResource Borders.UserSettingsBoxBorder.Information}">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="5" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Margin="0 5 0 0"
+                                       FontWeight="Medium"
+                                       Text="Update password"/>
+
+                            <TextBlock Grid.Row="2"
+                                       Text="Confirm your current password"
+                                       FontSize="14"/>
+
+                            <!--TODO: Create a new component for a PasswordBox with a 'Show password' option -->
+                            <components:BindablePasswordBox Grid.Row="4"
+                                                            x:Name="currentPassword"
+                                                            Height="30"
+                                                            FontSize="14"
+                                                            Watermark="Current password"
+                                                            Password="{Binding CurrentPassword}"/>
+                            <TextBox Grid.Row="4"
+                                     Height="30"
+                                     x:Name="currentPasswordTextBox"
+                                     Text="{Binding Password, Mode=TwoWay, ElementName=currentPassword}"
+                                     Visibility="Collapsed" />
+                            <CheckBox x:Name="ShowPasswordCharsCheckBox"
+                                      Grid.Row="4"
+                                      HorizontalAlignment="Right"
+                                      Checked="ShowPasswordCharsCheckBox_Checked"
+                                      Unchecked="ShowPasswordCharsCheckBox_Unchecked" />
+
+
+                            <components:BindablePasswordBox Grid.Row="6"
+                                                            Height="30"
+                                                            FontSize="14"
+                                                            Watermark="New password"
+                                                            Password="{Binding NewPassword}"/>
+
+                            <components:BindablePasswordBox Grid.Row="8"
+                                                            Height="30"
+                                                            FontSize="14"
+                                                            Watermark="Confirm new password"
+                                                            Password="{Binding RepeatNewPassword}"/>
+
+                            <Button Grid.Row="10"
+                                    Command="{Binding UpdatePasswordCommand}"
+                                    Content="Change Password"
+                                    Style="{StaticResource MaterialDesignFlatLightBgButton}"
+                                    materialDesign:ButtonAssist.CornerRadius="15"
+                                    Foreground="White"
+                                    MaxWidth="250"
+                                    Background="DodgerBlue"
+                                    Height="32" />
+
+                        </Grid>
+                    </Border>
+
+                    <!--Two-Step Verification-->
+                    <Border Grid.Column="2"
+                            MinWidth="420"
+                            Style="{StaticResource Borders.UserSettingsBoxBorder.Information}"
+                            HorizontalAlignment="Right">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="15" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Two-Step Verification Setup"
+                                       FontWeight="Medium"
+                                       HorizontalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="2"
+                                       Text="After entering your password, you will be prompted to enter your verification code."
+                                       TextWrapping="Wrap"
+                                       FontSize="17"
+                                       TextAlignment="Center"/>
+
+                            <!--TODO: Add a flag to IsEnabled!-->
+                            <Grid Grid.Row="4"
+                                  HorizontalAlignment="Stretch"
+                                  IsEnabled="{Binding IsTwoFactorAuthEnabled}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="10" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Two-Step Verification"/>
+
+                                <mah:ToggleSwitch OffContent="Off"
+                                                  OnContent="On"
+                                                  Grid.Row="0"
+                                                  Grid.Column="2"
+                                                  CommandParameter="{Binding}"
+                                                  OnCommand="{Binding EnableTwoStepVerificationCommand}"
+                                                  OffCommand="{Binding DisableTwoStepVerificationCommand}">
+                                    
+                                    <mah:ToggleSwitch.Resources>
+                                        <SolidColorBrush x:Key="MahApps.Brushes.ToggleSwitch.FillOn" Color="#1288ff" />
+                                    </mah:ToggleSwitch.Resources>
+                                </mah:ToggleSwitch>
+
+                                <!--TODO: Add Visibility converter!-->
+                                <TextBlock Grid.Row="2"
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="3"
+                                           HorizontalAlignment="Center"
+                                           Visibility="{Binding IsTwoFactorAuthEnabled, Converter={cv:BoolToVisibilityConverter Invert=True}}"
+                                           Text="Currently Two-Step verification is disabled"
+                                           Foreground="Red"
+                                           FontSize="15"/>
+                            </Grid>
+
+                            <Separator Grid.Row="6" />
+                        </Grid>
+
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!--TODO: Add Functionality!-->
+            <TabItem Header="Notifications">
+
+            </TabItem>
+        </TabControl>
+
+    </Border>
+</UserControl>

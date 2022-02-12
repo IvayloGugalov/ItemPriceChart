@@ -64,7 +64,8 @@
                 </Grid.RowDefinitions>
 
                 <Button Grid.Row="0"
-                        Style="{StaticResource Buttons.UserSettingsButton}">
+                        Style="{StaticResource Buttons.UserSettingsButton}"
+                        Command="{Binding ShowUserSettingsCommand}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

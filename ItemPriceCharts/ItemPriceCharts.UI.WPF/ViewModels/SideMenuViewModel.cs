@@ -15,9 +15,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
 {
     public class SideMenuViewModel : BaseViewModel
     {
-        private OnlineShop selectedShop;
-        private bool isLogOutModalOpen;
-
         public ObservableCollection<OnlineShop> OnlineShops { get; }
 
         public OnlineShop SelectedShop
@@ -25,12 +22,16 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             get => this.selectedShop;
             set => SetValue(ref this.selectedShop, value);
         }
-        
+        private OnlineShop selectedShop;
+
         public bool IsLogOutModalOpen
         {
             get => this.isLogOutModalOpen;
             set => SetValue(ref this.isLogOutModalOpen, value);
         }
+        private bool isLogOutModalOpen;
+
+        public UserAccount UserAccount { get; }
 
         public ICommand ShowItemsForShopCommand { get; }
         public ICommand ShowItemListingCommand { get; }
@@ -39,15 +40,18 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         public ICommand ShowCreateShopCommand { get; }
         public ICommand ShowAddItemCommand { get; }
 
+        public ICommand ShowUserSettingsCommand { get; }
         public ICommand ShowLogOutModalCommand { get; }
         public ICommand LogOutCommand { get; }
         public ICommand CancelLogOutCommand { get; }
 
         public event Action<OnlineShop> ShowItems;
         public event Action ClearView;
+        public event Action ShowUserSettings;
 
         public SideMenuViewModel(ILogOutService logOutService, UiEvents uiEvents, UserAccount userAccount)
         {
+            this.UserAccount = userAccount;
             this.OnlineShops = userAccount.OnlineShopsForUser.Select(x => x.OnlineShop).ToObservableCollection();
 
             this.ShowItemsForShopCommand = new RelayCommand(_ => this.ShowItems?.Invoke(this.SelectedShop));
@@ -61,6 +65,7 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.ShowCreateShopCommand = new RelayCommand(_ => UiEvents.ShowCreateShopView.Raise(userAccount));
             this.ShowAddItemCommand = new RelayCommand(_ => UiEvents.ShowCreateItemView.Raise(this.SelectedShop));
 
+            this.ShowUserSettingsCommand = new RelayCommand(_ => this.ShowUserSettings?.Invoke());
             this.ShowLogOutModalCommand = new RelayCommand(_ => this.IsLogOutModalOpen = true);
             this.LogOutCommand = new RelayCommand(_ => logOutService.LogOut());
             this.CancelLogOutCommand = new RelayCommand(_ => this.IsLogOutModalOpen = false);

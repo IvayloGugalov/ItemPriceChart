@@ -30,6 +30,8 @@ namespace ItemPriceCharts.UI.WPF.Modules
             builder.RegisterType<MainWindow>().SingleInstance();
 
             builder.RegisterType<SideMenuViewModel>().SingleInstance();
+            builder.RegisterType<UserSettingsViewModel>().InstancePerDependency()
+                .OnRelease(instance => instance.Dispose());
 
             builder.RegisterType<ShopsAndItemListingsViewModel>();
             builder.RegisterType<ItemListingViewModel>();
@@ -45,6 +47,9 @@ namespace ItemPriceCharts.UI.WPF.Modules
 
             builder.RegisterType<ItemInformationViewModel>();
             builder.RegisterType<ItemInformationView>();
+
+            builder.RegisterType<UpdateEmailViewModel>();
+            builder.RegisterType<UpdateEmailView>();
         }
     }
 }

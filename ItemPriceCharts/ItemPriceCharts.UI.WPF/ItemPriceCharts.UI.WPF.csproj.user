@@ -33,6 +33,9 @@
     <Compile Update="Views\Unused\UnusedElements.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UpdateEmailView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\UserControls\ItemListingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -60,12 +63,18 @@
     <Compile Update="Views\UserControls\SideMenuView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UserControls\UserSettingsModalControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\ModalStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\MyWatermarkTextBoxStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\Borders.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\Buttons.xaml">
@@ -107,6 +116,9 @@
     <Page Update="Views\Unused\UnusedElements.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\UpdateEmailView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\UserControls\ItemListingView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -135,6 +147,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UserControls\SideMenuView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\UserControls\UserSettingsModalControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
