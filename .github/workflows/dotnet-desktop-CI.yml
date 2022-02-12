@@ -69,10 +69,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-      
-    # Instal project dependencies
-    - name: Install Dependencies
-      run: npm install
     
     # Restoring the project
     - name: Restore project
