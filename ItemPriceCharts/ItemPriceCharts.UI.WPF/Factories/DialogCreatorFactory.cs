@@ -16,6 +16,7 @@ namespace ItemPriceCharts.UI.WPF.Factories
             UiEvents.ShowCreateItemView.Register(this.CreateItemView);
             UiEvents.ShowDeleteItemView.Register(this.CreateDeleteItemView);
             UiEvents.ShowItemInformationView.Register(this.CreateItemInformationView);
+            UiEvents.ShowUpdateEmailView.Register(this.CreateUpdateEmailView);
 
             UiEvents.ShowMessageDialog = vm => dispatcherWrapper.Invoke(() => new MessageDialog(vm).ShowDialog());
         }
@@ -49,6 +50,13 @@ namespace ItemPriceCharts.UI.WPF.Factories
                 var window = Bootstrapper.Bootstrapper.ViewFactory.Resolve<ItemInformationViewModel>(parameters);
                 window.ShowDialog();
             }
+        }
+
+        private void CreateUpdateEmailView(UserAccount userAccount)
+        {
+            var parameters = new Parameter[] { new TypedParameter(typeof(UserAccount), userAccount) };
+            var window = Bootstrapper.Bootstrapper.ViewFactory.Resolve<UpdateEmailViewModel>(parameters);
+            window.ShowDialog();
         }
     }
 }

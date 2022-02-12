@@ -47,6 +47,9 @@ namespace ItemPriceCharts.UI.WPF.Modules
 
             builder.RegisterType<ItemInformationViewModel>();
             builder.RegisterType<ItemInformationView>();
+
+            builder.RegisterType<UpdateEmailViewModel>();
+            builder.RegisterType<UpdateEmailView>();
         }
     }
 }

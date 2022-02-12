@@ -101,6 +101,7 @@ namespace ItemPriceCharts.UI.WPF.Bootstrapper
             ViewFactory.Register<CreateItemViewModel, CreateItemView>();
             ViewFactory.Register<DeleteItemViewModel, DeleteItemView>();
             ViewFactory.Register<ItemInformationViewModel, ItemInformationView>();
+            ViewFactory.Register<UpdateEmailViewModel, UpdateEmailView>();
         }
 
         public static T Resolve<T>(params Parameter[] parameters)

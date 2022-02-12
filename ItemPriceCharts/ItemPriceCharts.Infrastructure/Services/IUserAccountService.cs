@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using ItemPriceCharts.Domain.Entities;
 
@@ -10,6 +11,7 @@ namespace ItemPriceCharts.Infrastructure.Services
         Task<bool> DeleteUserAccount(UserAccount userAccount);
         Task<UserAccount> GetUserAccount(string userName, string email);
         Task<(UserAccountLoginResult loginResult, UserAccount userAccount)> TryGetUserAccount(string userName, string email, string password);
-        Task WriteUserCredentials(UserAccount userAccount, bool userWantsToAutoLogin, string loginExpiryDate);
+        Task UpdateUserAccountEmail(Guid userAccountId, string newEmail);
+        Task WriteUserCredentials(UserAccount userAccount, bool? userWantsToAutoLogin = null, string expiryDate = "");
     }
 }

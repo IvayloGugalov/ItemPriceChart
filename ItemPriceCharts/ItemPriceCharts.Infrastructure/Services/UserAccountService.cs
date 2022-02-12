@@ -28,7 +28,7 @@ namespace ItemPriceCharts.Infrastructure.Services
         InvalidPassword = 4
     }
 
-    // We ar using raw sql queries, as EF Core cannot resolve UserAccount.Email,
+    // We are using raw sql queries, as EF Core cannot resolve UserAccount.Email,
     // because in C# Email is an object, while in the database it's a string
     public class UserAccountService : IUserAccountService
     {
@@ -176,7 +176,27 @@ namespace ItemPriceCharts.Infrastructure.Services
             }
         }
 
-        public async Task WriteUserCredentials(UserAccount userAccount, bool userWantsToAutoLogin, string expiryDate)
+        public async Task UpdateUserAccountEmail(Guid userAccountId, string newEmail)
+        {
+            try
+            {
+                var userAccount = await this.dbContext.UserAccounts.FindAsync(userAccountId);
+                if (userAccount == null) return;
+
+                this.dbContext.UserAccounts.Attach(userAccount);
+                userAccount.UpdateEmail(newEmail);
+                await this.dbContext.SaveChangesAsync();
+
+                Logger.Debug($"Updated user email: '{newEmail}'.");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, $"Couldn't update user {userAccountId} email.");
+                throw;
+            }
+        }
+
+        public async Task WriteUserCredentials(UserAccount userAccount, bool? userWantsToAutoLogin, string expiryDate)
         {
             try
             {
@@ -184,8 +204,14 @@ namespace ItemPriceCharts.Infrastructure.Services
                 {
                     UserCredentialsSettings.Username = userAccount.Username;
                     UserCredentialsSettings.Email = userAccount.Email.Value;
-                    UserCredentialsSettings.RememberAccount = userWantsToAutoLogin.ToString();
-                    UserCredentialsSettings.LoginExpiresDate = expiryDate;
+                    if (userWantsToAutoLogin.HasValue)
+                    {
+                        UserCredentialsSettings.RememberAccount = userWantsToAutoLogin.ToString();
+                    }
+                    if (!string.IsNullOrEmpty(expiryDate))
+                    {
+                        UserCredentialsSettings.LoginExpiresDate = expiryDate;
+                    }
                     UserCredentialsSettings.WriteToXmlFile();
                 });
             }

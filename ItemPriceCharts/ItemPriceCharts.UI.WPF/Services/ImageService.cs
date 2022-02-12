@@ -94,12 +94,12 @@ namespace ItemPriceCharts.UI.WPF.Services
                     this.imageProxy.SaveImageFile(destinationFilePath, bitmap, compressionLevel: ImageService.COMPRESSION_LEVEL);
                     success = true;
 
-                    Logger.Info($"Copied the file {originalFilePath} to application directory.");
+                    Logger.Info($"Created profile image {fileName} in application directory.");
                     break;
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, $"Could not copy the file {originalFilePath} to application directory.");
+                    Logger.Error(e, $"Could not create {fileName} in application directory.");
                     Thread.Sleep(TimeSpan.FromSeconds(1 + counter));
                 }
                 finally

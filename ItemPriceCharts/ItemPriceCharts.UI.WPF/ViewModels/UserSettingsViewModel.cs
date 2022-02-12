@@ -7,6 +7,7 @@ using NLog;
 
 using ItemPriceCharts.Domain.Entities;
 using ItemPriceCharts.UI.WPF.CommandHelpers;
+using ItemPriceCharts.UI.WPF.Events;
 using ItemPriceCharts.UI.WPF.Extensions;
 using ItemPriceCharts.UI.WPF.Services;
 using ItemPriceCharts.UI.WPF.ViewModels.Base;
@@ -18,7 +19,12 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         private static readonly Logger Logger = LogManager.GetLogger(nameof(UserSettingsViewModel));
 
         private readonly IImageService imageService;
-        public UserAccount UserAccount { get; }
+        public UserAccount UserAccount
+        {
+            get => this.userAccount;
+            set => this.SetValue(ref this.userAccount, value);
+        }
+        private UserAccount userAccount;
 
         public string CurrentPassword
         {
@@ -48,8 +54,6 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
         }
         private bool isUpdatingProfileImage;
 
-        public bool RequestToUpdateEmail { get; set; }
-
         public bool IsTwoFactorAuthEnabled => false;
 
         public BitmapImage UserProfileImage { get; private set; }
@@ -67,19 +71,19 @@ namespace ItemPriceCharts.UI.WPF.ViewModels
             this.UserAccount = userAccount;
 
             this.UpdateProfileImageCommand = new RelayAsyncCommand(this.UpdateProfileImageAction);
-            this.UpdateEmailCommand = new RelayCommand(this.UpdateEmailAction);
+            this.UpdateEmailCommand = new RelayCommand(_ =>
+            {
+                UiEvents.ShowUpdateEmailView.Raise(this.UserAccount);
+                this.OnPropertyChanged(nameof(this.UserAccount));
+            });
             this.UpdatePasswordCommand = new RelayCommand(_ => {});
             this.EnableTwoStepVerificationCommand = new RelayCommand(_ => { });
             this.DisableTwoStepVerificationCommand = new RelayCommand(_ => { });
             this.CloseAccountCommand = new RelayCommand(_ => {});
             
-            this.SetProfileImage().FireAndForgetSafeAsync(continueOnCapturedContext: false);
-        }
+            UiEvents.UserAccountUpdated.Register(updatedAccount => this.UserAccount = updatedAccount);
 
-        private void UpdateEmailAction(object obj)
-        {
-            this.RequestToUpdateEmail = true;
-            this.OnPropertyChanged(nameof(this.RequestToUpdateEmail));
+            this.SetProfileImage().FireAndForgetSafeAsync(continueOnCapturedContext: false);
         }
 
         private async Task SetProfileImage()

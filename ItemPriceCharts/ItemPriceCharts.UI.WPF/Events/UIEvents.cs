@@ -20,6 +20,8 @@ namespace ItemPriceCharts.UI.WPF.Events
         public static IEvent<Item> ShowDeleteItemView { get; set; } = new Event<Item>();
         public static IEvent<Item> ShowItemInformationView { get; set; } = new Event<Item>();
         public static IEvent<UserAccount> SuccessfulLogin { get; set; } = new Event<UserAccount>();
+        public static IEvent<UserAccount> ShowUpdateEmailView { get; set; } = new Event<UserAccount>();
+        public static IEvent<UserAccount> UserAccountUpdated { get; set; } = new Event<UserAccount>();
 
 
         //Events from EventsLocator for the UI

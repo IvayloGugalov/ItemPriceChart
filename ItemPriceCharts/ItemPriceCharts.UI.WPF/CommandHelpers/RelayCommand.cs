@@ -11,7 +11,7 @@ namespace ItemPriceCharts.UI.WPF.CommandHelpers
         {
         }
 
-        public RelayCommand(Action<object> action, Func<object> predicate) : base(action, predicate)
+        public RelayCommand(Action<object> action, Func<bool> predicate) : base(action, predicate)
         {
         }
     }

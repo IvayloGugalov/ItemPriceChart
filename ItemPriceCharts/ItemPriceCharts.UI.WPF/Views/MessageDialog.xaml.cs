@@ -19,7 +19,7 @@ namespace ItemPriceCharts.UI.WPF.Views
 
             if (viewModel.CloseWindow == null)
             {
-                viewModel.CloseWindow = new Action(this.Close);
+                viewModel.CloseWindow = this.Close;
             }
 
             this.negativeButton.Click += (s, e) => this.Close();
